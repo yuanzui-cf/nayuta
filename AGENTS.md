@@ -187,6 +187,9 @@ Agents must follow these toolchain rules:
 - Prefer `bun run <script>` for package scripts.
 - Prefer repository-defined scripts from `package.json` once they exist.
 - Use commands such as `bun run dev`, `bun run build`, `bun run preview`, `bun run check`, `bun run test`, `bun run lint`, or `bun run format` when those scripts are defined.
+- Use TypeScript 6 as the project TypeScript baseline until TypeScript 7 is stable in the main `typescript` package.
+- TypeScript 6 and 7 do not auto-discover every `@types/*` package by default. For example, when Bun globals or Bun runtime types are needed, you should install `@types/bun` and then include `"types": ["bun"]` in `tsconfig.json` manually.
+- Prefer `bun run check` for TypeScript validation when the script exists; it should run the repository TypeScript checker through Bun.
 - Use Prettier as the repository formatter for Astro, Markdown, CSS, TypeScript, JavaScript, JSON, and other supported text files.
 - Run Prettier through Bun scripts, such as `bun run format` or `bun run format:check`, rather than ad-hoc formatter commands when scripts exist.
 - Never format, lint-fix, generate into, or otherwise modify files under `design/` unless the user explicitly overrides the protected-reference rule in the current conversation.
@@ -323,7 +326,7 @@ Agents must not merge a PR without explicit user approval after the PR is create
 - The required agent context directory is `docs/agents/`.
 - Visual references live under `design/` and are protected read-only files for agents.
 - Formatting, lint fixes, generated output, cleanup, and other automated write operations must exclude `design/`.
-- The required frontend toolchain is Astro, TypeScript, CSS, Bun, and Prettier.
+- The required frontend toolchain is Astro, TypeScript 6, CSS, Bun, and Prettier.
 - Vite is not treated as a separate project toolchain; use Astro-managed commands unless repository scripts say otherwise.
 - `vp` is not used in this repository.
 - Rust tooling is not part of this repository's current design.
