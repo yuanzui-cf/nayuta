@@ -1,5 +1,5 @@
 {
-  "name": "Nayuta",
+  "name": "nayuta-theme",
   "type": "module",
   "version": "0.0.0",
   "scripts": {
@@ -9,6 +9,6 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.16.15"
+    "astro": "^6.4.4"
   }
 }
