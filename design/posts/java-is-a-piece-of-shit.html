@@ -1,0 +1,1412 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Java is a piece of SHIT - Nayuta UI</title>
+        <link rel="stylesheet" href="../assets/styles/style.css" />
+        <style>
+            /* Styling extension for long reading experience */
+            .prose blockquote {
+                border-left: 4px solid var(--ny-color-primary);
+                padding-left: var(--ny-space-3);
+                color: var(--ny-color-text-muted);
+                font-style: italic;
+                margin: var(--ny-space-4) 0;
+            }
+            .prose pre {
+                background-color: var(--ny-color-surface-container);
+                border: 1px solid var(--ny-color-border);
+                border-radius: var(--ny-radius-md);
+                padding: var(--ny-space-3);
+                overflow-x: auto;
+                max-width: 100%;
+                width: 100%;
+                box-sizing: border-box;
+                margin: var(--ny-space-4) 0;
+                font-family: var(--ny-font-code);
+                font-size: 12px;
+                line-height: 1.5;
+                -webkit-overflow-scrolling: touch;
+            }
+            .prose code {
+                font-family: var(--ny-font-code);
+                background-color: var(--ny-color-surface-container);
+                padding: 2px 4px;
+                border-radius: var(--ny-radius-xs);
+                color: var(--ny-color-outline);
+            }
+            .table-container {
+                overflow-x: auto;
+                width: 100%;
+                margin: var(--ny-space-5) 0;
+                border: 1px solid var(--ny-color-border);
+                border-radius: var(--ny-radius-md);
+                background-color: var(--ny-color-surface);
+                -webkit-overflow-scrolling: touch;
+            }
+            .prose table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 0;
+                font-size: 12px;
+                min-width: 600px;
+            }
+            .prose th,
+            .prose td {
+                border-bottom: 1px solid var(--ny-color-border);
+                border-right: 1px solid var(--ny-color-border);
+                padding: 8px 12px;
+                text-align: left;
+            }
+            .prose th:last-child,
+            .prose td:last-child {
+                border-right: none;
+            }
+            .prose tr:last-child td {
+                border-bottom: none;
+            }
+            .prose th {
+                background-color: var(--ny-color-surface-elevated);
+                border-top: none;
+                font-weight: 600;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Mobile Sticky Header -->
+        <header class="mobile-sticky-header">
+            <nav class="breadcrumbs">
+                <a href="/">Home</a> &gt; <a href="/post.html">Posts</a> &gt;
+            </nav>
+            <div class="header-actions">
+                <button
+                    class="header-action-btn"
+                    id="open-widgets-btn"
+                    aria-label="Open Widgets"
+                >
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"
+                        />
+                    </svg>
+                </button>
+                <button
+                    class="header-action-btn"
+                    id="open-context-btn"
+                    aria-label="Open Page Widgets"
+                >
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
+                        />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="layout-container with-right-sidebar">
+            <!-- Left Region (Sidebar) -->
+            <aside class="left-region" id="left-sidebar">
+                <div class="profile-card">
+                    <img
+                        class="avatar"
+                        src="../assets/images/avatar.png"
+                        alt="Leo Jia Avatar"
+                    />
+                    <div class="profile-info">
+                        <h2 class="profile-name">Leo Jia</h2>
+                        <div class="profile-title">
+                            🏫 Undergraduate Student | 🤷‍♂️ Aspiring Full Stack
+                            Engineer
+                        </div>
+                    </div>
+
+                    <div class="social-buttons">
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            class="btn"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"
+                                />
+                            </svg>
+                            Github
+                        </a>
+                        <a href="/post.html" class="btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
+                                />
+                            </svg>
+                            Blog
+                        </a>
+                        <a href="/friend.html" class="btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+                                />
+                            </svg>
+                            Friends
+                        </a>
+                        <a
+                            href="https://t.me"
+                            target="_blank"
+                            class="btn btn-icon-only"
+                            aria-label="Telegram"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M9.78 18.65l.28-4.28 7.76-7.01c.34-.3-.07-.47-.52-.18L7.79 12.25l-4.15-1.3c-.9-.28-.92-.9.19-1.34l16.2-6.25c.75-.28 1.4.17 1.15 1.25l-2.75 12.97c-.2.92-.75 1.15-1.52.72l-4.19-3.08-2.02 1.95c-.22.22-.41.41-.84.41z"
+                                />
+                            </svg>
+                        </a>
+                        <a
+                            href="mailto:leo@example.com"
+                            class="btn btn-icon-only"
+                            aria-label="Email"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Posts Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Recent Posts</span>
+                        <a href="/post.html">More ></a>
+                    </div>
+                    <div class="post-list">
+                        <a
+                            href="/posts/why-i-choose-to-use-astro.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Why I choose to use Astro?</span
+                            >
+                            <div class="post-meta">
+                                <span>2026-11-11</span>
+                                <span>1k views</span>
+                            </div>
+                        </a>
+                        <a
+                            href="/posts/how-easy-can-rust-be.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >How easy can Rust be?</span
+                            >
+                            <div class="post-meta">
+                                <span>2026-11-01</span>
+                                <span>11.4k views</span>
+                            </div>
+                        </a>
+                        <a
+                            href="/posts/java-is-a-piece-of-shit.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Java is a piece of SHIT</span
+                            >
+                            <div class="post-meta">
+                                <span>2025-12-12</span>
+                                <span>193k views</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Website Status Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Website Status</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Posts</span>
+                            <span class="status-value">24</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Running</span>
+                            <span class="status-value">1024 days</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Visitor</span>
+                            <span class="status-value">313</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Views</span>
+                            <span class="status-value">12.3k</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Last Updated</span>
+                            <span class="status-value">2026-11-11</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Footer -->
+                <footer class="left-footer">
+                    <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
+                    <p>
+                        Powered by <a href="#">Litepage</a>. Designed by
+                        <a href="#">Leo Jia</a>.
+                    </p>
+                </footer>
+            </aside>
+
+            <!-- Main Region -->
+            <main class="main-region">
+                <nav class="breadcrumbs">
+                    <a href="/">Home</a> &gt;
+                    <a href="/post.html">Posts</a> &gt;
+                </nav>
+
+                <article class="prose">
+                    <h1 class="page-title">Java is a piece of SHIT</h1>
+                    <p
+                        style="
+                            color: var(--ny-color-text-subtle);
+                            margin-bottom: 20px;
+                        "
+                    >
+                        Published: 2025-12-12 &nbsp;•&nbsp; 193k views
+                        &nbsp;•&nbsp; Reading Time: 45 mins
+                    </p>
+
+                    <blockquote>
+                        “世界上只有两种编程语言：一种是天天被人骂的，另一种是没人用的。”
+                        —— Bjarne Stroustrup。然而，Java
+                        属于第三种：它是如此地难用、繁琐、笨重，却因为历史惰性和垄断性的企业市场而无处不在，成为无数程序员不得不面对的噩梦。
+                    </blockquote>
+
+                    <p class="post-subtitle">引言：被神话的“企业级第一语言”</p>
+                    <p>
+                        在二十一世纪初，Sun Microsystems
+                        凭借“一次编写，到处运行”（Write Once, Run
+                        Anywhere）的口号将 Java
+                        推向了神坛。在那个跨平台环境极度匮乏、C/C++
+                        内存泄漏和段错误满天飞的年代，Java
+                        凭借自动内存管理（Garbage
+                        Collection）和所谓的虚拟机技术，迅速俘获了企业级应用市场。几十年过去了，Java
+                        演变成了商业帝国和臃肿的象征。随着 Rust、Go、Kotlin
+                        以及现代 TypeScript 等语言的兴起，回看
+                        Java，我们发现它早已不是什么先进生产力的代表，而是充满了过时设计理念、臃肿八股文和繁复工程结构的庞然大物。本篇文章将以极其详尽的技术细节，彻底拆解
+                        Java 为什么已经成为现代软件工程的严重毒瘤和落后代表。
+                    </p>
+
+                    <p class="post-subtitle">
+                        第一章：繁琐与臃肿——用生命写模板代码
+                    </p>
+                    <p>
+                        Java 最直观的毛病，就是它那惨绝人寰的繁琐语法。在 Java
+                        中，“一切皆对象”被极端教条地贯彻执行，导致了极其严重的表达力低下。程序员在写
+                        Java 的时候，至少有 70%
+                        的生命消耗在毫无意义的“样板代码（Boilerplate Code）”中。
+                    </p>
+
+                    <p>
+                        要定义一个简单的用户数据传输对象（DTO），在现代语言（比如
+                        TypeScript、Go、Rust）中只需要短短几行。而在 Java
+                        中，你需要写一个完整的类，带有私有字段，然后是长篇大论的
+                        Getter、Setter，还有构造函数、<code>equals()</code>、<code
+                            >hashCode()</code
+                        >
+                        以及 <code>toString()</code>。即便后来 Java 引入了
+                        <code>Record</code> 或者是社区使用三方工具 Lombok
+                        插件来用注解生成这些方法，也无法从根本上消除 Java
+                        整个语法底层的繁琐本质。以下是一个简单的对比：
+                    </p>
+
+                    <pre><code>// 现代 Rust 实现
+struct User {
+    id: u64,
+    name: String,
+    email: String,
+}
+
+// 现代 TypeScript 实现
+interface User {
+    id: number;
+    name: string;
+    email: string;
+}
+
+// 传统 Java 实现 (不使用 Lombok)
+public class User {
+    private Long id;
+    private String name;
+    private String email;
+
+    public User(Long id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+               Objects.equals(name, user.name) &&
+               Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email);
+    }
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", name='" + name + "', email='" + email + "'}";
+    }
+}</code></pre>
+
+                    <p>
+                        这就是 Java 程序员每天都要面对的现实。即使使用 IDE
+                        自动生成，或者用 Lombok
+                        注解，这些繁琐的代码依旧存在于编译产物中。Lombok
+                        作为极其广泛的三方库，甚至需要直接去 hack Java 编译器的
+                        AST（抽象语法树）才能工作，这在任何一个健康的编程语言生态中都是不可想象的——这意味着官方编译器缺乏最基本的反射、元编程或宏系统的设计，逼得社区不得不使用这种“邪术”。
+                    </p>
+
+                    <p class="post-subtitle">
+                        第二章：企业级“过度工程”与反射地狱
+                    </p>
+                    <p>
+                        由于 Java
+                        语言本身的表达能力极为有限，且不支持头等函数（在 Java 8
+                        引入拙劣的 Lambda 表达式和 Functional Interface
+                        之前），因此为了实现所谓的软件设计原则（如 SOLID），Java
+                        社区发明了全宇宙最复杂的“设计模式”和框架体系。这就导致了臭名昭著的<strong>过度工程（Over-Engineering）</strong>。
+                    </p>
+
+                    <p>
+                        在企业级 Java 框架（尤其是 Spring Boot / Spring
+                        Cloud）中，你经常能看到令人啼笑皆非的类名：<code>AbstractSingletonProxyFactoryBean</code>、<code
+                            >InternalResourceViewResolver</code
+                        >
+                        甚至是
+                        <code>BeanPostProcessorRegistrationDelegate</code
+                        >。这些冗长类名的背后，是 Java
+                        缺乏强大的语言特性支持，而不得不采用庞杂的多层抽象来弥补。为了在运行时获得动态性，Java
+                        极度依赖<strong>反射（Reflection）</strong>和<strong>运行时注解处理</strong>。这引发了一系列灾难性的后果：
+                    </p>
+                    <ul>
+                        <li>
+                            <strong>破坏编译期检查：</strong>Spring
+                            框架通过大量的 XML 配置或 Java
+                            注解在运行时进行依赖注入（DI）和切面编程（AOP）。这意味着，如果配置或类型注入错误，Java
+                            编译器完全一无所知，错误只会在程序启动或运行时爆发。这让
+                            Java 的强类型检查变成了笑话。
+                        </li>
+                        <li>
+                            <strong>黑盒魔法：</strong>Java
+                            应用的启动过程像是一个巨大的黑盒。类加载器在后台狂热地扫描整个
+                            Classpath，读取 jar 包中的每一个字节码，寻找
+                            <code>@Component</code> 和
+                            <code>@Autowired</code>
+                            注解，通过反射强行拼装对象。程序员很难看清自己的代码究竟是如何执行的。
+                        </li>
+                        <li>
+                            <strong>构建配置冗长：</strong>Maven
+                            依靠庞大臃肿且难以阅读的 XML
+                            文件（pom.xml），即使是现代的
+                            Gradle，其编译和构建速度也常常慢到令人抓狂。
+                        </li>
+                    </ul>
+
+                    <p class="post-subtitle">
+                        第三章：JVM 的内存吞噬与冷启动硬伤
+                    </p>
+                    <p>
+                        Java 是运行在 JVM（Java 虚拟机）上的。JVM
+                        内部结构极其复杂，包含
+                        JIT（即时编译器）、垃圾回收器（GC）、类加载子系统等。虽然经过二十余年的优化，JVM
+                        在长期运行下的吞吐量表现不俗，但在如今以<strong>微服务、Serverless、容器化（Docker/K8s）</strong>为核心的云原生时代，JVM
+                        表现出了致命的硬伤。
+                    </p>
+
+                    <p>
+                        首先是<strong>内存开销巨大</strong>。一个最基础的 Spring
+                        Boot Hello World
+                        应用，在不做任何业务处理的情况下，启动后往往就需要占用
+                        200MB - 300MB 的物理内存。而在 Go 或 Rust
+                        中，同等吞吐量的原生 Web 应用仅需要 10MB - 20MB
+                        左右的内存。这种高内存消耗在海量微服务集群下会被无限放大，直接导致企业的云服务账单翻倍增长。
+                    </p>
+
+                    <p>
+                        其次是<strong>冷启动（Cold Start）延迟</strong>。在
+                        Serverless（如 AWS Lambda / Google Cloud
+                        Run）环境中，服务需要根据流量动态伸缩。当流量暴增时，平台需要瞬间启动几百个新容器。而
+                        JVM 应用从启动到完全就绪，由于类加载扫描、JIT
+                        热点代码编译等过程，往往需要 5 到 15 秒甚至更久。在 JIT
+                        编译器把代码编译成机器码之前，应用运行极慢。与之对比，Go/Rust
+                        编译出的原生可执行文件启动时间往往小于 10
+                        毫秒，且起步即是全速运行。尽管 Java 社区尝试通过 GraalVM
+                        原生镜像（Native Image）技术来解决这个问题，但因为 Java
+                        生态中大量第三方库极度依赖反射和动态代理，使得将现有的
+                        Java 应用编译为 GraalVM
+                        原生可执行文件需要配置浩如烟海的反射 JSON
+                        文件，极为难用且易崩，纯属削足适履。
+                    </p>
+
+                    <p class="post-subtitle">
+                        第四章：历史局限性——泛型擦除与十亿美元的噩梦
+                    </p>
+                    <p>
+                        Java 为了维持所谓对旧版本的向后兼容性（Backward
+                        Compatibility），背负了沉重的历史包袱，导致其语言设计中存在大量粗糙、不科学的妥协。
+                    </p>
+
+                    <p>
+                        <strong>1. 伪泛型与类型擦除（Type Erasure）</strong
+                        ><br />
+                        Java 在 1.5
+                        版本才引入了泛型（Generics），但这并不是真泛型，而是伪泛型。在编译之后，所有的泛型信息都会被“擦除”为默认的
+                        <code>Object</code>。这意味着在运行时，JVM 根本不知道
+                        <code>List&lt;String&gt;</code> 和
+                        <code>List&lt;Integer&gt;</code>
+                        的区别，它们全都是原始的
+                        <code>ArrayList</code>。这也导致了 Java
+                        泛型中无法执行许多直观的操作，比如你不能
+                        <code>new T()</code>，不能
+                        <code>instanceof List&lt;String&gt;</code
+                        >，不得不通过传递
+                        <code>Class&lt;T&gt;</code>
+                        对象等令人感到恶心的权宜手段来工作：
+                    </p>
+                    <pre><code>// 由于类型擦除，你不能直接创建泛型对象
+public &lt;T&gt; void doSomething() {
+    // T obj = new T(); // 编译错误！
+}
+
+// 必须写成这种极其别扭的“反射”方式
+public &lt;T&gt; void doSomething(Class&lt;T&gt; clazz) {
+    try {
+        T obj = clazz.getDeclaredConstructor().newInstance();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}</code></pre>
+
+                    <p>
+                        <strong
+                            >2.
+                            空指针异常（NullPointerException）——十亿美元的灾难</strong
+                        ><br />
+                        Java 中的一切对象引用都可以为
+                        <code>null</code>。这意味着，只要你没有进行防卫性的
+                        <code>if (obj != null)</code>
+                        判断，随时随地都会在运行时抛出
+                        <code>NullPointerException</code
+                        >。这被设计界公认为编程史上的“十亿美元错误”。而在现代语言（如
+                        Rust）中，通过
+                        <code>Option&lt;T&gt;</code>
+                        枚举完全在编译期消除了空指针的存在；即使在 Kotlin 或
+                        TypeScript 中，也提供了内置的空安全检查。Java 8
+                        虽然后补了一个
+                        <code>Optional&lt;T&gt;</code>
+                        类，但它只是一个笨重的内存包装，不仅带来了额外的内存分配开销开销，而且由于你可以对一个
+                        <code>Optional</code> 对象本身赋予
+                        <code>null</code>，或者直接强行调用
+                        <code>.get()</code>，它根本没有在编译器层面保证空安全。
+                    </p>
+
+                    <p>
+                        <strong>3. 强制 Checked Exception</strong><br />
+                        Java 独创了“受检异常（Checked
+                        Exception）”概念，要求开发者必须在方法签名中声明抛出的异常，或者捕获处理。原本这一设计初衷是为了让代码更健壮，但实际开发中，它极大地破坏了代码的组合性。因为当你在写
+                        Lambda 表达式或 Stream 时， Checked Exception
+                        会因为方法签名不符导致编译失败，逼得程序员写出无数毫无意义的垃圾捕获代码：
+                    </p>
+                    <pre><code>// 即使你明确知道不会出错，也必须捕获或者抛出 Checked Exception
+list.stream().forEach(item -&gt; {
+    try {
+        // 一个可能抛出 IOException 的操作
+        processItem(item);
+    } catch (IOException e) {
+        // 只能用 RuntimeException 包裹强行抛出，毫无优雅可言
+        throw new RuntimeException(e);
+    }
+});</code></pre>
+
+                    <p class="post-subtitle">
+                        第五章：拙劣的并发与臃肿的现代化改造
+                    </p>
+                    <p>
+                        Java
+                        最初的并发模型是基于原生操作系统线程的。由于操作系统线程非常昂贵，一个
+                        JVM 进程最多只能启动数千个线程，这迫使 Java
+                        社区广泛采用高并发下的线程池（ThreadPool）和复杂的异步回调模型（如
+                        CompletableFuture / Reactive
+                        Programming）。响应式编程（Reactive Programming）在 Java
+                        中的实现（如 Spring WebFlux /
+                        RxJava）被称为“地狱级排版”，其代码完全失去了可读性和可调试性：
+                    </p>
+                    <pre><code>// 响应式 Java 并发代码，极难阅读和断点调试
+public Mono&lt;UserDTO&gt; getUser(String userId) {
+    return userService.findUser(userId)
+        .flatMap(user -&gt; orderService.getOrders(user.getId())
+            .collectList()
+            .map(orders -&gt; new UserDTO(user, orders)))
+        .onErrorResume(e -&gt; Mono.just(UserDTO.empty()));
+}</code></pre>
+
+                    <p>
+                        在 Go
+                        语言中，同等逻辑只需要使用轻量级的协程（Goroutines）以及最符合人类直觉的同步阻塞式写法，便能在数百万并发下轻松自如。虽然
+                        Java 21 带来了 Project
+                        Loom（虚拟线程），号称能彻底解决高并发问题，但这已经晚了太多年。而且，由于
+                        Java 整个生态库（比如 JDBC
+                        等庞杂的三方库）的历史包袱过于沉重，大量底层库依旧包含很多
+                        <code>synchronized</code>
+                        关键字的阻塞逻辑（这会导致虚拟线程卡死在原生载体线程上，无法释放），导致虚拟线程在实际项目中推进速度缓慢，这正是历史包袱太重导致步子迈不大的典型体现。
+                    </p>
+
+                    <p class="post-subtitle">
+                        第六章：技术生态与效率横向大比拼
+                    </p>
+                    <p>
+                        为了让事实更加清晰，我们可以通过一张直观的技术对比表，来看看
+                        Java 与现代主流开发语言之间的真实差距：
+                    </p>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>特性</th>
+                                    <th>Java (JVM)</th>
+                                    <th>Rust</th>
+                                    <th>Go</th>
+                                    <th>TypeScript (Node.js)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>Hello World 内存占用</strong>
+                                    </td>
+                                    <td>约 200MB - 300MB</td>
+                                    <td>小于 5MB</td>
+                                    <td>约 8MB - 12MB</td>
+                                    <td>约 20MB - 30MB</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>冷启动速度</strong></td>
+                                    <td>秒级 (3s - 15s)</td>
+                                    <td>毫秒级 (&lt; 10ms)</td>
+                                    <td>毫秒级 (&lt; 15ms)</td>
+                                    <td>毫秒级 (&lt; 50ms)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>空安全机制</strong></td>
+                                    <td>Optional 封装 (运行时)</td>
+                                    <td>Option&lt;T&gt; (编译期安全)</td>
+                                    <td>部分空指针风险</td>
+                                    <td>可选链、严格模式 (编译期)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>并发模型</strong></td>
+                                    <td>系统级线程 / 虚拟线程</td>
+                                    <td>无畏并发 (Compile-time)</td>
+                                    <td>Goroutines + Channels</td>
+                                    <td>单线程事件循环 (Event Loop)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>二进制体积</strong></td>
+                                    <td>庞大的 Jar 包 + JVM 运行时</td>
+                                    <td>微小、单文件原生二进制</td>
+                                    <td>较小、单文件原生二进制</td>
+                                    <td>依赖 node_modules 与运行时</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>开发生产率</strong></td>
+                                    <td>极低 (由于大量模板代码)</td>
+                                    <td>中等 (严格但安全)</td>
+                                    <td>极高 (简洁优雅)</td>
+                                    <td>极高 (极速反馈循环)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>
+                        无论从运行效率、内存开销，还是现代工程急需的敏捷度、快速构建速度来看，Java
+                        全方位落后于时代。它唯一的护城河，就是历史上几十年堆积起来的“屎山”系统（Legacy
+                        Systems），以及大厂中那群只懂
+                        Java、依靠八股文面试维持行业门槛的“企业级架构师”们。
+                    </p>
+
+                    <p class="post-subtitle">结论：让老兵安息吧</p>
+                    <p>
+                        Java
+                        是一代传奇，它在互联网爆发的黄金时代立下了汗马功劳，完成了它的历史使命。然而，时代在变，软件工程面临的挑战也在发生翻天覆地的变化。如今的开发需要极高的冷启动响应、极简的云托管成本、极致的安全性和最高的开发生产效率。Java
+                        本身沉重的历史兼容性负担，决定了它只能通过不停地打补丁来假装自己很现代，这导致它的语法正变得越来越混乱和丑陋。
+                    </p>
+
+                    <p>
+                        在这个万物上云、微服务与原生编译大行其道的时代，我们没有理由再去新项目中拥抱笨重的
+                        Java。与其忍受冗余的框架配置、冗长的反射魔法和经常在半夜拉响警报的空指针异常，不如去拥抱更优雅的
+                        Go、更有编译期安全保证的
+                        Rust，或者是生态蓬勃又极速反应的 TypeScript。Java
+                        这辆年久失修、布满灰尘的蒸汽机车，是时候让它缓缓驶入历史博物馆，安享晚年了。
+                    </p>
+                </article>
+
+                <!-- Comments Section -->
+                <section class="comments-section">
+                    <h3 class="comments-title">
+                        <span>Discussion / Comments</span>
+                        <span class="comments-count">12</span>
+                    </h3>
+
+                    <!-- Mock Comment Form -->
+                    <div class="comment-form">
+                        <textarea
+                            class="comment-textarea"
+                            placeholder="Join the flame war... (Markdown is supported)"
+                        ></textarea>
+                        <div class="comment-form-footer">
+                            <span class="comment-input-tip"
+                                >Posting as guest_anon_404</span
+                            >
+                            <button class="btn">Submit Comment</button>
+                        </div>
+                    </div>
+
+                    <div class="comments-list">
+                        <!-- Comment 1 (Anti-Java) -->
+                        <div class="comment-card">
+                            <div
+                                class="comment-avatar"
+                                style="background-color: #ff3355"
+                            >
+                                G
+                            </div>
+                            <div class="comment-main">
+                                <div class="comment-header">
+                                    <span class="comment-author"
+                                        >GarbageCollector_Hater</span
+                                    >
+                                    <span class="comment-system-badge"
+                                        >FreeBSD</span
+                                    >
+                                    <span class="comment-time">1 hour ago</span>
+                                </div>
+                                <div class="comment-content">
+                                    <p>
+                                        说得太对了！写 Java
+                                        就像在跟一大堆八股文和繁复的 XML/YAML
+                                        配置作斗争。我一天写 500 行代码，其中
+                                        400 行是 getter/setter/boilerplate，还有
+                                        50 行是各种反射和 Annotation。用 Spring
+                                        Boot 启动一个 Hello World 占了 500MB
+                                        内存，简直是环境污染！
+                                    </p>
+                                </div>
+                                <div class="comment-footer">
+                                    <span class="comment-action"
+                                        >▲ Upvote (42)</span
+                                    >
+                                    <span class="comment-action"
+                                        >▼ Downvote</span
+                                    >
+                                    <span class="comment-action">Reply</span>
+                                </div>
+
+                                <!-- Replies Section (Nested level 1) -->
+                                <div class="comment-replies">
+                                    <!-- Reply 1a (Pro-Java) -->
+                                    <div class="comment-card">
+                                        <div
+                                            class="comment-avatar"
+                                            style="background-color: #00aaff"
+                                        >
+                                            E
+                                        </div>
+                                        <div class="comment-main">
+                                            <div class="comment-header">
+                                                <span class="comment-author"
+                                                    >Enterprise_Architect_99</span
+                                                >
+                                                <span
+                                                    class="comment-system-badge"
+                                                    >Windows 11</span
+                                                >
+                                                <span
+                                                    class="comment-reply-arrow"
+                                                    >▶</span
+                                                >
+                                                <span
+                                                    class="comment-target-author"
+                                                    >GarbageCollector_Hater</span
+                                                >
+                                                <span class="comment-time"
+                                                    >45 mins ago</span
+                                                >
+                                            </div>
+                                            <div class="comment-content">
+                                                <p>
+                                                    呵呵，楼上这种只写过学生期末作业的就别出来丢人了。Spring
+                                                    Boot
+                                                    内存大是因为人家开箱即用集成了全套企业级基础设施。等你项目规模上去了，几百个微服务，需要高并发、高可用和稳定的垃圾回收器，这时候除了
+                                                    Java 谁能抗住？Go
+                                                    连个泛型都搞得别扭，动态语言跑大项目就是灾难。
+                                                </p>
+                                            </div>
+                                            <div class="comment-footer">
+                                                <span class="comment-action"
+                                                    >▲ Upvote (28)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >▼ Downvote (3)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >Reply</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reply 1b (Anti-Java) -->
+                                    <div class="comment-card">
+                                        <div
+                                            class="comment-avatar"
+                                            style="background-color: #ee2244"
+                                        >
+                                            N
+                                        </div>
+                                        <div class="comment-main">
+                                            <div class="comment-header">
+                                                <span class="comment-author"
+                                                    >NullPointerKing</span
+                                                >
+                                                <span
+                                                    class="comment-system-badge"
+                                                    >ArchLinux</span
+                                                >
+                                                <span
+                                                    class="comment-reply-arrow"
+                                                    >▶</span
+                                                >
+                                                <span
+                                                    class="comment-target-author"
+                                                    >Enterprise_Architect_99</span
+                                                >
+                                                <span class="comment-time"
+                                                    >30 mins ago</span
+                                                >
+                                            </div>
+                                            <div class="comment-content">
+                                                <p>
+                                                    笑死，企业级基础设施？是指运行期随机抛出
+                                                    <code
+                                                        >NullPointerException</code
+                                                    >
+                                                    还是指 Log4j
+                                                    隔三差五爆个核弹级漏洞？Java
+                                                    的并发也就是套了层皮的 OS
+                                                    线程，虚拟线程到现在才挤牙膏挤出来，还特么一堆
+                                                    Pin
+                                                    线程的限制。退役吧，老兵！
+                                                </p>
+                                            </div>
+                                            <div class="comment-footer">
+                                                <span class="comment-action"
+                                                    >▲ Upvote (19)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >▼ Downvote</span
+                                                >
+                                                <span class="comment-action"
+                                                    >Reply</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End replies -->
+                            </div>
+                        </div>
+                        <!-- End Comment 1 -->
+
+                        <!-- Comment 2 (Rust Preaching & Being mocked) -->
+                        <div class="comment-card">
+                            <div
+                                class="comment-avatar"
+                                style="background-color: #ff9900"
+                            >
+                                R
+                            </div>
+                            <div class="comment-main">
+                                <div class="comment-header">
+                                    <span class="comment-author"
+                                        >Rustacean_Loom</span
+                                    >
+                                    <span class="comment-system-badge"
+                                        >macOS 15.1</span
+                                    >
+                                    <span class="comment-time"
+                                        >50 mins ago</span
+                                    >
+                                </div>
+                                <div class="comment-content">
+                                    <p>
+                                        听懂掌声！所以为什么不试试现代化的
+                                        <strong>Rust</strong> 呢？
+                                    </p>
+                                    <pre><code>fn main() {
+    println!("Hello, World without GC or NPE!");
+}</code></pre>
+                                    <p>
+                                        Rust
+                                        有生命周期和所有权机制，编译期直接干掉数据竞争和空指针。不需要
+                                        JVM 这种庞然大物，跑起来只要几个
+                                        MB，性能堪比
+                                        C++，内存安全，现代云原生工程的首选！
+                                    </p>
+                                </div>
+                                <div class="comment-footer">
+                                    <span class="comment-action"
+                                        >▲ Upvote (35)</span
+                                    >
+                                    <span class="comment-action"
+                                        >▼ Downvote (12)</span
+                                    >
+                                    <span class="comment-action">Reply</span>
+                                </div>
+
+                                <!-- Replies Section (Nested level 1) -->
+                                <div class="comment-replies">
+                                    <!-- Reply 2a (Mocking Rust) -->
+                                    <div class="comment-card">
+                                        <div
+                                            class="comment-avatar"
+                                            style="background-color: #555555"
+                                        >
+                                            C
+                                        </div>
+                                        <div class="comment-main">
+                                            <div class="comment-header">
+                                                <span class="comment-author"
+                                                    >CurlyBracesFan</span
+                                                >
+                                                <span
+                                                    class="comment-system-badge"
+                                                    >Windows 10</span
+                                                >
+                                                <span
+                                                    class="comment-reply-arrow"
+                                                    >▶</span
+                                                >
+                                                <span
+                                                    class="comment-target-author"
+                                                    >Rustacean_Loom</span
+                                                >
+                                                <span class="comment-time"
+                                                    >40 mins ago</span
+                                                >
+                                            </div>
+                                            <div class="comment-content">
+                                                <p>
+                                                    又来了又来了，Rust
+                                                    邪教又出来抓人传教了。写个双向链表先去读三天三夜的
+                                                    lifetime 规范是吧？写代码 5
+                                                    分钟，跟编译器斗智斗勇 5
+                                                    小时，最后为了混过编译写了一大堆
+                                                    <code
+                                                        >Arc&lt;Mutex&lt;RefCell&lt;T&gt;&gt;&gt;</code
+                                                    >，恶心谁呢？
+                                                </p>
+                                            </div>
+                                            <div class="comment-footer">
+                                                <span class="comment-action"
+                                                    >▲ Upvote (57)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >▼ Downvote</span
+                                                >
+                                                <span class="comment-action"
+                                                    >Reply</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reply 2b (Mocking Rust) -->
+                                    <div class="comment-card">
+                                        <div
+                                            class="comment-avatar"
+                                            style="background-color: #ff3355"
+                                        >
+                                            G
+                                        </div>
+                                        <div class="comment-main">
+                                            <div class="comment-header">
+                                                <span class="comment-author"
+                                                    >GarbageCollector_Hater</span
+                                                >
+                                                <span
+                                                    class="comment-system-badge"
+                                                    >FreeBSD</span
+                                                >
+                                                <span
+                                                    class="comment-reply-arrow"
+                                                    >▶</span
+                                                >
+                                                <span
+                                                    class="comment-target-author"
+                                                    >Rustacean_Loom</span
+                                                >
+                                                <span class="comment-time"
+                                                    >35 mins ago</span
+                                                >
+                                            </div>
+                                            <div class="comment-content">
+                                                <p>
+                                                    虽然我讨厌
+                                                    Java，但我也看不起你们 Rust
+                                                    传教士。天天在各种帖子底下发
+                                                    Rust
+                                                    广告，不知道的还以为你们有提成呢。你行你用
+                                                    Rust去写个企业级电商系统试试，光是写各种
+                                                    trait 和 lifetime
+                                                    就能让你们组的程序员全部离职。
+                                                </p>
+                                            </div>
+                                            <div class="comment-footer">
+                                                <span class="comment-action"
+                                                    >▲ Upvote (31)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >▼ Downvote</span
+                                                >
+                                                <span class="comment-action"
+                                                    >Reply</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reply 2c (Rust Defender replying) -->
+                                    <div class="comment-card">
+                                        <div
+                                            class="comment-avatar"
+                                            style="background-color: #e05a00"
+                                        >
+                                            R
+                                        </div>
+                                        <div class="comment-main">
+                                            <div class="comment-header">
+                                                <span class="comment-author"
+                                                    >Rust_Is_The_Future</span
+                                                >
+                                                <span
+                                                    class="comment-system-badge"
+                                                    >Ubuntu 24.04</span
+                                                >
+                                                <span
+                                                    class="comment-reply-arrow"
+                                                    >▶</span
+                                                >
+                                                <span
+                                                    class="comment-target-author"
+                                                    >CurlyBracesFan</span
+                                                >
+                                                <span class="comment-time"
+                                                    >25 mins ago</span
+                                                >
+                                            </div>
+                                            <div class="comment-content">
+                                                <p>
+                                                    写不好双向链表是你们水平烂，不是
+                                                    Rust
+                                                    的问题。编译器报错是在帮你提前修
+                                                    Bug。等你在生产环境下遇到
+                                                    Java GC 停顿或者 OOM
+                                                    导致服务器宕机，你就会跪在地上感谢
+                                                    Rust 编译器的严格了！
+                                                </p>
+                                            </div>
+                                            <div class="comment-footer">
+                                                <span class="comment-action"
+                                                    >▲ Upvote (14)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >▼ Downvote (19)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >Reply</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reply 2d (Go preachy) -->
+                                    <div class="comment-card">
+                                        <div
+                                            class="comment-avatar"
+                                            style="background-color: #00c4cc"
+                                        >
+                                            G
+                                        </div>
+                                        <div class="comment-main">
+                                            <div class="comment-header">
+                                                <span class="comment-author"
+                                                    >GoGopher_Fast</span
+                                                >
+                                                <span
+                                                    class="comment-system-badge"
+                                                    >Alpine Linux</span
+                                                >
+                                                <span
+                                                    class="comment-reply-arrow"
+                                                    >▶</span
+                                                >
+                                                <span
+                                                    class="comment-target-author"
+                                                    >Rust_Is_The_Future</span
+                                                >
+                                                <span class="comment-time"
+                                                    >15 mins ago</span
+                                                >
+                                            </div>
+                                            <div class="comment-content">
+                                                <p>
+                                                    两个极端。Java
+                                                    繁琐臃肿像八股，Rust
+                                                    复杂反人类。只有 Go
+                                                    才是大道至简，编译快、运行快、开发效率高，直接秒杀你们两个！
+                                                </p>
+                                            </div>
+                                            <div class="comment-footer">
+                                                <span class="comment-action"
+                                                    >▲ Upvote (22)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >▼ Downvote (5)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >Reply</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End replies -->
+                            </div>
+                        </div>
+                        <!-- End Comment 2 -->
+
+                        <!-- Comment 3 (Pro-Java) -->
+                        <div class="comment-card">
+                            <div
+                                class="comment-avatar"
+                                style="background-color: #9d32d6"
+                            >
+                                J
+                            </div>
+                            <div class="comment-main">
+                                <div class="comment-header">
+                                    <span class="comment-author"
+                                        >Java_Giga_Chad</span
+                                    >
+                                    <span class="comment-system-badge"
+                                        >RHEL 9.4</span
+                                    >
+                                    <span class="comment-time"
+                                        >40 mins ago</span
+                                    >
+                                </div>
+                                <div class="comment-content">
+                                    <p>
+                                        别争了，Java 是世界上最好的语言。TIOBE
+                                        排行榜常年头几名，你们这些新小众语言叫得再响，大厂的底层还不是全套
+                                        Java 基础设施？工作机会也是 Java
+                                        最多，能养活几十万程序员。现实点吧！
+                                    </p>
+                                </div>
+                                <div class="comment-footer">
+                                    <span class="comment-action"
+                                        >▲ Upvote (60)</span
+                                    >
+                                    <span class="comment-action"
+                                        >▼ Downvote (20)</span
+                                    >
+                                    <span class="comment-action">Reply</span>
+                                </div>
+
+                                <!-- Replies Section (Nested level 1) -->
+                                <div class="comment-replies">
+                                    <!-- Reply 3a -->
+                                    <div class="comment-card">
+                                        <div
+                                            class="comment-avatar"
+                                            style="background-color: #ee5522"
+                                        >
+                                            B
+                                        </div>
+                                        <div class="comment-main">
+                                            <div class="comment-header">
+                                                <span class="comment-author"
+                                                    >ByeJava</span
+                                                >
+                                                <span
+                                                    class="comment-system-badge"
+                                                    >Android 15</span
+                                                >
+                                                <span
+                                                    class="comment-reply-arrow"
+                                                    >▶</span
+                                                >
+                                                <span
+                                                    class="comment-target-author"
+                                                    >Java_Giga_Chad</span
+                                                >
+                                                <span class="comment-time"
+                                                    >20 mins ago</span
+                                                >
+                                            </div>
+                                            <div class="comment-content">
+                                                <p>
+                                                    工作机会多是因为遗留的屎山代码多，需要大量的
+                                                    Java
+                                                    螺丝钉填坑。这不叫优势，这叫历史包袱。现在新项目谁还用
+                                                    Java？
+                                                </p>
+                                            </div>
+                                            <div class="comment-footer">
+                                                <span class="comment-action"
+                                                    >▲ Upvote (18)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >▼ Downvote (4)</span
+                                                >
+                                                <span class="comment-action"
+                                                    >Reply</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End replies -->
+                            </div>
+                        </div>
+                        <!-- End Comment 3 -->
+                    </div>
+                </section>
+
+                <!-- Mobile Footer -->
+                <footer class="mobile-footer">
+                    <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
+                    <p>
+                        Powered by <a href="#">Litepage</a>. Designed by
+                        <a href="#">Leo Jia</a>.
+                    </p>
+                </footer>
+            </main>
+
+            <!-- Right Region (Sidebar) -->
+            <aside class="right-region" id="right-sidebar">
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Table of Contents</span>
+                    </div>
+                    <div class="widget-content-simple">
+                        <div>1. 引言</div>
+                        <div>2. 繁杂样板</div>
+                        <div>3. 过度工程</div>
+                        <div>4. 性能泥潭</div>
+                        <div>5. 历史妥协</div>
+                        <div>6. 现代并发</div>
+                        <div>7. 横向比拼</div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Mobile Widget Drawer (Left Drawer) -->
+        <div class="drawer-backdrop" id="drawer-backdrop"></div>
+        <div class="drawer" id="widgets-drawer">
+            <button class="drawer-close" id="close-widgets-btn">[Close]</button>
+            <div style="display: flex; flex-direction: column; gap: 28px">
+                <!-- Copied content for the drawer -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Recent Posts</span>
+                        <a href="/post.html">More ></a>
+                    </div>
+                    <div class="post-list">
+                        <a
+                            href="/posts/why-i-choose-to-use-astro.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Why I choose to use Astro?</span
+                            >
+                            <div class="post-meta">
+                                <span>2026-11-11</span>
+                                <span>1k views</span>
+                            </div>
+                        </a>
+                        <a
+                            href="/posts/how-easy-can-rust-be.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >How easy can Rust be?</span
+                            >
+                            <div class="post-meta">
+                                <span>2026-11-01</span>
+                                <span>11.4k views</span>
+                            </div>
+                        </a>
+                        <a
+                            href="/posts/java-is-a-piece-of-shit.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Java is a piece of SHIT</span
+                            >
+                            <div class="post-meta">
+                                <span>2025-12-12</span>
+                                <span>193k views</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Website Status</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Posts</span>
+                            <span class="status-value">24</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Running</span>
+                            <span class="status-value">1024 days</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Visitor</span>
+                            <span class="status-value">313</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Views</span>
+                            <span class="status-value">12.3k</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Last Updated</span>
+                            <span class="status-value">2026-11-11</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Context Drawer (Right Drawer) -->
+        <div class="drawer drawer-right" id="context-drawer">
+            <button class="drawer-close" id="close-context-btn">[Close]</button>
+            <div style="display: flex; flex-direction: column; gap: 28px">
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Table of Contents</span>
+                    </div>
+                    <div class="widget-content-simple">
+                        <div>1. 引言</div>
+                        <div>2. 繁杂样板</div>
+                        <div>3. 过度工程</div>
+                        <div>4. 性能泥潭</div>
+                        <div>5. 历史妥协</div>
+                        <div>6. 现代并发</div>
+                        <div>7. 横向比拼</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const openBtn = document.getElementById("open-widgets-btn");
+            const closeBtn = document.getElementById("close-widgets-btn");
+            const openContextBtn = document.getElementById("open-context-btn");
+            const closeContextBtn =
+                document.getElementById("close-context-btn");
+
+            const widgetsDrawer = document.getElementById("widgets-drawer");
+            const contextDrawer = document.getElementById("context-drawer");
+            const backdrop = document.getElementById("drawer-backdrop");
+
+            function toggleWidgetsDrawer(open) {
+                if (open) {
+                    widgetsDrawer.classList.add("open");
+                    backdrop.classList.add("open");
+                } else {
+                    widgetsDrawer.classList.remove("open");
+                    backdrop.classList.remove("open");
+                }
+            }
+
+            function toggleContextDrawer(open) {
+                if (open) {
+                    contextDrawer.classList.add("open");
+                    backdrop.classList.add("open");
+                } else {
+                    contextDrawer.classList.remove("open");
+                    backdrop.classList.remove("open");
+                }
+            }
+
+            function closeAll() {
+                toggleWidgetsDrawer(false);
+                toggleContextDrawer(false);
+            }
+
+            openBtn.addEventListener("click", () => {
+                closeAll();
+                toggleWidgetsDrawer(true);
+            });
+            closeBtn.addEventListener("click", () =>
+                toggleWidgetsDrawer(false),
+            );
+
+            openContextBtn.addEventListener("click", () => {
+                closeAll();
+                toggleContextDrawer(true);
+            });
+            closeContextBtn.addEventListener("click", () =>
+                toggleContextDrawer(false),
+            );
+
+            backdrop.addEventListener("click", closeAll);
+
+            // Handle escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    closeAll();
+                }
+            });
+        </script>
+    </body>
+</html>

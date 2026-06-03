@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Friends & Links - Nayuta UI</title>
+        <link rel="stylesheet" href="assets/styles/style.css" />
+        <style>
+            /* Premium friend grid layout */
+            .friends-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 16px;
+                margin-top: 24px;
+            }
+
+            .friend-card {
+                background-color: var(--ny-color-surface);
+                border: 1px solid var(--ny-color-border);
+                border-radius: var(--ny-radius-md);
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                text-decoration: none;
+                color: inherit;
+                transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .friend-card:hover {
+                transform: translateY(-4px);
+                border-color: var(--ny-color-outline);
+                background-color: var(--ny-color-surface-elevated);
+                box-shadow: 0 4px 20px var(--ny-color-shadow);
+            }
+
+            .friend-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .friend-avatar {
+                width: 44px;
+                height: 44px;
+                border-radius: var(--ny-radius-sm);
+                object-fit: cover;
+                border: 1px solid var(--ny-color-border);
+                background-color: var(--ny-color-surface-container);
+            }
+
+            .friend-info {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .friend-name {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--ny-color-text);
+            }
+
+            .friend-site {
+                font-size: 11px;
+                color: var(--ny-color-outline);
+            }
+
+            .friend-desc {
+                font-size: 12px;
+                color: var(--ny-color-text-muted);
+                line-height: 1.5;
+            }
+
+            /* Tag Cloud Style */
+            .tag-cloud {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .tag-item {
+                font-size: 10px;
+                background-color: var(--ny-color-surface-container);
+                border: 1px solid var(--ny-color-border);
+                color: var(--ny-color-text-muted);
+                padding: 2px 6px;
+                border-radius: var(--ny-radius-xs);
+                cursor: pointer;
+            }
+
+            .tag-item:hover {
+                border-color: var(--ny-color-outline);
+                color: var(--ny-color-text);
+            }
+
+            /* Theme Swapper Simulator */
+            .theme-swatches {
+                display: flex;
+                gap: 8px;
+            }
+
+            .theme-swatch {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                border: 1px solid var(--ny-color-border);
+                cursor: pointer;
+                position: relative;
+            }
+
+            .theme-swatch.active::after {
+                content: "";
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background-color: #fff;
+                border-radius: 50%;
+                top: 5px;
+                left: 5px;
+            }
+
+            /* Site Search input */
+            .search-input {
+                width: 100%;
+                height: 28px;
+                background-color: var(--ny-color-surface-container);
+                border: 1px solid var(--ny-color-border);
+                border-radius: var(--ny-radius-sm);
+                color: var(--ny-color-text);
+                font-family: var(--ny-font-ui);
+                font-size: 11px;
+                padding: 0 8px;
+                outline: none;
+            }
+
+            .search-input:focus {
+                border-color: var(--ny-color-outline);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Mobile Sticky Header -->
+        <header class="mobile-sticky-header">
+            <nav class="breadcrumbs">
+                <a href="/">Home</a> &gt;
+                <a href="/friend.html">Friends</a> &gt;
+            </nav>
+            <div class="header-actions">
+                <button
+                    class="header-action-btn"
+                    id="open-widgets-btn"
+                    aria-label="Open Widgets"
+                >
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"
+                        />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="layout-container">
+            <!-- Left Region (Sidebar) - Has 8 Widgets (to test overflow scrolling) -->
+            <aside class="left-region" id="left-sidebar">
+                <!-- 1. Profile Widget -->
+                <div class="profile-card">
+                    <img
+                        class="avatar"
+                        src="assets/images/avatar.png"
+                        alt="Leo Jia Avatar"
+                    />
+                    <div class="profile-info">
+                        <h2 class="profile-name">Leo Jia</h2>
+                        <div class="profile-title">
+                            🏫 Undergraduate Student | 🤷‍♂️ Aspiring Full Stack
+                            Engineer
+                        </div>
+                    </div>
+
+                    <div class="social-buttons">
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            class="btn"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"
+                                />
+                            </svg>
+                            Github
+                        </a>
+                        <a href="/post.html" class="btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
+                                />
+                            </svg>
+                            Blog
+                        </a>
+                        <a href="/friend.html" class="btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+                                />
+                            </svg>
+                            Friends
+                        </a>
+                        <a
+                            href="https://t.me"
+                            target="_blank"
+                            class="btn btn-icon-only"
+                            aria-label="Telegram"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M9.78 18.65l.28-4.28 7.76-7.01c.34-.3-.07-.47-.52-.18L7.79 12.25l-4.15-1.3c-.9-.28-.92-.9.19-1.34l16.2-6.25c.75-.28 1.4.17 1.15 1.25l-2.75 12.97c-.2.92-.75 1.15-1.52.72l-4.19-3.08-2.02 1.95c-.22.22-.41.41-.84.41z"
+                                />
+                            </svg>
+                        </a>
+                        <a
+                            href="mailto:leo@example.com"
+                            class="btn btn-icon-only"
+                            aria-label="Email"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. Search Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Search Site</span>
+                    </div>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Type to search..."
+                    />
+                </div>
+
+                <!-- 3. Recent Posts Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Recent Posts</span>
+                        <a href="/post.html">More ></a>
+                    </div>
+                    <div class="post-list">
+                        <a
+                            href="/posts/designing-with-antigravity.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Designing the Future with Antigravity</span
+                            >
+                            <div class="post-meta"><span>2026-06-03</span></div>
+                        </a>
+                        <a href="/posts/typography-test.html" class="post-item">
+                            <span class="post-title"
+                                >Typography & Kitchen Sink</span
+                            >
+                            <div class="post-meta"><span>2026-06-03</span></div>
+                        </a>
+                        <a
+                            href="/posts/why-i-choose-to-use-astro.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Why I choose to use Astro?</span
+                            >
+                            <div class="post-meta"><span>2026-11-11</span></div>
+                        </a>
+                        <a
+                            href="/posts/how-easy-can-rust-be.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >How easy can Rust be?</span
+                            >
+                            <div class="post-meta"><span>2026-11-01</span></div>
+                        </a>
+                        <a
+                            href="/posts/java-is-a-piece-of-shit.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Java is a piece of SHIT</span
+                            >
+                            <div class="post-meta"><span>2025-12-12</span></div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 4. Theme Select Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Choose Theme</span>
+                    </div>
+                    <div class="theme-swatches">
+                        <div
+                            class="theme-swatch active"
+                            style="background-color: #9d32d6"
+                            title="Nayuta Purple"
+                        ></div>
+                        <div
+                            class="theme-swatch"
+                            style="background-color: #0088cc"
+                            title="Midnight Blue"
+                        ></div>
+                        <div
+                            class="theme-swatch"
+                            style="background-color: #ff6699"
+                            title="Sakura Pink"
+                        ></div>
+                        <div
+                            class="theme-swatch"
+                            style="background-color: #333333"
+                            title="OLED Dark"
+                        ></div>
+                    </div>
+                </div>
+
+                <!-- 5. Tag Cloud Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Tags Cloud</span>
+                    </div>
+                    <div class="tag-cloud">
+                        <span class="tag-item">Rust</span>
+                        <span class="tag-item">Astro</span>
+                        <span class="tag-item">WebComponents</span>
+                        <span class="tag-item">TypeScript</span>
+                        <span class="tag-item">Go</span>
+                        <span class="tag-item">Loom</span>
+                        <span class="tag-item">CSS Grid</span>
+                    </div>
+                </div>
+
+                <!-- 6. Website Status Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Website Status</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Posts</span>
+                            <span class="status-value">25</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Running</span>
+                            <span class="status-value">1024 days</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Views</span>
+                            <span class="status-value">12.3k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Categories Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Categories</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Technical Notes</span>
+                            <span class="status-value">(12)</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Ramblings</span>
+                            <span class="status-value">(8)</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Design Systems</span>
+                            <span class="status-value">(5)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Server Health Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Server Info</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Server Engine</span>
+                            <span class="status-value">Bun HTTP</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">API Status</span>
+                            <span
+                                class="status-value"
+                                style="color: #00cc66; font-weight: bold"
+                                >ONLINE</span
+                            >
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Cache State</span>
+                            <span class="status-value">HIT (Redis)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Footer -->
+                <footer class="left-footer">
+                    <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
+                    <p>
+                        Powered by <a href="#">Litepage</a>. Designed by
+                        <a href="#">Leo Jia</a>.
+                    </p>
+                </footer>
+            </aside>
+
+            <!-- Main Region -->
+            <main class="main-region">
+                <nav class="breadcrumbs">
+                    <a href="/">Home</a> &gt;
+                    <a href="/friend.html">Friends</a> &gt;
+                </nav>
+
+                <div class="prose">
+                    <h1 class="page-title">Friends & Links</h1>
+                    <p>
+                        Here are some of my friends, classmates, and tech blogs
+                        that I follow regularly. Feel free to contact me if you
+                        would like to exchange website links!
+                    </p>
+
+                    <div class="friends-grid">
+                        <!-- Friend 1 -->
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            class="friend-card"
+                        >
+                            <div class="friend-header">
+                                <div
+                                    class="friend-avatar"
+                                    style="
+                                        background-color: rgba(
+                                            157,
+                                            50,
+                                            214,
+                                            0.2
+                                        );
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        color: var(--ny-color-outline);
+                                    "
+                                >
+                                    A
+                                </div>
+                                <div class="friend-info">
+                                    <span class="friend-name">Alice Chen</span>
+                                    <span class="friend-site"
+                                        >rust-in-peace.dev</span
+                                    >
+                                </div>
+                            </div>
+                            <p class="friend-desc">
+                                Diving into Rust memory systems, OS dev, and
+                                asynchronous runtimes. Writes technical columns.
+                            </p>
+                        </a>
+
+                        <!-- Friend 2 -->
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            class="friend-card"
+                        >
+                            <div class="friend-header">
+                                <div
+                                    class="friend-avatar"
+                                    style="
+                                        background-color: rgba(
+                                            0,
+                                            136,
+                                            204,
+                                            0.2
+                                        );
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        color: #00ccff;
+                                    "
+                                >
+                                    B
+                                </div>
+                                <div class="friend-info">
+                                    <span class="friend-name">Bob Gopher</span>
+                                    <span class="friend-site"
+                                        >gopherslog.org</span
+                                    >
+                                </div>
+                            </div>
+                            <p class="friend-desc">
+                                Go microservices architect, kubernetes wizard,
+                                and coffee lover. Sharing daily enterprise logs.
+                            </p>
+                        </a>
+
+                        <!-- Friend 3 -->
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            class="friend-card"
+                        >
+                            <div class="friend-header">
+                                <div
+                                    class="friend-avatar"
+                                    style="
+                                        background-color: rgba(
+                                            0,
+                                            204,
+                                            102,
+                                            0.2
+                                        );
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        color: #00cc66;
+                                    "
+                                >
+                                    C
+                                </div>
+                                <div class="friend-info">
+                                    <span class="friend-name"
+                                        >Charlie Pixel</span
+                                    >
+                                    <span class="friend-site"
+                                        >pixelprose.design</span
+                                    >
+                                </div>
+                            </div>
+                            <p class="friend-desc">
+                                Designer, front-end visual engineer, and
+                                typographer. Creator of various dark high-end
+                                color schemes.
+                            </p>
+                        </a>
+
+                        <!-- Friend 4 -->
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            class="friend-card"
+                        >
+                            <div class="friend-header">
+                                <div
+                                    class="friend-avatar"
+                                    style="
+                                        background-color: rgba(
+                                            255,
+                                            153,
+                                            0,
+                                            0.2
+                                        );
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        color: #ff9900;
+                                    "
+                                >
+                                    D
+                                </div>
+                                <div class="friend-info">
+                                    <span class="friend-name"
+                                        >Diana Island</span
+                                    >
+                                    <span class="friend-site"
+                                        >astroislands.net</span
+                                    >
+                                </div>
+                            </div>
+                            <p class="friend-desc">
+                                Web Components evangelist, Astro contributor,
+                                and clean semantics defender. Exploring islands
+                                paradigm.
+                            </p>
+                        </a>
+
+                        <!-- Friend 5 -->
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            class="friend-card"
+                        >
+                            <div class="friend-header">
+                                <div
+                                    class="friend-avatar"
+                                    style="
+                                        background-color: rgba(
+                                            255,
+                                            51,
+                                            51,
+                                            0.2
+                                        );
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        color: #ff3333;
+                                    "
+                                >
+                                    E
+                                </div>
+                                <div class="friend-info">
+                                    <span class="friend-name">Evan Evans</span>
+                                    <span class="friend-site"
+                                        >evan-notes.com</span
+                                    >
+                                </div>
+                            </div>
+                            <p class="friend-desc">
+                                Fullstack engineer writing about Go, Postgres
+                                optimization, and Docker orchestration tools.
+                            </p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile Footer -->
+                <footer class="mobile-footer">
+                    <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
+                    <p>
+                        Powered by <a href="#">Litepage</a>. Designed by
+                        <a href="#">Leo Jia</a>.
+                    </p>
+                </footer>
+            </main>
+        </div>
+
+        <!-- Mobile Widget Drawer (Left Drawer) -->
+        <div class="drawer-backdrop" id="drawer-backdrop"></div>
+        <div class="drawer" id="widgets-drawer">
+            <button class="drawer-close" id="close-widgets-btn">[Close]</button>
+            <div style="display: flex; flex-direction: column; gap: 28px">
+                <!-- Copied content for the drawer (has all 8 widgets for mobile drawer testing too!) -->
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Search Site</span>
+                    </div>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Type to search..."
+                    />
+                </div>
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Recent Posts</span>
+                        <a href="/post.html">More ></a>
+                    </div>
+                    <div class="post-list">
+                        <a
+                            href="/posts/designing-with-antigravity.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Designing the Future with Antigravity</span
+                            >
+                            <div class="post-meta"><span>2026-06-03</span></div>
+                        </a>
+                        <a href="/posts/typography-test.html" class="post-item">
+                            <span class="post-title"
+                                >Typography & Kitchen Sink</span
+                            >
+                            <div class="post-meta"><span>2026-06-03</span></div>
+                        </a>
+                        <a
+                            href="/posts/why-i-choose-to-use-astro.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Why I choose to use Astro?</span
+                            >
+                            <div class="post-meta"><span>2026-11-11</span></div>
+                        </a>
+                        <a
+                            href="/posts/how-easy-can-rust-be.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >How easy can Rust be?</span
+                            >
+                            <div class="post-meta"><span>2026-11-01</span></div>
+                        </a>
+                        <a
+                            href="/posts/java-is-a-piece-of-shit.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Java is a piece of SHIT</span
+                            >
+                            <div class="post-meta"><span>2025-12-12</span></div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Choose Theme</span>
+                    </div>
+                    <div class="theme-swatches">
+                        <div
+                            class="theme-swatch active"
+                            style="background-color: #9d32d6"
+                        ></div>
+                        <div
+                            class="theme-swatch"
+                            style="background-color: #0088cc"
+                        ></div>
+                        <div
+                            class="theme-swatch"
+                            style="background-color: #ff6699"
+                        ></div>
+                        <div
+                            class="theme-swatch"
+                            style="background-color: #333333"
+                        ></div>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Tags Cloud</span>
+                    </div>
+                    <div class="tag-cloud">
+                        <span class="tag-item">Rust</span>
+                        <span class="tag-item">Astro</span>
+                        <span class="tag-item">WebComponents</span>
+                        <span class="tag-item">TypeScript</span>
+                        <span class="tag-item">Go</span>
+                        <span class="tag-item">Loom</span>
+                        <span class="tag-item">CSS Grid</span>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Website Status</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Posts</span>
+                            <span class="status-value">25</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Running</span>
+                            <span class="status-value">1024 days</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Views</span>
+                            <span class="status-value">12.3k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Categories</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Technical Notes</span>
+                            <span class="status-value">(12)</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Ramblings</span>
+                            <span class="status-value">(8)</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Design Systems</span>
+                            <span class="status-value">(5)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Server Info</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Server Engine</span>
+                            <span class="status-value">Bun HTTP</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">API Status</span>
+                            <span
+                                class="status-value"
+                                style="color: #00cc66; font-weight: bold"
+                                >ONLINE</span
+                            >
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Cache State</span>
+                            <span class="status-value">HIT (Redis)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const openBtn = document.getElementById("open-widgets-btn");
+            const closeBtn = document.getElementById("close-widgets-btn");
+            const widgetsDrawer = document.getElementById("widgets-drawer");
+            const backdrop = document.getElementById("drawer-backdrop");
+
+            function toggleWidgetsDrawer(open) {
+                if (open) {
+                    widgetsDrawer.classList.add("open");
+                    backdrop.classList.add("open");
+                } else {
+                    widgetsDrawer.classList.remove("open");
+                    backdrop.classList.remove("open");
+                }
+            }
+
+            openBtn.addEventListener("click", () => toggleWidgetsDrawer(true));
+            closeBtn.addEventListener("click", () =>
+                toggleWidgetsDrawer(false),
+            );
+            backdrop.addEventListener("click", () =>
+                toggleWidgetsDrawer(false),
+            );
+
+            // Handle escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    toggleWidgetsDrawer(false);
+                }
+            });
+        </script>
+    </body>
+</html>
