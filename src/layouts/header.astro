@@ -1,48 +1,48 @@
 ---
-import type { ImageMetadata } from "astro";
+import type { ImageMetadata } from 'astro';
 
 interface Props {
-    favicon: ImageMetadata;
+  favicon: ImageMetadata;
 }
 ---
 
 <header>
-    <img
-        class="favicon"
-        width="64"
-        height="64"
-        src={Astro.props.favicon.src}
-        alt="Favicon"
-    />
-    <hgroup>
-        <h1>Leo Jia</h1>
-        <h2>🏫 An undergraduate student / 🧑‍💻 Part-time coder</h2>
-    </hgroup>
+  <img
+    class="favicon"
+    width="64"
+    height="64"
+    src={Astro.props.favicon.src}
+    alt="Favicon"
+  />
+  <hgroup>
+    <h1>Leo Jia</h1>
+    <h2>🏫 An undergraduate student / 🧑‍💻 Part-time coder</h2>
+  </hgroup>
 </header>
 
 <style>
-    header {
-        width: 345px;
-        height: calc(100vh - 120px);
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+  header {
+    width: 345px;
+    height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 
-        > img.favicon {
-            border-radius: 12px;
-        }
-
-        hgroup {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-
-            h2 {
-                font-weight: normal;
-                font-size: 16px;
-                color: #888888;
-                line-height: 1rem;
-            }
-        }
+    > img.favicon {
+      border-radius: 12px;
     }
+
+    hgroup {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      h2 {
+        font-weight: normal;
+        font-size: 16px;
+        color: #888888;
+        line-height: 1rem;
+      }
+    }
+  }
 </style>
