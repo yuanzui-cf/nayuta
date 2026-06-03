@@ -1,0 +1,121 @@
+---
+import Frame from '../layouts/frame.astro';
+
+const breadcrumbs = [
+  { text: 'Home', href: '/' },
+  { text: 'Friends', href: '/friend' },
+];
+---
+
+<Frame title="Friends & Links - Nayuta Theme" breadcrumbs={breadcrumbs}>
+  <div class="prose">
+    <h1 class="page-title">Friends & Links</h1>
+    <p>
+      Here are some of my friends, classmates, and tech blogs that I follow
+      regularly. Feel free to contact me if you would like to exchange website
+      links!
+    </p>
+
+    <div class="friends-grid">
+      <!-- Friend 1 -->
+      <a href="https://github.com" target="_blank" class="friend-card">
+        <div class="friend-header">
+          <div
+            class="friend-avatar"
+            style="background-color: rgba(0, 153, 204, 0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: var(--ny-color-outline);"
+          >
+            A
+          </div>
+          <div class="friend-info">
+            <span class="friend-name">Alice Chen</span>
+            <span class="friend-site">rust-in-peace.dev</span>
+          </div>
+        </div>
+        <p class="friend-desc">
+          Diving into Rust memory systems, OS dev, and asynchronous runtimes.
+          Writes technical columns.
+        </p>
+      </a>
+
+      <!-- Friend 2 -->
+      <a href="https://github.com" target="_blank" class="friend-card">
+        <div class="friend-header">
+          <div
+            class="friend-avatar"
+            style="background-color: rgba(0, 102, 204, 0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #00bfff;"
+          >
+            B
+          </div>
+          <div class="friend-info">
+            <span class="friend-name">Bob Gopher</span>
+            <span class="friend-site">gopherslog.org</span>
+          </div>
+        </div>
+        <p class="friend-desc">
+          Go microservices architect, kubernetes wizard, and coffee lover.
+          Sharing daily enterprise logs.
+        </p>
+      </a>
+
+      <!-- Friend 3 -->
+      <a href="https://github.com" target="_blank" class="friend-card">
+        <div class="friend-header">
+          <div
+            class="friend-avatar"
+            style="background-color: rgba(0, 204, 102, 0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #00cc66;"
+          >
+            C
+          </div>
+          <div class="friend-info">
+            <span class="friend-name">Charlie Pixel</span>
+            <span class="friend-site">pixelprose.design</span>
+          </div>
+        </div>
+        <p class="friend-desc">
+          Designer, front-end visual engineer, and typographer. Creator of
+          various dark high-end color schemes.
+        </p>
+      </a>
+
+      <!-- Friend 4 -->
+      <a href="https://github.com" target="_blank" class="friend-card">
+        <div class="friend-header">
+          <div
+            class="friend-avatar"
+            style="background-color: rgba(255, 102, 153, 0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #ff6699;"
+          >
+            D
+          </div>
+          <div class="friend-info">
+            <span class="friend-name">Diana Island</span>
+            <span class="friend-site">astroislands.net</span>
+          </div>
+        </div>
+        <p class="friend-desc">
+          Web Components evangelist, Astro contributor, and clean semantics
+          defender. Exploring islands paradigm.
+        </p>
+      </a>
+
+      <!-- Friend 5 -->
+      <a href="https://github.com" target="_blank" class="friend-card">
+        <div class="friend-header">
+          <div
+            class="friend-avatar"
+            style="background-color: rgba(255, 51, 51, 0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #ff3333;"
+          >
+            E
+          </div>
+          <div class="friend-info">
+            <span class="friend-name">Evan Evans</span>
+            <span class="friend-site">evan-notes.com</span>
+          </div>
+        </div>
+        <p class="friend-desc">
+          Fullstack engineer writing about Go, Postgres optimization, and Docker
+          orchestration tools.
+        </p>
+      </a>
+    </div>
+  </div>
+</Frame>

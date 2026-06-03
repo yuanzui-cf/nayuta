@@ -1,7 +1,30 @@
 ---
-import Frame from '@layouts/frame.astro';
+import Frame from '../layouts/frame.astro';
 ---
 
-<Frame title="首页">
-  <h1>Hello World!</h1>
+<Frame
+  title="👋 Welcome - Nayuta Theme"
+  breadcrumbs={[{ text: 'Home', href: '/' }]}
+>
+  <article class="prose">
+    <h1 class="page-title">👋 Welcome</h1>
+    <p>Hey there! I'm Leo Jia (@yuanzui_cf)</p>
+    <p>
+      Currently, I'm an undergraduate student, but I already have 6 years coding
+      experience. I'm diving into Rust, Typescript and Go. I use <a href="#"
+        >Zed</a
+      > as my code editor. It's pretty nice - lightweight but convenient. I enjoy
+      building small projects to practice new languages and patterns, and I'm always
+      open to collaboration or feedback.
+    </p>
+    <p>
+      When I'm not coding, I play games or watch anime. My favorite series is <a
+        href="#">Puella Magi Madoka Magica</a
+      > - it's a fantastic show I keep coming back to.
+    </p>
+    <p>
+      Feel free to reach out on <a href="#">Telegram (@kami_madoka)</a> or check my
+      GitHub to see my projects.
+    </p>
+  </article>
 </Frame>

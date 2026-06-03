@@ -1,0 +1,20 @@
+---
+const tags = [
+  'Rust',
+  'Astro',
+  'WebComponents',
+  'TypeScript',
+  'Go',
+  'Loom',
+  'CSS Grid',
+];
+---
+
+<div class="widget">
+  <div class="widget-header">
+    <span>Tags Cloud</span>
+  </div>
+  <div class="tag-cloud">
+    {tags.map((tag) => <span class="tag-item">{tag}</span>)}
+  </div>
+</div>

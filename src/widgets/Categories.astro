@@ -1,0 +1,23 @@
+---
+const categories = [
+  { name: 'Technical Notes', count: 12 },
+  { name: 'Ramblings', count: 8 },
+  { name: 'Design Systems', count: 5 },
+];
+---
+
+<div class="widget">
+  <div class="widget-header">
+    <span>Categories</span>
+  </div>
+  <div class="status-list">
+    {
+      categories.map((cat) => (
+        <div class="status-row">
+          <span class="status-label">{cat.name}</span>
+          <span class="status-value">({cat.count})</span>
+        </div>
+      ))
+    }
+  </div>
+</div>

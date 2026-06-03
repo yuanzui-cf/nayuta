@@ -1,0 +1,88 @@
+---
+
+---
+
+<div class="widget">
+  <div class="widget-header">
+    <span>Choose Theme</span>
+  </div>
+  <div class="theme-swatches">
+    <div
+      class="theme-swatch active"
+      style="background-color: #0099cc"
+      title="Nayuta Aqua"
+      data-theme-id=""
+    >
+    </div>
+    <div
+      class="theme-swatch"
+      style="background-color: #0066cc"
+      title="Midnight Blue"
+      data-theme-id="midnight-blue"
+    >
+    </div>
+    <div
+      class="theme-swatch"
+      style="background-color: #ff6699"
+      title="Sakura Pink"
+      data-theme-id="sakura-pink"
+    >
+    </div>
+    <div
+      class="theme-swatch"
+      style="background-color: #333333"
+      title="OLED Dark"
+      data-theme-id="oled-dark"
+    >
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Run immediately to prevent Flash of Unstyled Content (FOUC)
+  (function () {
+    const savedTheme = localStorage.getItem('nayuta-theme') || '';
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  })();
+</script>
+
+<script>
+  function setupThemeSwitcher() {
+    const swatches = document.querySelectorAll('.theme-swatch');
+
+    function updateActiveSwatches(theme: string) {
+      swatches.forEach((swatch) => {
+        const themeId = swatch.getAttribute('data-theme-id') || '';
+        if (themeId === theme) {
+          swatch.classList.add('active');
+        } else {
+          swatch.classList.remove('active');
+        }
+      });
+    }
+
+    // Sync UI to current theme state
+    const currentTheme = localStorage.getItem('nayuta-theme') || '';
+    updateActiveSwatches(currentTheme);
+
+    swatches.forEach((swatch) => {
+      swatch.addEventListener('click', () => {
+        const theme = swatch.getAttribute('data-theme-id') || '';
+        if (theme) {
+          document.documentElement.setAttribute('data-theme', theme);
+          localStorage.setItem('nayuta-theme', theme);
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.removeItem('nayuta-theme');
+        }
+        updateActiveSwatches(theme);
+      });
+    });
+  }
+
+  // Setup theme switcher on page load (and support Astro view transitions if added later)
+  setupThemeSwitcher();
+  document.addEventListener('astro:after-swap', setupThemeSwitcher);
+</script>

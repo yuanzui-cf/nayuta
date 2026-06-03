@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import Frame from '../../layouts/frame.astro';
+
+const posts = await getCollection('posts');
+const sortedPosts = [...posts].sort((a, b) => {
+  return (
+    new Date(b.data.publishDate).getTime() -
+    new Date(a.data.publishDate).getTime()
+  );
+});
+
+const breadcrumbs = [
+  { text: 'Home', href: '/' },
+  { text: 'Posts', href: '/posts' },
+];
+---
+
+<Frame
+  title="Blog Posts - Nayuta Theme"
+  withRightSidebar={true}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="prose">
+    <h1 class="page-title">Blog Posts</h1>
+
+    <div
+      style="display: flex; flex-direction: column; gap: 32px; margin-top: 24px;"
+    >
+      {
+        sortedPosts.map((post) => (
+          <article style="border-bottom: 1px solid var(--ny-color-border); padding-bottom: 24px; display: flex; flex-direction: column; gap: 6px;">
+            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">
+              <a
+                href={`/posts/${post.id}`}
+                style="color: var(--ny-color-text); text-decoration: none;"
+              >
+                {post.data.title}
+                {post.data.cover && ' [With Cover]'}
+              </a>
+            </h2>
+            <div style="font-size: 11px; color: var(--ny-color-text-subtle); display: flex; gap: 16px;">
+              <span>Published: {post.data.publishDate}</span>
+              <span>Views: {post.data.views}</span>
+            </div>
+            {post.data.cover && (
+              <div style="width: 100%; border-radius: var(--ny-radius-md); overflow: hidden; border: 1px solid var(--ny-color-border); aspect-ratio: 21 / 9; margin-top: 8px;">
+                <img
+                  src={post.data.cover}
+                  alt="Cover Banner"
+                  style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; border-radius: 0;"
+                />
+              </div>
+            )}
+            {post.data.description && (
+              <p style="color: var(--ny-color-text-muted); font-size: 13px; line-height: 1.6; margin-top: 8px; margin-bottom: 0;">
+                {post.data.description}
+              </p>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+
+  <div slot="right" class="widget">
+    <div class="widget-header">
+      <span>Widget 1</span>
+    </div>
+    <div class="widget-content-simple">
+      <div>This is a Widget</div>
+      <div>This is a Widget</div>
+      <div>This is a Widget</div>
+    </div>
+  </div>
+</Frame>

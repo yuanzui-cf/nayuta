@@ -1,0 +1,68 @@
+---
+import { getCollection, render } from 'astro:content';
+import Frame from '../../layouts/frame.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+
+const breadcrumbs = [
+  { text: 'Home', href: '/' },
+  { text: 'Posts', href: '/posts' },
+];
+---
+
+<Frame
+  title={`${post.data.title} - Nayuta Theme`}
+  withRightSidebar={true}
+  headings={headings}
+  breadcrumbs={breadcrumbs}
+>
+  <article class="prose">
+    {
+      post.data.cover && (
+        <div class="post-cover-container">
+          <img class="post-cover" src={post.data.cover} alt={post.data.title} />
+        </div>
+      )
+    }
+
+    <h1 class="page-title">{post.data.title}</h1>
+    <p style="color: var(--ny-color-text-subtle); margin-bottom: 20px;">
+      Published: {post.data.publishDate} &nbsp;•&nbsp; {post.data.views} views &nbsp;•&nbsp;
+      Reading Time: {post.data.readingTime}
+    </p>
+
+    <Content />
+  </article>
+</Frame>
+
+<style is:global>
+  /* Premium post-specific cover styles */
+  .post-cover-container {
+    width: 100%;
+    margin: 16px 0 28px 0;
+    border-radius: var(--ny-radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--ny-color-border);
+    aspect-ratio: 21 / 9;
+    background-color: var(--ny-color-surface-container);
+    box-shadow: 0 8px 30px var(--ny-color-shadow);
+  }
+
+  .prose .post-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: none;
+    border-radius: 0;
+  }
+</style>

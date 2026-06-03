@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+
+// Sort by publishDate descending and take the first 5 posts
+const recentPosts = [...posts]
+  .sort(
+    (a, b) =>
+      new Date(b.data.publishDate).getTime() -
+      new Date(a.data.publishDate).getTime(),
+  )
+  .slice(0, 3);
+---
+
+<div class="widget">
+  <div class="widget-header">
+    <span>Recent Posts</span>
+    <a href="/posts">More &gt;</a>
+  </div>
+  <div class="post-list">
+    {
+      recentPosts.map((post) => (
+        <a href={`/posts/${post.id}`} class="post-item">
+          <span class="post-title">{post.data.title}</span>
+          <div class="post-meta">
+            <span>{post.data.publishDate}</span>
+            <span>{post.data.views} views</span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</div>

@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+const postCount = posts.length;
+
+// Sort by date descending
+const sortedPosts = [...posts].sort((a, b) => {
+  return (
+    new Date(b.data.publishDate).getTime() -
+    new Date(a.data.publishDate).getTime()
+  );
+});
+const latestPostDate =
+  sortedPosts.length > 0 ? sortedPosts[0].data.publishDate : '2026-11-11';
+---
+
+<div class="widget">
+  <div class="widget-header">
+    <span>Website Status</span>
+  </div>
+  <div class="status-list">
+    <div class="status-row">
+      <span class="status-label">Posts</span>
+      <span class="status-value">{postCount}</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Running</span>
+      <span class="status-value">1024 days</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Visitor</span>
+      <span class="status-value">313</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Views</span>
+      <span class="status-value">12.3k</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Last Updated</span>
+      <span class="status-value">{latestPostDate}</span>
+    </div>
+  </div>
+</div>
