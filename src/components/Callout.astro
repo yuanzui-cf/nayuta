@@ -1,0 +1,24 @@
+---
+interface Props {
+  type: 'note' | 'tip' | 'important' | 'warning' | 'caution';
+  title?: string;
+  class?: string;
+}
+
+const { type, title, class: className = '' } = Astro.props;
+
+const defaultTitles = {
+  note: '📝 Note',
+  tip: '💡 Tip',
+  important: '⚠️ Important',
+  warning: '⚡ Warning',
+  caution: '🛑 Caution',
+};
+
+const displayTitle = title || defaultTitles[type] || type.toUpperCase();
+---
+
+<div class={`callout callout-${type} ${className}`.trim()}>
+  <div class="callout-title">{displayTitle}</div>
+  <slot />
+</div>

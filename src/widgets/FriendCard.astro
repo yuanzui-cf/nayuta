@@ -1,0 +1,32 @@
+---
+import Card from '../components/Card.astro';
+
+interface Props {
+  name: string;
+  site: string;
+  href: string;
+  desc: string;
+  avatarText: string;
+  avatarBg: string;
+  avatarColor: string;
+}
+
+const { name, site, href, desc, avatarText, avatarBg, avatarColor } =
+  Astro.props;
+---
+
+<Card href={href} target="_blank" class="friend-card">
+  <div class="friend-header">
+    <div
+      class="friend-avatar"
+      style={`background-color: ${avatarBg}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: ${avatarColor};`}
+    >
+      {avatarText}
+    </div>
+    <div class="friend-info">
+      <span class="friend-name">{name}</span>
+      <span class="friend-site">{site}</span>
+    </div>
+  </div>
+  <p class="friend-desc">{desc}</p>
+</Card>

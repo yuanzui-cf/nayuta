@@ -1,0 +1,14 @@
+---
+interface Props {
+  type?: string;
+  class?: string;
+  placeholder?: string;
+  value?: string;
+  id?: string;
+  name?: string;
+}
+
+const { type = 'text', class: className = '', ...props } = Astro.props;
+---
+
+<input type={type} class={`search-input ${className}`.trim()} {...props} />

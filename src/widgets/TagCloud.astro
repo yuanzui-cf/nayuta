@@ -1,4 +1,6 @@
 ---
+import Tag from '../components/Tag.astro';
+
 const tags = [
   'Rust',
   'Astro',
@@ -15,6 +17,6 @@ const tags = [
     <span>Tags Cloud</span>
   </div>
   <div class="tag-cloud">
-    {tags.map((tag) => <span class="tag-item">{tag}</span>)}
+    {tags.map((tag) => <Tag>{tag}</Tag>)}
   </div>
 </div>

@@ -1,0 +1,25 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+  target?: string;
+  ariaLabel?: string;
+  iconOnly?: boolean;
+}
+
+const {
+  href,
+  class: className = '',
+  target,
+  ariaLabel,
+  iconOnly = false,
+} = Astro.props;
+
+const Element = href ? 'a' : 'button';
+const buttonClass =
+  `btn ${iconOnly ? 'btn-icon-only' : ''} ${className}`.trim();
+---
+
+<Element href={href} class={buttonClass} target={target} aria-label={ariaLabel}>
+  <slot />
+</Element>

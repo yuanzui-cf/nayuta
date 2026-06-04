@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Frame from '../../layouts/frame.astro';
+import Prose from '../../components/Prose.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -25,7 +26,7 @@ const breadcrumbs = [
   headings={headings}
   breadcrumbs={breadcrumbs}
 >
-  <article class="prose">
+  <Prose>
     {
       post.data.cover && (
         <div class="post-cover-container">
@@ -41,7 +42,7 @@ const breadcrumbs = [
     </p>
 
     <Content />
-  </article>
+  </Prose>
 </Frame>
 
 <style is:global>

@@ -1,0 +1,14 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+  target?: string;
+}
+
+const { href, class: className = '', ...props } = Astro.props;
+const Element = href ? 'a' : 'div';
+---
+
+<Element href={href} class={`card ${className}`.trim()} {...props}>
+  <slot />
+</Element>

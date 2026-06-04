@@ -1,12 +1,13 @@
 ---
 import Frame from '../layouts/frame.astro';
+import Prose from '../components/Prose.astro';
 ---
 
 <Frame
   title="👋 Welcome - Nayuta Theme"
   breadcrumbs={[{ text: 'Home', href: '/' }]}
 >
-  <article class="prose">
+  <Prose>
     <h1 class="page-title">👋 Welcome</h1>
     <p>Hey there! I'm Leo Jia (@yuanzui_cf)</p>
     <p>
@@ -26,5 +27,5 @@ import Frame from '../layouts/frame.astro';
       Feel free to reach out on <a href="#">Telegram (@kami_madoka)</a> or check my
       GitHub to see my projects.
     </p>
-  </article>
+  </Prose>
 </Frame>
