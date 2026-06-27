@@ -1,0 +1,153 @@
+---
+title: 'Typography & Kitchen Sink Test'
+publishDate: '2026-06-03'
+views: '120'
+readingTime: '10 mins'
+description: 'A comprehensive kitchen-sink verification page rendering standard Markdown text formats including headings H2-H6, lists, callouts, horizontal rules, code blocks, inline formatting, images, and responsive tables.'
+---
+
+This page is a visual verification test, also known as a kitchen sink page. It demonstrates how common article typography renders under the **Nayuta UI** theme system.
+
+The examples below intentionally use Markdown-first syntax. No raw HTML blocks or MDX components are required for normal writing.
+
+---
+
+## Heading Levels
+
+This paragraph precedes the heading samples below. Heading levels establish hierarchy, rhythm, and scannable reading flow.
+
+### Heading Level 3
+
+This paragraph demonstrates the default prose hierarchy. Nayuta uses a compact monospace type direction to preserve a clean developer-oriented visual style.
+
+#### Heading Level 4
+
+A smaller sub-heading is useful for minor structural units, explanations, or local definitions inside a section.
+
+##### Heading Level 5
+
+This level is rarely needed, but it should still remain readable and visually distinct from body text.
+
+###### Heading Level 6
+
+The smallest heading level works best for metadata-like labels or compact section accents.
+
+## Standard Lists
+
+### Unordered List
+
+- First item in the list.
+- Second item in the list, showing word-wrapping behavior when there is a significant amount of text. The bullet should stay aligned with the text.
+- Third item with nested list content:
+  - Nested list item level 1.
+  - Another nested list item.
+    - Double nested list item level 2.
+- Final item in the unordered list.
+
+### Ordered List
+
+1. Ensure the layout container supports CSS grid correctly.
+2. Implement responsive navigation breakpoints.
+3. Deliver static files through the Bun-powered static server:
+   1. Verify `index.html` page mapping.
+   2. Verify `posts/` subfolder routes.
+4. Confirm mobile viewport readability.
+
+### Task Lists
+
+- [x] Finish implementing the responsive sticky mobile header.
+- [x] Resolve CSS Grid column layout overflow bugs.
+- [ ] Port Nayuta UI to an official Astro component package.
+- [ ] Build automated tests for light and dark color scheme seeds.
+
+## Blockquotes and Callouts
+
+### Standard Blockquotes
+
+Blockquotes highlight external quotes, citations, notes, or conversational context.
+
+> “Simplicity is the ultimate sophistication.” — Leonardo da Vinci
+>
+> Monospace typography provides a clean container structure to emphasize quoted material.
+>
+> > Nested blockquotes are also supported. This helps when citing conversations, comment threads, or email chains.
+
+### Markdown Alert-Style Notes
+
+> [!NOTE]
+> This is a standard informational note. Use it for background context, guidelines, or helpful explanations.
+
+> [!TIP]
+> Compile color schemes at build time when possible to avoid flashes of unstyled content.
+
+> [!IMPORTANT]
+> On mobile, grid columns that contain prose or code should usually use `minmax(0, 1fr)` instead of a bare `1fr`.
+
+> [!WARNING]
+> Arbitrary runtime script injection can bypass review expectations and make static output harder to reason about.
+
+> [!CAUTION]
+> Deleting `bun.lock` or `package.json` can break local task runner pipelines.
+
+## Media
+
+Images should remain responsive, centered, and visually consistent with the prose surface.
+
+![Nayuta abstract landscape banner](../../assets/images/banner.png)
+
+_Figure 1: Minimalist geometric landscape in dark purple tones, used to verify image spacing and caption-like text rhythm._
+
+## Responsive Comparison Tables
+
+Markdown tables should remain readable and should not break the page on narrow viewports.
+
+| Framework       | Rendering Style              | JS Weight             | Use Case                     | DX Score |
+| --------------- | ---------------------------- | --------------------- | ---------------------------- | -------- |
+| **Astro**       | Islands Architecture         | Zero by default       | Blogs, portfolios, docs      | 9.5 / 10 |
+| **Next.js**     | React Server Components      | Heavy React hydration | Web applications, dashboards | 8.0 / 10 |
+| **SvelteKit**   | Compiler-compiled components | Lightweight SPA       | Interactive tools, SaaS MVP  | 9.0 / 10 |
+| **Vite Static** | Vanilla client-side JS       | Custom size           | Technical prototypes         | 8.5 / 10 |
+
+## Code Blocks and Inline Formatting
+
+### Inline Elements
+
+Markdown supports common inline decorations without raw HTML:
+
+- Use inline code for terms like `const x = 42`, `minmax(0, 1fr)`, and `--ny-color-bg`.
+- Use **bold text** for strong emphasis.
+- Use _italic text_ for secondary emphasis.
+- Use ~~strikethrough text~~ for removed or rejected ideas.
+- Use regular text when the format is not supported by Markdown instead of forcing HTML into the document.
+
+Keyboard combinations can be written as inline code: press `Ctrl` + `Shift` + `R` for a hard refresh, or tap `Esc` to dismiss drawer widgets.
+
+### Definition-Style Content
+
+Markdown does not have a native description-list syntax, so use a simple list instead.
+
+- **CSS Custom Properties**: Variables defined by CSS authors and reused throughout a document, such as `--ny-color-bg`.
+- **JIT Compilation**: Just-in-time compilation improves bytecode execution by compiling hot paths into native machine code at runtime.
+
+### Syntax Highlighting Mockup
+
+```rust
+// Simple Rust function demonstrating code formatting
+fn calculate_fibonacci(n: u32) -> u64 {
+    let mut a = 0;
+    let mut b = 1;
+
+    for _ in 0..n {
+        let temp = a + b;
+        a = b;
+        b = temp;
+    }
+
+    a
+}
+
+fn main() {
+    let result = calculate_fibonacci(10);
+    println!("Fibonacci(10) is {}", result);
+}
+```
