@@ -1,12 +1,19 @@
 ---
 import Frame from '../layouts/frame.astro';
 import Prose from '../components/Prose.astro';
+import ProfileCard from '../widgets/ProfileCard.astro';
+import RecentPosts from '../widgets/RecentPosts.astro';
+import WebsiteStatus from '../widgets/WebsiteStatus.astro';
 ---
 
 <Frame
   title="👋 Welcome - Nayuta Theme"
   breadcrumbs={[{ text: 'Home', href: '/' }]}
 >
+  <ProfileCard slot="left" />
+  <RecentPosts slot="left" />
+  <WebsiteStatus slot="left" />
+
   <Prose>
     <h1 class="page-title">👋 Welcome</h1>
     <p>Hey there! I'm Leo Jia (@yuanzui_cf)</p>

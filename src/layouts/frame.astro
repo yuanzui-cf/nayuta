@@ -1,24 +1,22 @@
 ---
 import HeadBase from './head-base.astro';
-import LeftSidebar from '../widgets/LeftSidebar.astro';
-import TableOfContents from '../widgets/TableOfContents.astro';
+import LeftSidebar from './left-sidebar.astro';
+import RightSidebar from './right-sidebar.astro';
 import '../styles/global.css';
 
 interface Props {
   title: string;
+  withLeftSidebar?: boolean;
   withRightSidebar?: boolean;
-  headings?: { depth: number; slug: string; text: string }[];
   breadcrumbs?: { text: string; href: string }[];
 }
 
 const {
   title,
+  withLeftSidebar = true,
   withRightSidebar = false,
-  headings = [],
   breadcrumbs = [{ text: 'Home', href: '/' }],
 } = Astro.props;
-
-const hasRightSidebar = withRightSidebar || headings.length > 0;
 ---
 
 <!doctype html>
@@ -41,19 +39,21 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
         }
       </nav>
       <div class="header-actions">
-        <button
-          class="header-action-btn"
-          id="open-widgets-btn"
-          aria-label="Open Widgets"
-        >
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"
-            ></path>
-          </svg>
-        </button>
         {
-          hasRightSidebar && (
+          withLeftSidebar && (
+            <button
+              class="header-action-btn"
+              id="open-widgets-btn"
+              aria-label="Open Widgets"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4H4zm6 6h4v4h-4zm6 0h4v4h-4z" />
+              </svg>
+            </button>
+          )
+        }
+        {
+          withRightSidebar && (
             <button
               class="header-action-btn"
               id="open-context-btn"
@@ -69,21 +69,15 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
     </header>
 
     <div
-      class={`layout-container ${hasRightSidebar ? 'with-right-sidebar' : ''}`}
+      class={`layout-container ${!withLeftSidebar ? 'without-left-sidebar' : ''} ${withRightSidebar ? 'with-right-sidebar' : ''}`}
     >
-      <!-- Left Region (Sidebar) -->
-      <aside class="left-region" id="left-sidebar">
-        <LeftSidebar />
-        <!-- Desktop Footer -->
-        <footer class="left-footer">
-          <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
-          <p>
-            Powered by <a href="#">Litepage</a>. Designed by <a href="#"
-              >Leo Jia</a
-            >.
-          </p>
-        </footer>
-      </aside>
+      {
+        withLeftSidebar && (
+          <LeftSidebar>
+            <slot name="left" />
+          </LeftSidebar>
+        )
+      }
 
       <!-- Main Region -->
       <main class="main-region">
@@ -111,16 +105,11 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
         </footer>
       </main>
 
-      <!-- Right Region (Sidebar) -->
       {
-        hasRightSidebar && (
-          <aside class="right-region" id="right-sidebar">
-            {headings.length > 0 ? (
-              <TableOfContents headings={headings} />
-            ) : (
-              <slot name="right" />
-            )}
-          </aside>
+        withRightSidebar && (
+          <RightSidebar>
+            <slot name="right" />
+          </RightSidebar>
         )
       }
     </div>
@@ -129,26 +118,32 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
     <div class="drawer-backdrop" id="drawer-backdrop"></div>
 
     <!-- Left Drawer (Widgets) -->
-    <div class="drawer" id="widgets-drawer">
-      <button class="drawer-close" id="close-widgets-btn">[Close]</button>
-      <div style="margin-top: 20px;">
-        <LeftSidebar />
-      </div>
-    </div>
+    {
+      withLeftSidebar && (
+        <div class="drawer" id="widgets-drawer">
+          <button class="drawer-close" id="close-widgets-btn">
+            [Close]
+          </button>
+          <div style="margin-top: 20px;">
+            <LeftSidebar drawer>
+              <slot name="left" />
+            </LeftSidebar>
+          </div>
+        </div>
+      )
+    }
 
     <!-- Right Drawer (Context) -->
     {
-      hasRightSidebar && (
+      withRightSidebar && (
         <div class="drawer drawer-right" id="context-drawer">
           <button class="drawer-close" id="close-context-btn">
             [Close]
           </button>
           <div style="margin-top: 20px;">
-            {headings.length > 0 ? (
-              <TableOfContents headings={headings} />
-            ) : (
+            <RightSidebar drawer>
               <slot name="right" />
-            )}
+            </RightSidebar>
           </div>
         </div>
       )
@@ -251,6 +246,10 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
     min-height: 100vh;
   }
 
+  .layout-container.without-left-sidebar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .layout-container.with-right-sidebar {
     grid-template-columns: var(--ny-layout-left-width) minmax(0, 1fr) var(
         --ny-layout-right-width
@@ -261,7 +260,11 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
     );
   }
 
-  .left-region {
+  .layout-container.without-left-sidebar.with-right-sidebar {
+    grid-template-columns: minmax(0, 1fr) var(--ny-layout-right-width);
+  }
+
+  :global(.left-region) {
     display: flex;
     flex-direction: column;
     gap: 28px;
@@ -274,24 +277,24 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
     padding-right: 6px;
   }
 
-  .left-region::-webkit-scrollbar {
+  :global(.left-region::-webkit-scrollbar) {
     width: 4px;
   }
 
-  .left-region::-webkit-scrollbar-track {
+  :global(.left-region::-webkit-scrollbar-track) {
     background: transparent;
   }
 
-  .left-region::-webkit-scrollbar-thumb {
+  :global(.left-region::-webkit-scrollbar-thumb) {
     background: var(--ny-color-border);
     border-radius: var(--ny-radius-xs);
   }
 
-  .left-region::-webkit-scrollbar-thumb:hover {
+  :global(.left-region::-webkit-scrollbar-thumb:hover) {
     background: var(--ny-color-outline);
   }
 
-  .left-footer {
+  :global(.left-footer) {
     margin-top: auto;
     font-size: 10px;
     color: var(--ny-color-text-subtle);
@@ -300,13 +303,13 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
     padding-top: 16px;
   }
 
-  .left-footer a,
+  :global(.left-footer a),
   .mobile-footer a {
     color: var(--ny-color-text-muted);
     text-decoration: none;
   }
 
-  .left-footer a:hover,
+  :global(.left-footer a:hover),
   .mobile-footer a:hover {
     color: var(--ny-color-outline);
     text-decoration: underline;
@@ -336,7 +339,7 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
     color: var(--ny-color-outline);
   }
 
-  .right-region {
+  :global(.right-region) {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -420,11 +423,15 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
       grid-template-columns: var(--ny-layout-left-width) minmax(0, 1fr);
     }
 
+    .layout-container.without-left-sidebar.with-right-sidebar {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
     .layout-container.with-right-sidebar .main-region {
       max-width: 1670px;
     }
 
-    .right-region {
+    :global(.right-region) {
       display: none;
     }
 
@@ -496,17 +503,19 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
       align-content: start;
     }
 
-    .layout-container.with-right-sidebar {
+    .layout-container.with-right-sidebar,
+    .layout-container.without-left-sidebar,
+    .layout-container.without-left-sidebar.with-right-sidebar {
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .left-region,
+    :global(.left-region),
     .main-region {
       display: contents;
     }
 
-    .left-region :global(.widget),
-    .left-region .left-footer {
+    :global(.left-region .widget),
+    :global(.left-region .left-footer) {
       display: none;
     }
 
@@ -515,7 +524,7 @@ const hasRightSidebar = withRightSidebar || headings.length > 0;
       margin-bottom: 0;
     }
 
-    .left-region :global(.profile-card) {
+    :global(.left-region .profile-card) {
       grid-row: 2;
       border-bottom: 1px solid var(--ny-color-border);
       padding-bottom: 20px;

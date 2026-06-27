@@ -2,6 +2,9 @@
 import { getCollection } from 'astro:content';
 import Frame from '../../layouts/frame.astro';
 import Prose from '../../components/Prose.astro';
+import ProfileCard from '../../widgets/ProfileCard.astro';
+import RecentPosts from '../../widgets/RecentPosts.astro';
+import WebsiteStatus from '../../widgets/WebsiteStatus.astro';
 import Widget from '../../widgets/Widget.astro';
 
 const posts = await getCollection('posts');
@@ -20,9 +23,13 @@ const breadcrumbs = [
 
 <Frame
   title="Blog Posts - Nayuta Theme"
-  withRightSidebar={true}
   breadcrumbs={breadcrumbs}
+  withRightSidebar={true}
 >
+  <ProfileCard slot="left" />
+  <RecentPosts slot="left" />
+  <WebsiteStatus slot="left" />
+
   <Prose>
     <h1 class="page-title">Blog Posts</h1>
 

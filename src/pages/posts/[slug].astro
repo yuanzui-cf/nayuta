@@ -2,6 +2,10 @@
 import { getCollection, render } from 'astro:content';
 import Frame from '../../layouts/frame.astro';
 import Prose from '../../components/Prose.astro';
+import ProfileCard from '../../widgets/ProfileCard.astro';
+import RecentPosts from '../../widgets/RecentPosts.astro';
+import WebsiteStatus from '../../widgets/WebsiteStatus.astro';
+import TableOfContents from '../../widgets/TableOfContents.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -23,9 +27,12 @@ const breadcrumbs = [
 <Frame
   title={`${post.data.title} - Nayuta Theme`}
   withRightSidebar={true}
-  headings={headings}
   breadcrumbs={breadcrumbs}
 >
+  <ProfileCard slot="left" />
+  <RecentPosts slot="left" />
+  <WebsiteStatus slot="left" />
+
   <Prose>
     {
       post.data.cover && (
@@ -43,6 +50,8 @@ const breadcrumbs = [
 
     <Content />
   </Prose>
+
+  <TableOfContents slot="right" headings={headings} />
 </Frame>
 
 <style is:global>
