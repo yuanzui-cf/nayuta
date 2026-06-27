@@ -1,4 +1,6 @@
 ---
+import Widget from './Widget.astro';
+
 interface Props {
   headings?: { depth: number; slug: string; text: string }[];
 }
@@ -7,10 +9,7 @@ const { headings = [] } = Astro.props;
 const displayHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
-<div class="widget">
-  <div class="widget-header">
-    <span>Table of Contents</span>
-  </div>
+<Widget title="Table of Contents">
   <div class="widget-content-simple">
     {
       displayHeadings.length > 0 ? (
@@ -24,22 +23,32 @@ const displayHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
           </div>
         ))
       ) : (
-        <div style="font-style: italic; color: var(--ny-color-text-subtle);">
-          No headings on this page
-        </div>
+        <div class="empty-toc">No headings on this page</div>
       )
     }
   </div>
-</div>
+</Widget>
 
 <style>
+  .widget-content-simple {
+    font-size: 12px;
+    color: var(--ny-color-text-muted);
+    line-height: 1.7;
+  }
+
   .toc-link {
     color: var(--ny-color-text-muted);
     text-decoration: none;
     transition: color 0.15s ease;
   }
+
   .toc-link:hover {
     color: var(--ny-color-outline);
     text-decoration: underline;
+  }
+
+  .empty-toc {
+    font-style: italic;
+    color: var(--ny-color-text-subtle);
   }
 </style>

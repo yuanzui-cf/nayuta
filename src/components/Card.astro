@@ -12,3 +12,11 @@ const Element = href ? 'a' : 'div';
 <Element href={href} class={`card ${className}`.trim()} {...props}>
   <slot />
 </Element>
+
+<style>
+  .card {
+    background-color: var(--ny-color-surface);
+    border: 1px solid var(--ny-color-border);
+    border-radius: var(--ny-radius-md);
+  }
+</style>

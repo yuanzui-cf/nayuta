@@ -1,11 +1,8 @@
 ---
-
+import Widget from './Widget.astro';
 ---
 
-<div class="widget">
-  <div class="widget-header">
-    <span>Choose Theme</span>
-  </div>
+<Widget title="Choose Theme">
   <div class="theme-swatches">
     <div
       class="theme-swatch active"
@@ -36,7 +33,7 @@
     >
     </div>
   </div>
-</div>
+</Widget>
 
 <script is:inline>
   // Run immediately to prevent Flash of Unstyled Content (FOUC)
@@ -86,3 +83,30 @@
   setupThemeSwitcher();
   document.addEventListener('astro:after-swap', setupThemeSwitcher);
 </script>
+
+<style>
+  .theme-swatches {
+    display: flex;
+    gap: 8px;
+  }
+
+  .theme-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--ny-color-border);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .theme-swatch.active::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #fff;
+    border-radius: 50%;
+    top: 5px;
+    left: 5px;
+  }
+</style>

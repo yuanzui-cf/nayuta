@@ -1,4 +1,6 @@
 ---
+import Widget from './Widget.astro';
+
 const categories = [
   { name: 'Technical Notes', count: 12 },
   { name: 'Ramblings', count: 8 },
@@ -6,10 +8,7 @@ const categories = [
 ];
 ---
 
-<div class="widget">
-  <div class="widget-header">
-    <span>Categories</span>
-  </div>
+<Widget title="Categories">
   <div class="status-list">
     {
       categories.map((cat) => (
@@ -20,4 +19,28 @@ const categories = [
       ))
     }
   </div>
-</div>
+</Widget>
+
+<style>
+  .status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .status-label {
+    color: var(--ny-color-text-muted);
+  }
+
+  .status-value {
+    color: var(--ny-color-text);
+    font-weight: 500;
+  }
+</style>

@@ -23,3 +23,47 @@ const buttonClass =
 <Element href={href} class={buttonClass} target={target} aria-label={ariaLabel}>
   <slot />
 </Element>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    background-color: var(--ny-color-surface-container);
+    border: 1px solid var(--ny-color-border);
+    border-radius: var(--ny-radius-sm);
+    color: var(--ny-color-text);
+    font-family: var(--ny-font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .btn:hover {
+    background-color: var(--ny-color-primary);
+    border-color: var(--ny-color-outline);
+    color: var(--ny-color-primary-text);
+    box-shadow: 0 0 8px rgba(0, 153, 204, 0.4);
+  }
+
+  .btn:active {
+    background-color: var(--ny-color-primary-active);
+    transform: translateY(1px);
+  }
+
+  .btn-icon-only {
+    width: 28px;
+    padding: 0;
+  }
+
+  .btn :global(svg) {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+</style>

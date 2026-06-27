@@ -12,3 +12,22 @@ const { type = 'text', class: className = '', ...props } = Astro.props;
 ---
 
 <input type={type} class={`search-input ${className}`.trim()} {...props} />
+
+<style>
+  .search-input {
+    width: 100%;
+    height: 28px;
+    background-color: var(--ny-color-surface-container);
+    border: 1px solid var(--ny-color-border);
+    border-radius: var(--ny-radius-sm);
+    color: var(--ny-color-text);
+    font-family: var(--ny-font-ui);
+    font-size: 11px;
+    padding: 0 8px;
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: var(--ny-color-outline);
+  }
+</style>

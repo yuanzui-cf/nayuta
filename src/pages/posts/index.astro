@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Frame from '../../layouts/frame.astro';
 import Prose from '../../components/Prose.astro';
+import Widget from '../../widgets/Widget.astro';
 
 const posts = await getCollection('posts');
 const sortedPosts = [...posts].sort((a, b) => {
@@ -64,14 +65,19 @@ const breadcrumbs = [
     </div>
   </Prose>
 
-  <div slot="right" class="widget">
-    <div class="widget-header">
-      <span>Widget 1</span>
-    </div>
+  <Widget slot="right" title="Widget 1">
     <div class="widget-content-simple">
       <div>This is a Widget</div>
       <div>This is a Widget</div>
       <div>This is a Widget</div>
     </div>
-  </div>
+  </Widget>
+
+  <style>
+    .widget-content-simple {
+      font-size: 12px;
+      color: var(--ny-color-text-muted);
+      line-height: 1.7;
+    }
+  </style>
 </Frame>

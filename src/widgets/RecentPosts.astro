@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Widget from './Widget.astro';
 
 const posts = await getCollection('posts');
 
@@ -13,11 +14,7 @@ const recentPosts = [...posts]
   .slice(0, 3);
 ---
 
-<div class="widget">
-  <div class="widget-header">
-    <span>Recent Posts</span>
-    <a href="/posts">More &gt;</a>
-  </div>
+<Widget title="Recent Posts" moreHref="/posts">
   <div class="post-list">
     {
       recentPosts.map((post) => (
@@ -31,4 +28,39 @@ const recentPosts = [...posts]
       ))
     }
   </div>
-</div>
+</Widget>
+
+<style>
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .post-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-decoration: none;
+  }
+
+  .post-title {
+    color: var(--ny-color-text);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: color 0.15s ease;
+  }
+
+  .post-item:hover .post-title {
+    color: var(--ny-color-outline);
+    text-decoration: underline;
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--ny-color-text-subtle);
+  }
+</style>

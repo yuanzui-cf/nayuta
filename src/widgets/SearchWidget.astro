@@ -1,10 +1,8 @@
 ---
 import Input from '../components/Input.astro';
+import Widget from './Widget.astro';
 ---
 
-<div class="widget">
-  <div class="widget-header">
-    <span>Search Site</span>
-  </div>
+<Widget title="Search Site">
   <Input type="text" placeholder="Type to search..." />
-</div>
+</Widget>

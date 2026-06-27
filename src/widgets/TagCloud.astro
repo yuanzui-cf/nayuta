@@ -1,5 +1,6 @@
 ---
 import Tag from '../components/Tag.astro';
+import Widget from './Widget.astro';
 
 const tags = [
   'Rust',
@@ -12,11 +13,16 @@ const tags = [
 ];
 ---
 
-<div class="widget">
-  <div class="widget-header">
-    <span>Tags Cloud</span>
-  </div>
+<Widget title="Tags Cloud">
   <div class="tag-cloud">
     {tags.map((tag) => <Tag>{tag}</Tag>)}
   </div>
-</div>
+</Widget>
+
+<style>
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+</style>

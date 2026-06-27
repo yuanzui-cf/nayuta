@@ -9,3 +9,17 @@ const { class: className = '' } = Astro.props;
 <span class={`badge ${className}`.trim()}>
   <slot />
 </span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--ny-color-border);
+    border-radius: var(--ny-radius-xs);
+    color: var(--ny-color-text-muted);
+    background-color: var(--ny-color-surface-container);
+    font-size: 10px;
+    line-height: 1.4;
+    padding: 1px 6px;
+  }
+</style>

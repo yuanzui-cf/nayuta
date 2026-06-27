@@ -11,3 +11,20 @@ const Element = href ? 'a' : 'span';
 <Element href={href} class={`tag-item ${className}`.trim()}>
   <slot />
 </Element>
+
+<style>
+  .tag-item {
+    font-size: 10px;
+    background-color: var(--ny-color-surface-container);
+    border: 1px solid var(--ny-color-border);
+    color: var(--ny-color-text-muted);
+    padding: 2px 6px;
+    border-radius: var(--ny-radius-xs);
+    cursor: pointer;
+  }
+
+  .tag-item:hover {
+    border-color: var(--ny-color-outline);
+    color: var(--ny-color-text);
+  }
+</style>

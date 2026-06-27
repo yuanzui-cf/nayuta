@@ -1,11 +1,8 @@
 ---
-
+import Widget from './Widget.astro';
 ---
 
-<div class="widget">
-  <div class="widget-header">
-    <span>Server Info</span>
-  </div>
+<Widget title="Server Info">
   <div class="status-list">
     <div class="status-row">
       <span class="status-label">Server Engine</span>
@@ -13,13 +10,40 @@
     </div>
     <div class="status-row">
       <span class="status-label">API Status</span>
-      <span class="status-value" style="color: #00cc66; font-weight: bold;"
-        >ONLINE</span
-      >
+      <span class="status-value online">ONLINE</span>
     </div>
     <div class="status-row">
       <span class="status-label">Cache State</span>
       <span class="status-value">HIT (Redis)</span>
     </div>
   </div>
-</div>
+</Widget>
+
+<style>
+  .status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .status-label {
+    color: var(--ny-color-text-muted);
+  }
+
+  .status-value {
+    color: var(--ny-color-text);
+    font-weight: 500;
+  }
+
+  .online {
+    color: #00cc66;
+    font-weight: 700;
+  }
+</style>

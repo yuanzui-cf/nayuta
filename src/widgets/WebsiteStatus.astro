@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Widget from './Widget.astro';
 
 const posts = await getCollection('posts');
 const postCount = posts.length;
@@ -15,10 +16,7 @@ const latestPostDate =
   sortedPosts.length > 0 ? sortedPosts[0].data.publishDate : '2026-11-11';
 ---
 
-<div class="widget">
-  <div class="widget-header">
-    <span>Website Status</span>
-  </div>
+<Widget title="Website Status">
   <div class="status-list">
     <div class="status-row">
       <span class="status-label">Posts</span>
@@ -41,4 +39,28 @@ const latestPostDate =
       <span class="status-value">{latestPostDate}</span>
     </div>
   </div>
-</div>
+</Widget>
+
+<style>
+  .status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .status-label {
+    color: var(--ny-color-text-muted);
+  }
+
+  .status-value {
+    color: var(--ny-color-text);
+    font-weight: 500;
+  }
+</style>

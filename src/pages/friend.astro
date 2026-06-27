@@ -1,5 +1,6 @@
 ---
 import Frame from '../layouts/frame.astro';
+import Prose from '../components/Prose.astro';
 import FriendCard from '../widgets/FriendCard.astro';
 
 const breadcrumbs = [
@@ -57,7 +58,7 @@ const friends = [
 ---
 
 <Frame title="Friends & Links - Nayuta Theme" breadcrumbs={breadcrumbs}>
-  <div class="prose">
+  <Prose>
     <h1 class="page-title">Friends & Links</h1>
     <p>
       Here are some of my friends, classmates, and tech blogs that I follow
@@ -68,5 +69,14 @@ const friends = [
     <div class="friends-grid">
       {friends.map((friend) => <FriendCard {...friend} />)}
     </div>
-  </div>
+  </Prose>
 </Frame>
+
+<style>
+  .friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+</style>
