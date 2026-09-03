@@ -74,6 +74,7 @@ const {
       {
         withLeftSidebar && (
           <LeftSidebar>
+            <slot name="left-header" slot="header" />
             <slot name="left" />
           </LeftSidebar>
         )
@@ -125,9 +126,7 @@ const {
             [Close]
           </button>
           <div style="margin-top: 20px;">
-            <LeftSidebar drawer>
-              <slot name="left" />
-            </LeftSidebar>
+            <slot name="left" />
           </div>
         </div>
       )
@@ -435,6 +434,11 @@ const {
       display: none;
     }
 
+    :global(.left-region) {
+      top: calc(48px + 20px);
+      max-height: calc(100vh - 48px - 40px);
+    }
+
     .mobile-sticky-header {
       display: flex;
       justify-content: space-between;
@@ -499,7 +503,7 @@ const {
     .layout-container {
       grid-template-columns: minmax(0, 1fr);
       padding: 24px 20px;
-      row-gap: 16px;
+      row-gap: 24px;
       align-content: start;
     }
 
@@ -509,34 +513,26 @@ const {
       grid-template-columns: minmax(0, 1fr);
     }
 
-    :global(.left-region),
-    .main-region {
-      display: contents;
+    :global(.left-region) {
+      position: static;
+      top: auto;
+      max-height: none;
+      overflow-y: visible;
+      padding-right: 0;
+      gap: 0;
     }
 
-    :global(.left-region .widget),
+    :global(.left-region .left-sidebar-content),
     :global(.left-region .left-footer) {
       display: none;
     }
 
-    .breadcrumbs {
-      grid-row: 1;
-      margin-bottom: 0;
-    }
-
     :global(.left-region .profile-card) {
-      grid-row: 2;
       border-bottom: 1px solid var(--ny-color-border);
       padding-bottom: 20px;
-      margin-bottom: 8px;
-    }
-
-    .main-region :global(.prose) {
-      grid-row: 3;
     }
 
     .mobile-footer {
-      grid-row: 4;
       display: block;
       margin-top: 40px;
       padding-top: 16px;

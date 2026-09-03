@@ -1,33 +1,27 @@
----
-interface Props {
-  drawer?: boolean;
-}
+<aside class="left-region" id="left-sidebar">
+  <header class="left-header">
+    <slot name="header" />
+  </header>
 
-const { drawer = false } = Astro.props;
----
+  <div class="left-sidebar-content">
+    <slot />
+  </div>
 
-{
-  drawer ? (
-    <div class="left-sidebar-content left-sidebar-content-drawer">
-      <slot />
-    </div>
-  ) : (
-    <aside class="left-region" id="left-sidebar">
-      <div class="left-sidebar-content">
-        <slot />
-      </div>
-      <footer class="left-footer">
-        <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
-        <p>
-          Powered by <a href="#">Litepage</a>. Designed by{' '}
-          <a href="#">Leo Jia</a>.
-        </p>
-      </footer>
-    </aside>
-  )
-}
+  <footer class="left-footer">
+    <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
+    <p>
+      Powered by <a href="#">Litepage</a>. Designed by <a href="#">Leo Jia</a>.
+    </p>
+  </footer>
+</aside>
 
 <style>
+  .left-region {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
   .left-sidebar-content {
     display: flex;
     flex-direction: column;
