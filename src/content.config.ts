@@ -25,19 +25,30 @@ const pagesCollection = defineCollection({
       breadcrumbs: z
         .array(z.object({ text: z.string(), href: z.string() }))
         .optional(),
+      categories: z
+        .array(
+          z.object({
+            id: z.string(),
+            title: z.string(),
+            desc: z.string().optional(),
+          }),
+        )
+        .optional(),
       friends: z
         .array(
           z.object({
             name: z.string(),
-            site: z.string(),
             href: z.string(),
-            desc: z.string(),
+            site: z.string().optional(),
+            desc: z.string().optional(),
             avatar: z.string().optional(),
+            logo: z.string().optional(),
             avatarText: z.string().optional(),
             avatarBg: z.string().optional(),
             avatarColor: z.string().optional(),
+            tag: z.string().optional(),
             tags: z.array(z.string()).optional(),
-            category: z.string().optional().default('tech'),
+            category: z.string().optional(),
           }),
         )
         .optional()
@@ -47,6 +58,7 @@ const pagesCollection = defineCollection({
           name: z.string(),
           url: z.string(),
           avatar: z.string().optional(),
+          logo: z.string().optional(),
           desc: z.string().optional(),
         })
         .optional(),

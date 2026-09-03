@@ -21,13 +21,48 @@ const breadcrumbs = data.breadcrumbs || [
 ];
 
 const friends = data.friends || [];
-const techFriends = friends.filter(
-  (f: any) => f.category === 'tech' || !f.category,
-);
-const designFriends = friends.filter((f: any) => f.category === 'design');
-const wandererFriends = friends.filter((f: any) => f.category === 'wanderer');
+const configuredCategories = data.categories || [];
 
-// 判定是否开启右边栏：如果显式指定 withRightSidebar 则以此为准，否则根据 rightWidgets 是否非空决定
+let displaySections: Array<{
+  id: string;
+  title: string;
+  friends: any[];
+}> = [];
+
+if (configuredCategories.length > 0) {
+  const knownIds = new Set(configuredCategories.map((c: any) => c.id));
+  displaySections = configuredCategories.map((cat: any) => ({
+    id: cat.id,
+    title: cat.title,
+    friends: friends.filter((f: any) => f.category === cat.id),
+  }));
+
+  const remainingFriends = friends.filter(
+    (f: any) => !f.category || !knownIds.has(f.category),
+  );
+  if (remainingFriends.length > 0) {
+    displaySections.push({
+      id: 'other',
+      title: '更多伙伴 / More Friends',
+      friends: remainingFriends,
+    });
+  }
+} else {
+  const uniqueKeys: string[] = [];
+  friends.forEach((f: any) => {
+    const key = f.category || '';
+    if (!uniqueKeys.includes(key)) {
+      uniqueKeys.push(key);
+    }
+  });
+
+  displaySections = uniqueKeys.map((key) => ({
+    id: key || 'default',
+    title: key ? key : '所有伙伴 / Friends',
+    friends: friends.filter((f: any) => (f.category || '') === key),
+  }));
+}
+
 const rightWidgets: string[] = data.rightWidgets || [];
 const showRightSidebar =
   typeof data.withRightSidebar === 'boolean'
@@ -35,6 +70,7 @@ const showRightSidebar =
     : rightWidgets.length > 0;
 
 const mySite = data.mySite;
+const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
 ---
 
 <Frame
@@ -47,12 +83,10 @@ const mySite = data.mySite;
   <WebsiteStatus slot="left" />
 
   <div class="friend-page">
-    <!-- Page Header -->
     <header class="page-header">
       <h1 class="page-title">{data.title}</h1>
     </header>
 
-    <!-- Custom Content from MDX at the Top -->
     {
       Content && (
         <div class="top-prose-wrapper">
@@ -63,67 +97,27 @@ const mySite = data.mySite;
       )
     }
 
-    <!-- Category: Tech & Engineering -->
     {
-      techFriends.length > 0 && (
-        <section class="friend-section">
-          <div class="section-header">
-            <h2 class="section-title">
-              <span class="section-symbol">&gt;</span>
-              技术与工程 / Tech &amp; Engineering
-            </h2>
-            <span class="section-count">{techFriends.length} Nodes</span>
-          </div>
-          <div class="friends-grid">
-            {techFriends.map((friend: any) => (
-              <FriendCard {...friend} />
-            ))}
-          </div>
-        </section>
-      )
+      displaySections
+        .filter((section) => section.friends.length > 0)
+        .map((section) => (
+          <section class="friend-section" id={`category-${section.id}`}>
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="section-symbol">&gt;</span>
+                {section.title}
+              </h2>
+              <span class="section-count">{section.friends.length} Nodes</span>
+            </div>
+            <div class="friends-grid">
+              {section.friends.map((friend: any) => (
+                <FriendCard {...friend} />
+              ))}
+            </div>
+          </section>
+        ))
     }
 
-    <!-- Category: Design & Creative -->
-    {
-      designFriends.length > 0 && (
-        <section class="friend-section">
-          <div class="section-header">
-            <h2 class="section-title">
-              <span class="section-symbol">&gt;</span>
-              设计与创意 / Design &amp; Visual
-            </h2>
-            <span class="section-count">{designFriends.length} Nodes</span>
-          </div>
-          <div class="friends-grid">
-            {designFriends.map((friend: any) => (
-              <FriendCard {...friend} />
-            ))}
-          </div>
-        </section>
-      )
-    }
-
-    <!-- Category: Wanderers & Life -->
-    {
-      wandererFriends.length > 0 && (
-        <section class="friend-section">
-          <div class="section-header">
-            <h2 class="section-title">
-              <span class="section-symbol">&gt;</span>
-              生活与漫步 / Wanderers &amp; Life
-            </h2>
-            <span class="section-count">{wandererFriends.length} Nodes</span>
-          </div>
-          <div class="friends-grid">
-            {wandererFriends.map((friend: any) => (
-              <FriendCard {...friend} />
-            ))}
-          </div>
-        </section>
-      )
-    }
-
-    <!-- Site Exchange & Info Section at the Bottom (Normal text display, not code block) -->
     {
       mySite && (
         <section class="exchange-section">
@@ -152,12 +146,12 @@ const mySite = data.mySite;
                   </span>
                 </div>
               )}
-              {mySite.avatar && (
+              {mySiteLogo && (
                 <div class="info-row">
-                  <span class="info-label">头像 / Avatar:</span>
+                  <span class="info-label">头像 / Logo:</span>
                   <span class="info-value">
-                    <a href={mySite.avatar} target="_blank">
-                      {mySite.avatar}
+                    <a href={mySiteLogo} target="_blank">
+                      {mySiteLogo}
                     </a>
                   </span>
                 </div>
@@ -175,7 +169,6 @@ const mySite = data.mySite;
     }
   </div>
 
-  <!-- Dynamic Right Sidebar Widgets controlled via MDX frontmatter -->
   {
     showRightSidebar && rightWidgets.length > 0 && (
       <Fragment slot="right">
@@ -194,7 +187,6 @@ const mySite = data.mySite;
     gap: 36px;
   }
 
-  /* Page Header */
   .page-header {
     display: flex;
     flex-direction: column;
@@ -212,7 +204,6 @@ const mySite = data.mySite;
     width: 100%;
   }
 
-  /* Friend Sections */
   .friend-section {
     display: flex;
     flex-direction: column;
@@ -248,14 +239,12 @@ const mySite = data.mySite;
     font-family: var(--ny-font-code);
   }
 
-  /* Friends Grid */
   .friends-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 16px;
   }
 
-  /* Site Exchange Section (Bottom) */
   .exchange-section {
     display: flex;
     flex-direction: column;

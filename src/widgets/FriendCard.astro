@@ -3,10 +3,11 @@ import Card from '../components/Card.astro';
 
 interface Props {
   name: string;
-  site: string;
   href: string;
-  desc: string;
+  site?: string;
+  desc?: string;
   avatar?: string;
+  logo?: string;
   avatarText?: string;
   avatarBg?: string;
   avatarColor?: string;
@@ -16,24 +17,36 @@ interface Props {
 
 const {
   name,
-  site,
   href,
-  desc,
   avatar,
-  avatarText = name.slice(0, 1).toUpperCase(),
+  logo,
+  avatarText = name ? name.trim().slice(0, 1).toUpperCase() : '?',
   avatarBg = 'rgba(0, 153, 204, 0.15)',
   avatarColor = 'var(--ny-color-outline)',
   tag,
   tags = tag ? [tag] : [],
 } = Astro.props;
+
+const imageSrc = avatar || logo;
+
+let site = Astro.props.site;
+if (!site && href) {
+  try {
+    site = new URL(href).hostname;
+  } catch {
+    site = href.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  }
+}
+
+const desc = Astro.props.desc || '';
 ---
 
 <Card href={href} target="_blank" class="friend-card">
   <div class="friend-header">
     <div class="avatar-wrapper">
       {
-        avatar ? (
-          <img src={avatar} alt={name} class="friend-avatar" loading="lazy" />
+        imageSrc ? (
+          <img src={imageSrc} alt={name} class="friend-avatar" loading="lazy" />
         ) : (
           <div
             class="friend-avatar friend-avatar-fallback"
@@ -57,10 +70,16 @@ const {
             fill="none"></path>
         </svg>
       </div>
-      <span class="friend-site">{site}</span>
+      {site && <span class="friend-site">{site}</span>}
     </div>
   </div>
-  <p class="friend-desc" title={desc}>{desc}</p>
+  {
+    desc && (
+      <p class="friend-desc" title={desc}>
+        {desc}
+      </p>
+    )
+  }
   {
     tags.length > 0 && (
       <div class="friend-tags">
