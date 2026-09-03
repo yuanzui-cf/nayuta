@@ -12,6 +12,9 @@ export interface Config {
   // Site URL
   site_url?: string;
 
+  // Theme name in src/styles/themes/ without .css extension (e.g. 'nayuta-aqua')
+  theme?: string;
+
   // Links to display in the header
   links?: Link[];
 }

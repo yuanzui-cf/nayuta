@@ -6,7 +6,7 @@ const config: Config = {
   avatar: '/assets/images/avatar.jpg',
   description: '🏫 Undergraduate Student | 🤷‍♂️ Aspiring Full Stack Engineer',
   site_url: '',
-
+  theme: 'oled-dark',
   links: [
     {
       content: {

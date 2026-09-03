@@ -3,22 +3,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 :root {
-  /* Semantic Tokens - Default: Kani Nayuta Aqua Blue */
-  --ny-color-bg: #030d16;
-  --ny-color-surface: #071524;
-  --ny-color-surface-container: #0c2033;
-  --ny-color-surface-elevated: #112a42;
-  --ny-color-text: #e6f3ff;
-  --ny-color-text-muted: #99b6d4;
-  --ny-color-text-subtle: #668ca3;
-  --ny-color-primary: #0099cc;
-  --ny-color-primary-hover: #1ab2e6;
-  --ny-color-primary-active: #0077a3;
-  --ny-color-primary-text: #ffffff;
-  --ny-color-border: #142e47;
-  --ny-color-outline: #00bfff;
-  --ny-color-shadow: rgba(0, 0, 0, 0.5);
-
   /* Typography */
   --ny-font-ui: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
   --ny-font-prose: var(--ny-font-ui);
@@ -48,57 +32,6 @@
   --ny-layout-left-width: 250px;
   --ny-layout-main-width: minmax(0, 680px);
   --ny-layout-right-width: 200px;
-}
-
-/* Midnight Blue */
-html[data-theme='midnight-blue'] {
-  --ny-color-bg: #020710;
-  --ny-color-surface: #050d18;
-  --ny-color-surface-container: #081525;
-  --ny-color-surface-elevated: #0c1d32;
-  --ny-color-text: #e1ebf5;
-  --ny-color-text-muted: #95adca;
-  --ny-color-text-subtle: #6282a3;
-  --ny-color-primary: #0066cc;
-  --ny-color-primary-hover: #1a85ff;
-  --ny-color-primary-active: #004fad;
-  --ny-color-primary-text: #ffffff;
-  --ny-color-border: #10233c;
-  --ny-color-outline: #3399ff;
-}
-
-/* Sakura Pink */
-html[data-theme='sakura-pink'] {
-  --ny-color-bg: #1c0811;
-  --ny-color-surface: #260f1b;
-  --ny-color-surface-container: #361727;
-  --ny-color-surface-elevated: #462035;
-  --ny-color-text: #faebf2;
-  --ny-color-text-muted: #d9a3be;
-  --ny-color-text-subtle: #b37495;
-  --ny-color-primary: #ff6699;
-  --ny-color-primary-hover: #ff80ab;
-  --ny-color-primary-active: #cc3366;
-  --ny-color-primary-text: #ffffff;
-  --ny-color-border: #4d1d35;
-  --ny-color-outline: #ff99bc;
-}
-
-/* OLED Dark */
-html[data-theme='oled-dark'] {
-  --ny-color-bg: #000000;
-  --ny-color-surface: #0a0a0a;
-  --ny-color-surface-container: #141414;
-  --ny-color-surface-elevated: #1e1e1e;
-  --ny-color-text: #f0f0f0;
-  --ny-color-text-muted: #a5a5a5;
-  --ny-color-text-subtle: #666666;
-  --ny-color-primary: #333333;
-  --ny-color-primary-hover: #444444;
-  --ny-color-primary-active: #222222;
-  --ny-color-primary-text: #ffffff;
-  --ny-color-border: #262626;
-  --ny-color-outline: #777777;
 }
 
 * {
