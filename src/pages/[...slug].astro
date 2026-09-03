@@ -1,0 +1,21 @@
+---
+import { getCollection, render } from 'astro:content';
+import FriendTemplate from '../templates/FriendTemplate.astro';
+import PageTemplate from '../templates/PageTemplate.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({
+    params: { slug: page.id },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+
+const template = page.data.template || 'default';
+---
+
+{template === 'friend' && <FriendTemplate entry={page} Content={Content} />}
+{template !== 'friend' && <PageTemplate entry={page} Content={Content} />}

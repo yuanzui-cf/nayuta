@@ -1,0 +1,52 @@
+---
+import Frame from '../layouts/frame.astro';
+import ProfileCard from '../widgets/ProfileCard.astro';
+import RecentPosts from '../widgets/RecentPosts.astro';
+import WebsiteStatus from '../widgets/WebsiteStatus.astro';
+import Prose from '../components/Prose.astro';
+import DynamicWidget from '../components/DynamicWidget.astro';
+
+interface Props {
+  entry: any;
+  Content?: any;
+}
+
+const { entry, Content } = Astro.props;
+const data = entry.data;
+
+const breadcrumbs = data.breadcrumbs || [
+  { text: 'Home', href: '/' },
+  { text: data.title, href: `/${entry.id}` },
+];
+
+const rightWidgets: string[] = data.rightWidgets || [];
+const showRightSidebar =
+  typeof data.withRightSidebar === 'boolean'
+    ? data.withRightSidebar
+    : rightWidgets.length > 0;
+---
+
+<Frame
+  title={`${data.title} - Nayuta Theme`}
+  breadcrumbs={breadcrumbs}
+  withRightSidebar={showRightSidebar}
+>
+  <ProfileCard slot="left-header" />
+  <RecentPosts slot="left" />
+  <WebsiteStatus slot="left" />
+
+  <Prose>
+    <h1 class="page-title">{data.title}</h1>
+    {Content && <Content />}
+  </Prose>
+
+  {
+    showRightSidebar && rightWidgets.length > 0 && (
+      <Fragment slot="right">
+        {rightWidgets.map((name) => (
+          <DynamicWidget name={name} />
+        ))}
+      </Fragment>
+    )
+  }
+</Frame>

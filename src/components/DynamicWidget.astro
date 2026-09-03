@@ -1,0 +1,23 @@
+---
+import TagCloud from '../widgets/TagCloud.astro';
+import Categories from '../widgets/Categories.astro';
+import RecentPosts from '../widgets/RecentPosts.astro';
+import WebsiteStatus from '../widgets/WebsiteStatus.astro';
+import ServerInfo from '../widgets/ServerInfo.astro';
+import ChooseTheme from '../widgets/ChooseTheme.astro';
+import SearchWidget from '../widgets/SearchWidget.astro';
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+---
+
+{name === 'tag-cloud' && <TagCloud />}
+{name === 'categories' && <Categories />}
+{name === 'recent-posts' && <RecentPosts />}
+{name === 'website-status' && <WebsiteStatus />}
+{name === 'server-info' && <ServerInfo />}
+{name === 'choose-theme' && <ChooseTheme />}
+{name === 'search' && <SearchWidget />}

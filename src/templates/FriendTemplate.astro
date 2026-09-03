@@ -1,0 +1,314 @@
+---
+import Frame from '../layouts/frame.astro';
+import ProfileCard from '../widgets/ProfileCard.astro';
+import RecentPosts from '../widgets/RecentPosts.astro';
+import WebsiteStatus from '../widgets/WebsiteStatus.astro';
+import FriendCard from '../widgets/FriendCard.astro';
+import DynamicWidget from '../components/DynamicWidget.astro';
+import Prose from '../components/Prose.astro';
+
+interface Props {
+  entry: any;
+  Content?: any;
+}
+
+const { entry, Content } = Astro.props;
+const data = entry.data;
+
+const breadcrumbs = data.breadcrumbs || [
+  { text: 'Home', href: '/' },
+  { text: data.title || 'Friends', href: `/${entry.id}` },
+];
+
+const friends = data.friends || [];
+const techFriends = friends.filter(
+  (f: any) => f.category === 'tech' || !f.category,
+);
+const designFriends = friends.filter((f: any) => f.category === 'design');
+const wandererFriends = friends.filter((f: any) => f.category === 'wanderer');
+
+// 判定是否开启右边栏：如果显式指定 withRightSidebar 则以此为准，否则根据 rightWidgets 是否非空决定
+const rightWidgets: string[] = data.rightWidgets || [];
+const showRightSidebar =
+  typeof data.withRightSidebar === 'boolean'
+    ? data.withRightSidebar
+    : rightWidgets.length > 0;
+
+const mySite = data.mySite;
+---
+
+<Frame
+  title={`${data.title} - Nayuta Theme`}
+  breadcrumbs={breadcrumbs}
+  withRightSidebar={showRightSidebar}
+>
+  <ProfileCard slot="left-header" />
+  <RecentPosts slot="left" />
+  <WebsiteStatus slot="left" />
+
+  <div class="friend-page">
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-title">{data.title}</h1>
+    </header>
+
+    <!-- Custom Content from MDX at the Top -->
+    {
+      Content && (
+        <div class="top-prose-wrapper">
+          <Prose>
+            <Content />
+          </Prose>
+        </div>
+      )
+    }
+
+    <!-- Category: Tech & Engineering -->
+    {
+      techFriends.length > 0 && (
+        <section class="friend-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span class="section-symbol">&gt;</span>
+              技术与工程 / Tech &amp; Engineering
+            </h2>
+            <span class="section-count">{techFriends.length} Nodes</span>
+          </div>
+          <div class="friends-grid">
+            {techFriends.map((friend: any) => (
+              <FriendCard {...friend} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Category: Design & Creative -->
+    {
+      designFriends.length > 0 && (
+        <section class="friend-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span class="section-symbol">&gt;</span>
+              设计与创意 / Design &amp; Visual
+            </h2>
+            <span class="section-count">{designFriends.length} Nodes</span>
+          </div>
+          <div class="friends-grid">
+            {designFriends.map((friend: any) => (
+              <FriendCard {...friend} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Category: Wanderers & Life -->
+    {
+      wandererFriends.length > 0 && (
+        <section class="friend-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span class="section-symbol">&gt;</span>
+              生活与漫步 / Wanderers &amp; Life
+            </h2>
+            <span class="section-count">{wandererFriends.length} Nodes</span>
+          </div>
+          <div class="friends-grid">
+            {wandererFriends.map((friend: any) => (
+              <FriendCard {...friend} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Site Exchange & Info Section at the Bottom (Normal text display, not code block) -->
+    {
+      mySite && (
+        <section class="exchange-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <span class="section-symbol">#</span>
+              申请友链与本站信息 / Exchange Links
+            </h2>
+          </div>
+
+          <div class="my-site-info-card">
+            <div class="site-info-list">
+              {mySite.name && (
+                <div class="info-row">
+                  <span class="info-label">名称 / Name:</span>
+                  <span class="info-value">{mySite.name}</span>
+                </div>
+              )}
+              {mySite.url && (
+                <div class="info-row">
+                  <span class="info-label">网址 / URL:</span>
+                  <span class="info-value">
+                    <a href={mySite.url} target="_blank">
+                      {mySite.url}
+                    </a>
+                  </span>
+                </div>
+              )}
+              {mySite.avatar && (
+                <div class="info-row">
+                  <span class="info-label">头像 / Avatar:</span>
+                  <span class="info-value">
+                    <a href={mySite.avatar} target="_blank">
+                      {mySite.avatar}
+                    </a>
+                  </span>
+                </div>
+              )}
+              {mySite.desc && (
+                <div class="info-row">
+                  <span class="info-label">描述 / Desc:</span>
+                  <span class="info-value">{mySite.desc}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </div>
+
+  <!-- Dynamic Right Sidebar Widgets controlled via MDX frontmatter -->
+  {
+    showRightSidebar && rightWidgets.length > 0 && (
+      <Fragment slot="right">
+        {rightWidgets.map((name) => (
+          <DynamicWidget name={name} />
+        ))}
+      </Fragment>
+    )
+  }
+</Frame>
+
+<style>
+  .friend-page {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  /* Page Header */
+  .page-header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ny-color-text);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .top-prose-wrapper {
+    width: 100%;
+  }
+
+  /* Friend Sections */
+  .friend-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--ny-color-border);
+    padding-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ny-color-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .section-symbol {
+    color: var(--ny-color-outline);
+    font-family: var(--ny-font-code);
+  }
+
+  .section-count {
+    font-size: 11px;
+    color: var(--ny-color-text-subtle);
+    font-family: var(--ny-font-code);
+  }
+
+  /* Friends Grid */
+  .friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  /* Site Exchange Section (Bottom) */
+  .exchange-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .my-site-info-card {
+    background-color: var(--ny-color-surface-container);
+    border: 1px solid var(--ny-color-border);
+    border-radius: var(--ny-radius-md);
+    padding: 16px 20px;
+  }
+
+  .site-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    line-height: 1.6;
+  }
+
+  .info-label {
+    width: 105px;
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--ny-color-text-muted);
+    font-family: var(--ny-font-code);
+    font-size: 12px;
+  }
+
+  .info-value {
+    color: var(--ny-color-text);
+    word-break: break-all;
+  }
+
+  @media (max-width: 640px) {
+    .friends-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .info-row {
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .info-label {
+      width: auto;
+    }
+  }
+</style>

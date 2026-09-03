@@ -117,3 +117,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Global Link Styles */
+a {
+  color: var(--ny-color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--ny-color-outline);
+}
