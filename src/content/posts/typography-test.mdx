@@ -1,7 +1,6 @@
 ---
 title: 'Manuscript Typesetting & Visual Lab'
 publishDate: '2026-05-10'
-views: '12.4k'
 readingTime: '8 mins'
 description: 'A visual typesetting laboratory for light novel manuscripts, testing heading hierarchy, dialogue pacing, inner monologues, TRPG stat tables, and typography under the Nayuta UI theme.'
 ---
@@ -62,7 +61,7 @@ The smallest heading level functions best for manuscript timestamps, draft versi
 Authors rely on varied emphasis to represent spoken inflection and psychological state:
 
 - **Bold Emphasis**: Used for sudden shouts, magical invocation incantations, or decisive declarations: **"I will love you until the sun freezes into cinder!"**
-- *Italicized Cadence*: Used for internal monologue, telepathic communication, or distant memories: *Did he really smile just now, or was it a trick of the lantern light?*
+- _Italicized Cadence_: Used for internal monologue, telepathic communication, or distant memories: _Did he really smile just now, or was it a trick of the lantern light?_
 - `Monospace Code Styling`: Ideal for system notifications, game menu interfaces, or magic formulas: `CastSpell("Glacial_Cascade", Level = 7, MP = 120)`
 - ~~Strikethrough Syntax~~: Used for retracted confessions or half-spoken thoughts: ~~I wanted to kiss you right then~~ Never mind, it's nothing.
 - [External Reference Links](https://imotosae.com): Connect seamlessly into the theme palette without breaking line flow.
@@ -74,7 +73,7 @@ Authors rely on varied emphasis to represent spoken inflection and psychological
 Single blockquotes represent reflective inner monologues or quoted passage excerpts:
 
 > “Words are terrifying things. Once you give them breath and cast them into the world, you can never take them back. They will outlive your shame, outlive your youth, and keep telling your secrets long after your bones are dust.”  
-> — *The Silvery Landscape (銀色景色), Chapter 12*
+> — _The Silvery Landscape (銀色景色), Chapter 12_
 
 Nested blockquotes demonstrate multi-speaker exchanges or editorial review dialogue:
 
@@ -90,13 +89,13 @@ Nested blockquotes demonstrate multi-speaker exchanges or editorial review dialo
 
 Tables are essential for displaying character statistics, gaming logs, and inventory manifests:
 
-| Character | Class / Archetype | Signature Ability | Fatal Weakness |
-| :--- | :--- | :--- | :--- |
-| **Itsuki** | Valiant Knight | *Sacrificial Oath* (Absorbs party damage) | Blindly trusts every female NPC |
-| **Nayuta** | Eldritch Prodigy | *Inferno Overdrive* (Uncapped magic burst) | Completely unarmored (AC: 10) |
-| **Miyako** | High Priestess | *Sanctuary Ward* (Mass party healing) | Constantly running out of MP |
-| **Haruto** | Game Master | *Sudden Plot Twist* (Summons ancient dragon) | Easily bribed with expensive craft beer |
-| **Chihiro** | Field Alchemist | *Divine Feast* (Restores all HP and stamina) | None; universally beloved |
+| Character   | Class / Archetype | Signature Ability                            | Fatal Weakness                          |
+| :---------- | :---------------- | :------------------------------------------- | :-------------------------------------- |
+| **Itsuki**  | Valiant Knight    | _Sacrificial Oath_ (Absorbs party damage)    | Blindly trusts every female NPC         |
+| **Nayuta**  | Eldritch Prodigy  | _Inferno Overdrive_ (Uncapped magic burst)   | Completely unarmored (AC: 10)           |
+| **Miyako**  | High Priestess    | _Sanctuary Ward_ (Mass party healing)        | Constantly running out of MP            |
+| **Haruto**  | Game Master       | _Sudden Plot Twist_ (Summons ancient dragon) | Easily bribed with expensive craft beer |
+| **Chihiro** | Field Alchemist   | _Divine Feast_ (Restores all HP and stamina) | None; universally beloved               |
 
 ---
 
@@ -112,7 +111,10 @@ interface NovelChapter {
   status: 'draft' | 'toki_panicking' | 'approved';
 }
 
-function calculateWritingFlow(caffeineLevel: number, clothesWorn: number): number {
+function calculateWritingFlow(
+  caffeineLevel: number,
+  clothesWorn: number,
+): number {
   if (clothesWorn > 0) {
     // Fabric drag reduces flow exponentially
     return Math.max(0, caffeineLevel * 10 - clothesWorn * 50);
@@ -135,9 +137,12 @@ Images should render with crisp borders, elegant corner radii, and seamless resp
 ## Editor Callouts
 
 <Callout type="note" title="Production Note">
-Light novel manuscript deliveries should always be exported in UTF-8 plain text with Unix line breaks (`\n`) to prevent typesetting encoding anomalies.
+  Light novel manuscript deliveries should always be exported in UTF-8 plain
+  text with Unix line breaks (`\n`) to prevent typesetting encoding anomalies.
 </Callout>
 
 <Callout type="warning" title="Deadline Protocol">
-If an author ceases communication for more than 48 hours within two weeks of release, editors are authorized to execute on-site apartment wellness inspections with emergency bento boxes.
+  If an author ceases communication for more than 48 hours within two weeks of
+  release, editors are authorized to execute on-site apartment wellness
+  inspections with emergency bento boxes.
 </Callout>

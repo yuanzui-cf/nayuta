@@ -44,8 +44,9 @@ const breadcrumbs = [
 
     <h1 class="page-title">{post.data.title}</h1>
     <p style="color: var(--ny-color-text-subtle); margin-bottom: 20px;">
-      Published: {post.data.publishDate} &nbsp;•&nbsp; {post.data.views} views &nbsp;•&nbsp;
-      Reading Time: {post.data.readingTime}
+      Published: {post.data.publishDate} &nbsp;•&nbsp; Reading Time: {
+        post.data.readingTime
+      }
     </p>
 
     <Content />

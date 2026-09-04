@@ -8,6 +8,7 @@ const config: Config = {
     'Genius Light Novelist | Author of "The Landscape Series" | Operating principle: 100% Love for Itsuki Hashima',
   site_url: 'https://nayuta.kani.dev',
   theme: 'nayuta',
+  since: '2024-01-01',
   links: [
     {
       content: {

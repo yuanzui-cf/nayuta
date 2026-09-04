@@ -4,7 +4,7 @@ import Widget from './Widget.astro';
 
 const posts = await getCollection('posts');
 
-// Sort by publishDate descending and take the first 5 posts
+// Sort by publishDate descending and take the first 3 posts
 const recentPosts = [...posts]
   .sort(
     (a, b) =>
@@ -22,7 +22,6 @@ const recentPosts = [...posts]
           <span class="post-title">{post.data.title}</span>
           <div class="post-meta">
             <span>{post.data.publishDate}</span>
-            <span>{post.data.views} views</span>
           </div>
         </a>
       ))

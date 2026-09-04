@@ -3,7 +3,6 @@ import TagCloud from '../widgets/TagCloud.astro';
 import Categories from '../widgets/Categories.astro';
 import RecentPosts from '../widgets/RecentPosts.astro';
 import WebsiteStatus from '../widgets/WebsiteStatus.astro';
-import ServerInfo from '../widgets/ServerInfo.astro';
 import SearchWidget from '../widgets/SearchWidget.astro';
 
 interface Props {
@@ -17,5 +16,4 @@ const { name } = Astro.props;
 {name === 'categories' && <Categories />}
 {name === 'recent-posts' && <RecentPosts />}
 {name === 'website-status' && <WebsiteStatus />}
-{name === 'server-info' && <ServerInfo />}
 {name === 'search' && <SearchWidget />}
