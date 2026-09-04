@@ -1,5 +1,15 @@
 import type { Icon } from './icon';
 
+export interface Link {
+  text?: string;
+  url?: string;
+  href?: string;
+  icon?: Icon;
+  target?: string;
+  ariaLabel?: string;
+  iconOnly?: boolean;
+}
+
 export interface Config {
   // Site title
   title: string;
@@ -18,20 +28,6 @@ export interface Config {
   // Theme name in src/styles/themes/ without .css extension (e.g. 'nayuta-aqua')
   theme?: string;
 
-  // Links to display in the header
+  // Profile Card links
   links?: Link[];
-}
-
-interface TextLink {
-  text: string;
-  icon?: Icon;
-}
-
-interface IconLink {
-  icon: Icon;
-}
-
-export interface Link {
-  content: TextLink | IconLink;
-  url: string;
 }

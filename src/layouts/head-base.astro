@@ -52,4 +52,12 @@ const themeCss = (await loadTheme()) as string;
 <meta name="description" content={config.description || ''} />
 <meta name="author" content={config.author || ''} />
 
+<!-- Built-in Icon Library (Font Awesome) -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+
 <style is:global set:html={themeCss}></style>
