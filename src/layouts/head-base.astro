@@ -2,10 +2,23 @@
 import config from '../config';
 
 interface Props {
-  title: string;
+  title?: string;
+  isHome?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, isHome = false } = Astro.props;
+
+// Format page title:
+// - Home page: directly config.title
+// - Other pages: `${pageTitle} - ${config.title}`
+let formattedTitle = config.title;
+if (!isHome && title && title !== config.title) {
+  if (title.endsWith(` - ${config.title}`)) {
+    formattedTitle = title;
+  } else {
+    formattedTitle = `${title} - ${config.title}`;
+  }
+}
 
 const rawThemeName = config.theme || 'nayuta-aqua';
 const themeBaseName = rawThemeName.replace(/\.css$/, '');
@@ -35,9 +48,8 @@ const themeCss = (await loadTheme()) as string;
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <meta name="generator" content={Astro.generator} />
 <link rel="icon" type="image/png" href="/favicon.png" />
-<title>{title}</title>
-<meta name="description" content="" />
-<meta name="keywords" content="" />
-<meta name="author" content="" />
+<title>{formattedTitle}</title>
+<meta name="description" content={config.description || ''} />
+<meta name="author" content={config.author || ''} />
 
 <style is:global set:html={themeCss}></style>

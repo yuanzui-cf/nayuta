@@ -1,4 +1,5 @@
 ---
+import config from '../config';
 import Frame from '../layouts/frame.astro';
 import Prose from '../components/Prose.astro';
 import ProfileCard from '../widgets/ProfileCard.astro';
@@ -7,7 +8,8 @@ import WebsiteStatus from '../widgets/WebsiteStatus.astro';
 ---
 
 <Frame
-  title="✍️ Kani Nayuta — Official Website"
+  isHome={true}
+  title={config.title}
   breadcrumbs={[{ text: 'Home', href: '/' }]}
 >
   <ProfileCard slot="left-header" />
@@ -15,7 +17,7 @@ import WebsiteStatus from '../widgets/WebsiteStatus.astro';
   <WebsiteStatus slot="left" />
 
   <Prose>
-    <h1 class="page-title">✍️ Welcome to My World</h1>
+    <h1 class="page-title">✍️ Welcome to My Blog</h1>
     <p>
       Hello there! I am <strong>Kani Nayuta</strong> (可児 那由多) — though my legal
       name is Kazuko Hashima (羽島 和子), née Honden (本田).
@@ -60,15 +62,14 @@ import WebsiteStatus from '../widgets/WebsiteStatus.astro';
       with this eccentricity long ago.
     </p>
 
-    <h2>About This Site</h2>
+    <h2>About This Blog</h2>
     <p>
-      This corner of the internet serves as an unfiltered personal archive where
-      I share essays on creative flow, commentary on <em
+      This blog is my personal playground and unfiltered digital notebook. Here
+      you won't find polite PR statements or corporate press releases — instead,
+      I share essays on creative flow, behind-the-scenes thoughts on <em
         >The Landscape Series</em
       >
-      (『景色』シリーズ), behind-the-scenes chaos from the publishing industry, and
-      occasional rants about how much I miss Hashima-senpai when we are not in the
-      same room.
+      (『景色』シリーズ), midnight musings, and stories about the people I love.
     </p>
     <p>
       Take a look through my <a href="/posts">Posts</a>, or meet the precious

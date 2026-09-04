@@ -5,7 +5,8 @@ import RightSidebar from './right-sidebar.astro';
 import '../styles/global.css';
 
 interface Props {
-  title: string;
+  title?: string;
+  isHome?: boolean;
   withLeftSidebar?: boolean;
   withRightSidebar?: boolean;
   breadcrumbs?: { text: string; href: string }[];
@@ -13,6 +14,7 @@ interface Props {
 
 const {
   title,
+  isHome = false,
   withLeftSidebar = true,
   withRightSidebar = false,
   breadcrumbs = [{ text: 'Home', href: '/' }],
@@ -22,7 +24,7 @@ const {
 <!doctype html>
 <html lang="en">
   <head>
-    <HeadBase title={title} />
+    <HeadBase title={title} isHome={isHome} />
     <slot name="head" />
   </head>
   <body>
