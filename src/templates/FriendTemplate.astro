@@ -43,7 +43,7 @@ if (configuredCategories.length > 0) {
   if (remainingFriends.length > 0) {
     displaySections.push({
       id: 'other',
-      title: '更多伙伴 / More Friends',
+      title: 'More Connections',
       friends: remainingFriends,
     });
   }
@@ -58,7 +58,7 @@ if (configuredCategories.length > 0) {
 
   displaySections = uniqueKeys.map((key) => ({
     id: key || 'default',
-    title: key ? key : '所有伙伴 / Friends',
+    title: key ? key : 'Friends & Connections',
     friends: friends.filter((f: any) => (f.category || '') === key),
   }));
 }
@@ -74,7 +74,7 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
 ---
 
 <Frame
-  title={`${data.title} - Nayuta Theme`}
+  title={`${data.title} — Kani Nayuta`}
   breadcrumbs={breadcrumbs}
   withRightSidebar={showRightSidebar}
 >
@@ -107,7 +107,9 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
                 <span class="section-symbol">&gt;</span>
                 {section.title}
               </h2>
-              <span class="section-count">{section.friends.length} Nodes</span>
+              <span class="section-count">
+                {section.friends.length} Profiles
+              </span>
             </div>
             <div class="friends-grid">
               {section.friends.map((friend: any) => (
@@ -124,7 +126,7 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
           <div class="section-header">
             <h2 class="section-title">
               <span class="section-symbol">#</span>
-              申请友链与本站信息 / Exchange Links
+              Site Info & Link Exchange
             </h2>
           </div>
 
@@ -132,13 +134,13 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
             <div class="site-info-list">
               {mySite.name && (
                 <div class="info-row">
-                  <span class="info-label">名称 / Name:</span>
+                  <span class="info-label">Name:</span>
                   <span class="info-value">{mySite.name}</span>
                 </div>
               )}
               {mySite.url && (
                 <div class="info-row">
-                  <span class="info-label">网址 / URL:</span>
+                  <span class="info-label">URL:</span>
                   <span class="info-value">
                     <a href={mySite.url} target="_blank">
                       {mySite.url}
@@ -148,7 +150,7 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
               )}
               {mySiteLogo && (
                 <div class="info-row">
-                  <span class="info-label">头像 / Logo:</span>
+                  <span class="info-label">Avatar / Logo:</span>
                   <span class="info-value">
                     <a href={mySiteLogo} target="_blank">
                       {mySiteLogo}
@@ -158,7 +160,7 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
               )}
               {mySite.desc && (
                 <div class="info-row">
-                  <span class="info-label">描述 / Desc:</span>
+                  <span class="info-label">Bio / Description:</span>
                   <span class="info-value">{mySite.desc}</span>
                 </div>
               )}
@@ -273,7 +275,7 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
   }
 
   .info-label {
-    width: 105px;
+    width: 120px;
     flex-shrink: 0;
     font-weight: 600;
     color: var(--ny-color-text-muted);

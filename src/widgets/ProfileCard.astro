@@ -2,34 +2,27 @@
 import avatarImg from '../assets/images/avatar.png';
 import Avatar from '../components/Avatar.astro';
 import Button from '../components/Button.astro';
+import config from '../config';
 ---
 
 <div class="profile-card">
-  <Avatar src={avatarImg.src} alt="Leo Jia Avatar" />
+  <Avatar src={avatarImg.src} alt={`${config.author} Avatar`} />
   <div class="profile-info">
-    <h2 class="profile-name">Leo Jia</h2>
+    <h2 class="profile-name">{config.author}</h2>
     <div class="profile-title">
-      🏫 Undergraduate Student | 🤷‍♂️ Aspiring Full Stack Engineer
+      {config.description}
     </div>
   </div>
 
   <!-- Social Action Buttons -->
   <div class="social-buttons">
-    <Button href="https://github.com" target="_blank">
-      <svg viewBox="0 0 24 24">
-        <path
-          d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"
-        ></path>
-      </svg>
-      Github
-    </Button>
     <Button href="/posts">
       <svg viewBox="0 0 24 24">
         <path
           d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
         ></path>
       </svg>
-      Blog
+      Posts
     </Button>
     <Button href="/friend">
       <svg viewBox="0 0 24 24">
@@ -40,21 +33,26 @@ import Button from '../components/Button.astro';
       Friends
     </Button>
     <Button
-      href="https://t.me"
+      href="https://twitter.com/imotosae_anime"
       target="_blank"
       iconOnly={true}
-      ariaLabel="Telegram"
+      ariaLabel="Twitter / X"
     >
       <svg viewBox="0 0 24 24">
         <path
-          d="M9.78 18.65l.28-4.28 7.76-7.01c.34-.3-.07-.47-.52-.18L7.79 12.25l-4.15-1.3c-.9-.28-.92-.9.19-1.34l16.2-6.25c.75-.28 1.4.17 1.15 1.25l-2.75 12.97c-.2.92-.75 1.15-1.52.72l-4.19-3.08-2.02 1.95c-.22.22-.41.41-.84.41z"
+          d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
         ></path>
       </svg>
     </Button>
-    <Button href="mailto:leo@example.com" iconOnly={true} ariaLabel="Email">
+    <Button
+      href="https://imotosae.com"
+      target="_blank"
+      iconOnly={true}
+      ariaLabel="Official GF Bunko / Imoutosae Portal"
+    >
       <svg viewBox="0 0 24 24">
         <path
-          d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
         ></path>
       </svg>
     </Button>
