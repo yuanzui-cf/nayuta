@@ -1,0 +1,64 @@
+/* Nayuta UI CSS Design System & Global Styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  /* Typography */
+  --ny-font-ui: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  --ny-font-prose: var(--ny-font-ui);
+  --ny-font-code: var(--ny-font-ui);
+  --ny-letter-spacing-ui: -0.01em;
+
+  /* Border Radius */
+  --ny-radius-xs: 2px;
+  --ny-radius-sm: 4px;
+  --ny-radius-md: 8px;
+  --ny-radius-lg: 12px;
+  --ny-radius-xl: 16px;
+
+  /* Density & Rhythm */
+  --ny-space-1: 4px;
+  --ny-space-2: 8px;
+  --ny-space-3: 12px;
+  --ny-space-4: 16px;
+  --ny-space-5: 20px;
+  --ny-space-6: 24px;
+
+  /* Grid proportions from reference */
+  --ny-layout-page-max-width: 1920px;
+  --ny-layout-outer-padding-inline: clamp(24px, 5vw, 64px);
+  --ny-layout-outer-padding-block: clamp(28px, 6vh, 56px);
+  --ny-layout-column-gap: clamp(24px, 4vw, 48px);
+  --ny-layout-left-width: 250px;
+  --ny-layout-main-width: minmax(0, 680px);
+  --ny-layout-right-width: 200px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--ny-color-bg);
+  color: var(--ny-color-text);
+  font-family: var(--ny-font-ui);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: var(--ny-letter-spacing-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global Link Styles */
+a {
+  color: var(--ny-color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--ny-color-outline);
+}

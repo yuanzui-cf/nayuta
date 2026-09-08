@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import Frame from '../../layouts/frame.astro';
+import Prose from '../../components/Prose.astro';
+import ProfileCard from '../../widgets/ProfileCard.astro';
+import RecentPosts from '../../widgets/RecentPosts.astro';
+import WebsiteStatus from '../../widgets/WebsiteStatus.astro';
+import Widget from '../../widgets/Widget.astro';
+
+const posts = await getCollection('posts');
+const sortedPosts = [...posts].sort((a, b) => {
+  return (
+    new Date(b.data.publishDate).getTime() -
+    new Date(a.data.publishDate).getTime()
+  );
+});
+
+const breadcrumbs = [
+  { text: 'Home', href: '/' },
+  { text: 'Posts', href: '/posts' },
+];
+---
+
+<Frame title="Posts" breadcrumbs={breadcrumbs} withRightSidebar={true}>
+  <ProfileCard slot="left-header" />
+  <RecentPosts slot="left" />
+  <WebsiteStatus slot="left" />
+
+  <Prose>
+    <h1 class="page-title">Essays & Manuscript Logs</h1>
+
+    <div
+      style="display: flex; flex-direction: column; gap: 32px; margin-top: 24px;"
+    >
+      {
+        sortedPosts.map((post) => (
+          <article style="border-bottom: 1px solid var(--ny-color-border); padding-bottom: 24px; display: flex; flex-direction: column; gap: 6px;">
+            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">
+              <a
+                href={`/posts/${post.id}`}
+                style="color: var(--ny-color-text); text-decoration: none;"
+              >
+                {post.data.title}
+              </a>
+            </h2>
+            <div style="font-size: 11px; color: var(--ny-color-text-subtle); display: flex; gap: 16px;">
+              <span>Published: {post.data.publishDate}</span>
+              <span>Reading: {post.data.readingTime}</span>
+            </div>
+            {post.data.cover && (
+              <div style="width: 100%; border-radius: var(--ny-radius-md); overflow: hidden; border: 1px solid var(--ny-color-border); aspect-ratio: 21 / 9; margin-top: 8px;">
+                <img
+                  src={post.data.cover}
+                  alt="Cover Banner"
+                  style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; border-radius: 0;"
+                />
+              </div>
+            )}
+            {post.data.description && (
+              <p style="color: var(--ny-color-text-muted); font-size: 13px; line-height: 1.6; margin-top: 8px; margin-bottom: 0;">
+                {post.data.description}
+              </p>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </Prose>
+
+  <Widget slot="right" title="Series Bulletin">
+    <div class="widget-content-simple">
+      <div><strong>Current Work:</strong> The Pale Landscape</div>
+      <div><strong>Label:</strong> GF Bunko</div>
+      <div><strong>Editor:</strong> Kenjirou Toki</div>
+      <div><strong>Status:</strong> Naked writing mode ✍️</div>
+    </div>
+  </Widget>
+
+  <style>
+    .widget-content-simple {
+      font-size: 12px;
+      color: var(--ny-color-text-muted);
+      line-height: 1.7;
+    }
+  </style>
+</Frame>

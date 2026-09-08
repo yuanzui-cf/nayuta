@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import Widget from './Widget.astro';
+
+const posts = await getCollection('posts');
+
+// Sort by publishDate descending and take the first 3 posts
+const recentPosts = [...posts]
+  .sort(
+    (a, b) =>
+      new Date(b.data.publishDate).getTime() -
+      new Date(a.data.publishDate).getTime(),
+  )
+  .slice(0, 3);
+---
+
+<Widget title="Recent Posts" moreHref="/posts">
+  <div class="post-list">
+    {
+      recentPosts.map((post) => (
+        <a href={`/posts/${post.id}`} class="post-item">
+          <span class="post-title">{post.data.title}</span>
+          <div class="post-meta">
+            <span>{post.data.publishDate}</span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</Widget>
+
+<style>
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .post-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-decoration: none;
+  }
+
+  .post-title {
+    color: var(--ny-color-text);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: color 0.15s ease;
+  }
+
+  .post-item:hover .post-title {
+    color: var(--ny-color-outline);
+    text-decoration: underline;
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--ny-color-text-subtle);
+  }
+</style>

@@ -1,65 +1,557 @@
 ---
-import HeadBase from "./head-base.astro";
-import Header from "./header.astro";
-
-import logo from "../assets/images/favicon.jpg"
+import HeadBase from './head-base.astro';
+import LeftSidebar from './left-sidebar.astro';
+import RightSidebar from './right-sidebar.astro';
+import '../styles/global.css';
 
 interface Props {
-    title: string;
+  title?: string;
+  isHome?: boolean;
+  withLeftSidebar?: boolean;
+  withRightSidebar?: boolean;
+  breadcrumbs?: { text: string; href: string }[];
 }
+
+const {
+  title,
+  isHome = false,
+  withLeftSidebar = true,
+  withRightSidebar = false,
+  breadcrumbs = [{ text: 'Home', href: '/' }],
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="zh-Hans">
-    <head>
-        <HeadBase title={Astro.props.title} />
-        <slot name="head" />
-    </head>
-    <body>
-        <Header favicon={logo} />
+<html lang="en">
+  <head>
+    <HeadBase title={title} isHome={isHome} />
+    <slot name="head" />
+  </head>
+  <body>
+    <!-- Mobile Sticky Header -->
+    <header class="mobile-sticky-header">
+      <nav class="breadcrumbs">
+        {
+          breadcrumbs.map((crumb, idx) => (
+            <Fragment key={crumb.href}>
+              <a href={crumb.href}>{crumb.text}</a>
+              {idx < breadcrumbs.length && ' > '}
+            </Fragment>
+          ))
+        }
+      </nav>
+      <div class="header-actions">
+        {
+          withLeftSidebar && (
+            <button
+              class="header-action-btn"
+              id="open-widgets-btn"
+              aria-label="Open Widgets"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4H4zm6 6h4v4h-4zm6 0h4v4h-4z" />
+              </svg>
+            </button>
+          )
+        }
+        {
+          withRightSidebar && (
+            <button
+              class="header-action-btn"
+              id="open-context-btn"
+              aria-label="Open Page Widgets"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+              </svg>
+            </button>
+          )
+        }
+      </div>
+    </header>
+
+    <div
+      class={`layout-container ${!withLeftSidebar ? 'without-left-sidebar' : ''} ${withRightSidebar ? 'with-right-sidebar' : ''}`}
+    >
+      {
+        withLeftSidebar && (
+          <LeftSidebar>
+            <slot name="left-header" slot="header" />
+            <slot name="left" />
+          </LeftSidebar>
+        )
+      }
+
+      <!-- Main Region -->
+      <main class="main-region">
+        <nav class="breadcrumbs">
+          {
+            breadcrumbs.map((crumb, idx) => (
+              <Fragment key={crumb.href}>
+                <a href={crumb.href}>{crumb.text}</a>
+                {idx < breadcrumbs.length && ' > '}
+              </Fragment>
+            ))
+          }
+        </nav>
+
         <slot />
-    </body>
+
+        <!-- Mobile Footer (Shown in normal flow only on mobile) -->
+        <footer class="mobile-footer">
+          <p>Copyright (C) 2026 Kani Nayuta. All rights reserved.</p>
+          <p>
+            Powered by <a href="#">Nayuta</a>. Designed by <a href="#"
+              >Leo Jia</a
+            >.
+          </p>
+        </footer>
+      </main>
+
+      {
+        withRightSidebar && (
+          <RightSidebar>
+            <slot name="right" />
+          </RightSidebar>
+        )
+      }
+    </div>
+
+    <!-- Mobile Drawer Elements -->
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+    <!-- Left Drawer (Widgets) -->
+    {
+      withLeftSidebar && (
+        <div class="drawer" id="widgets-drawer">
+          <button class="drawer-close" id="close-widgets-btn">
+            [Close]
+          </button>
+          <div style="margin-top: 20px;">
+            <slot name="left" />
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Right Drawer (Context) -->
+    {
+      withRightSidebar && (
+        <div class="drawer drawer-right" id="context-drawer">
+          <button class="drawer-close" id="close-context-btn">
+            [Close]
+          </button>
+          <div style="margin-top: 20px;">
+            <RightSidebar drawer>
+              <slot name="right" />
+            </RightSidebar>
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Pure JS for drawer transitions (Progressive Enhancement) -->
+    <script>
+      function setupDrawers() {
+        const openBtn = document.getElementById('open-widgets-btn');
+        const closeBtn = document.getElementById('close-widgets-btn');
+        const openContextBtn = document.getElementById('open-context-btn');
+        const closeContextBtn = document.getElementById('close-context-btn');
+
+        const widgetsDrawer = document.getElementById('widgets-drawer');
+        const contextDrawer = document.getElementById('context-drawer');
+        const backdrop = document.getElementById('drawer-backdrop');
+
+        function toggleWidgetsDrawer(open: boolean) {
+          if (!widgetsDrawer || !backdrop) return;
+          if (open) {
+            widgetsDrawer.classList.add('open');
+            backdrop.classList.add('open');
+          } else {
+            widgetsDrawer.classList.remove('open');
+            backdrop.classList.remove('open');
+          }
+        }
+
+        function toggleContextDrawer(open: boolean) {
+          if (!contextDrawer || !backdrop) return;
+          if (open) {
+            contextDrawer.classList.add('open');
+            backdrop.classList.add('open');
+          } else {
+            contextDrawer.classList.remove('open');
+            backdrop.classList.remove('open');
+          }
+        }
+
+        function closeAll() {
+          toggleWidgetsDrawer(false);
+          toggleContextDrawer(false);
+        }
+
+        if (openBtn) {
+          openBtn.addEventListener('click', () => {
+            closeAll();
+            toggleWidgetsDrawer(true);
+          });
+        }
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => toggleWidgetsDrawer(false));
+        }
+
+        if (openContextBtn) {
+          openContextBtn.addEventListener('click', () => {
+            closeAll();
+            toggleContextDrawer(true);
+          });
+        }
+        if (closeContextBtn) {
+          closeContextBtn.addEventListener('click', () =>
+            toggleContextDrawer(false),
+          );
+        }
+
+        if (backdrop) {
+          backdrop.addEventListener('click', closeAll);
+        }
+
+        // Close on Escape key
+        const escHandler = (e: KeyboardEvent) => {
+          if (e.key === 'Escape') {
+            closeAll();
+          }
+        };
+        document.removeEventListener('keydown', escHandler);
+        document.addEventListener('keydown', escHandler);
+      }
+
+      setupDrawers();
+      // Support Astro View Transitions if swap occurs
+      document.addEventListener('astro:after-swap', setupDrawers);
+    </script>
+  </body>
 </html>
 
-<style is:global>
-    * {
-        margin: 0;
-        padding: 0;
-    }
-</style>
-
 <style>
-    html,
-    body {
-        width: 100%;
-        min-height: 100vh;
-        min-height: 100dvh;
-        padding: 0;
-        margin: 0;
+  .layout-container {
+    display: grid;
+    grid-template-columns: var(--ny-layout-left-width) minmax(0, 1fr);
+    gap: var(--ny-layout-column-gap);
+    max-width: calc(
+      var(--ny-layout-page-max-width) + var(--ny-layout-column-gap) + 2 *
+        var(--ny-layout-outer-padding-inline)
+    );
+    margin: 0 auto;
+    padding: var(--ny-layout-outer-padding-block)
+      var(--ny-layout-outer-padding-inline);
+    min-height: 100vh;
+  }
+
+  .layout-container.without-left-sidebar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .layout-container.with-right-sidebar {
+    grid-template-columns: var(--ny-layout-left-width) minmax(0, 1fr) var(
+        --ny-layout-right-width
+      );
+    max-width: calc(
+      var(--ny-layout-page-max-width) + 2 * var(--ny-layout-column-gap) + 2 *
+        var(--ny-layout-outer-padding-inline)
+    );
+  }
+
+  .layout-container.without-left-sidebar.with-right-sidebar {
+    grid-template-columns: minmax(0, 1fr) var(--ny-layout-right-width);
+  }
+
+  :global(.left-region) {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: sticky;
+    top: var(--ny-layout-outer-padding-block);
+    max-height: calc(100vh - 2 * var(--ny-layout-outer-padding-block));
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ny-color-border) transparent;
+    padding-right: 6px;
+  }
+
+  :global(.left-region::-webkit-scrollbar) {
+    width: 4px;
+  }
+
+  :global(.left-region::-webkit-scrollbar-track) {
+    background: transparent;
+  }
+
+  :global(.left-region::-webkit-scrollbar-thumb) {
+    background: var(--ny-color-border);
+    border-radius: var(--ny-radius-xs);
+  }
+
+  :global(.left-region::-webkit-scrollbar-thumb:hover) {
+    background: var(--ny-color-outline);
+  }
+
+  :global(.left-footer) {
+    margin-top: auto;
+    font-size: 10px;
+    color: var(--ny-color-text-subtle);
+    line-height: 1.6;
+    border-top: 1px solid var(--ny-color-border);
+    padding-top: 16px;
+  }
+
+  :global(.left-footer a),
+  .mobile-footer a {
+    color: var(--ny-color-text-muted);
+    text-decoration: none;
+  }
+
+  :global(.left-footer a:hover),
+  .mobile-footer a:hover {
+    color: var(--ny-color-outline);
+    text-decoration: underline;
+  }
+
+  .main-region {
+    max-width: 1670px;
+    width: 100%;
+  }
+
+  .layout-container.with-right-sidebar .main-region {
+    max-width: 1470px;
+  }
+
+  .breadcrumbs {
+    font-size: 11px;
+    color: var(--ny-color-text-subtle);
+    margin-bottom: 24px;
+  }
+
+  .breadcrumbs a {
+    color: var(--ny-color-text-subtle);
+    text-decoration: none;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--ny-color-outline);
+  }
+
+  :global(.right-region) {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: fit-content;
+    position: sticky;
+    top: var(--ny-layout-outer-padding-block);
+  }
+
+  .mobile-sticky-header {
+    display: none;
+  }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: min(300px, calc(100vw - 32px));
+    background-color: var(--ny-color-surface);
+    border-right: 1px solid var(--ny-color-border);
+    padding: 24px;
+    box-shadow: 10px 0 30px var(--ny-color-shadow);
+    z-index: 2000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+  }
+
+  .drawer-right {
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--ny-color-border);
+    transform: translateX(100%);
+  }
+
+  .drawer.open {
+    transform: translateX(0);
+  }
+
+  .drawer-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(3, 13, 22, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 1500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .drawer-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .drawer-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--ny-color-text-muted);
+    font-family: var(--ny-font-ui);
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .drawer-close + div {
+    margin-top: 44px !important;
+  }
+
+  .drawer-close:hover {
+    color: var(--ny-color-outline);
+  }
+
+  @media (max-width: 1120px) {
+    .layout-container.with-right-sidebar {
+      grid-template-columns: var(--ny-layout-left-width) minmax(0, 1fr);
     }
 
-    body {
-        box-sizing: border-box;
-        max-width: 1920px;
-        padding: 60px 30px;
-        margin: auto;
-        display: flex;
-        gap: 10px;
-
-        // TODO: Remove these
-        background-color: #faf8f0;
-        color: #120e01;
-        font-family:
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            "Open Sans",
-            "Helvetica Neue",
-            sans-serif;
+    .layout-container.without-left-sidebar.with-right-sidebar {
+      grid-template-columns: minmax(0, 1fr);
     }
+
+    .layout-container.with-right-sidebar .main-region {
+      max-width: 1670px;
+    }
+
+    :global(.right-region) {
+      display: none;
+    }
+
+    :global(.left-region) {
+      top: calc(48px + 20px);
+      max-height: calc(100vh - 48px - 40px);
+    }
+
+    .mobile-sticky-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background-color: rgba(3, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--ny-color-border);
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    .mobile-sticky-header .breadcrumbs {
+      margin-bottom: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .header-action-btn {
+      background: none;
+      border: 1px solid var(--ny-color-border);
+      border-radius: var(--ny-radius-sm);
+      color: var(--ny-color-text-muted);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .header-action-btn:hover {
+      color: var(--ny-color-outline);
+      border-color: var(--ny-color-outline);
+      background-color: var(--ny-color-surface-container);
+    }
+
+    .header-action-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    .main-region .breadcrumbs {
+      display: none;
+    }
+
+    #open-widgets-btn {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .layout-container {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 24px 20px;
+      row-gap: 24px;
+      align-content: start;
+    }
+
+    .layout-container.with-right-sidebar,
+    .layout-container.without-left-sidebar,
+    .layout-container.without-left-sidebar.with-right-sidebar {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    :global(.left-region) {
+      position: static;
+      top: auto;
+      max-height: none;
+      overflow-y: visible;
+      padding-right: 0;
+      gap: 0;
+    }
+
+    :global(.left-region .left-sidebar-content),
+    :global(.left-region .left-footer) {
+      display: none;
+    }
+
+    :global(.left-region .profile-card) {
+      border-bottom: 1px solid var(--ny-color-border);
+      padding-bottom: 20px;
+    }
+
+    .mobile-footer {
+      display: block;
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid var(--ny-color-border);
+      font-size: 10px;
+      color: var(--ny-color-text-subtle);
+      line-height: 1.6;
+    }
+
+    #open-widgets-btn {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-footer {
+      display: none;
+    }
+  }
 </style>

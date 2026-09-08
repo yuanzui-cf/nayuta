@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Typography & Kitchen Sink Test - Nayuta UI</title>
+        <link rel="stylesheet" href="../assets/styles/style.css" />
+    </head>
+    <body>
+        <!-- Mobile Sticky Header -->
+        <header class="mobile-sticky-header">
+            <nav class="breadcrumbs">
+                <a href="/">Home</a> &gt; <a href="/post.html">Posts</a> &gt;
+            </nav>
+            <div class="header-actions">
+                <button
+                    class="header-action-btn"
+                    id="open-widgets-btn"
+                    aria-label="Open Widgets"
+                >
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"
+                        />
+                    </svg>
+                </button>
+                <button
+                    class="header-action-btn"
+                    id="open-context-btn"
+                    aria-label="Open Page Widgets"
+                >
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
+                        />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="layout-container with-right-sidebar">
+            <!-- Left Region (Sidebar) -->
+            <aside class="left-region" id="left-sidebar">
+                <div class="profile-card">
+                    <img
+                        class="avatar"
+                        src="../assets/images/avatar.png"
+                        alt="Leo Jia Avatar"
+                    />
+                    <div class="profile-info">
+                        <h2 class="profile-name">Leo Jia</h2>
+                        <div class="profile-title">
+                            🏫 Undergraduate Student | 🤷‍♂️ Aspiring Full Stack
+                            Engineer
+                        </div>
+                    </div>
+
+                    <div class="social-buttons">
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            class="btn"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"
+                                />
+                            </svg>
+                            Github
+                        </a>
+                        <a href="/post.html" class="btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
+                                />
+                            </svg>
+                            Blog
+                        </a>
+                        <a href="/friend.html" class="btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+                                />
+                            </svg>
+                            Friends
+                        </a>
+                        <a
+                            href="https://t.me"
+                            target="_blank"
+                            class="btn btn-icon-only"
+                            aria-label="Telegram"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M9.78 18.65l.28-4.28 7.76-7.01c.34-.3-.07-.47-.52-.18L7.79 12.25l-4.15-1.3c-.9-.28-.92-.9.19-1.34l16.2-6.25c.75-.28 1.4.17 1.15 1.25l-2.75 12.97c-.2.92-.75 1.15-1.52.72l-4.19-3.08-2.02 1.95c-.22.22-.41.41-.84.41z"
+                                />
+                            </svg>
+                        </a>
+                        <a
+                            href="mailto:leo@example.com"
+                            class="btn btn-icon-only"
+                            aria-label="Email"
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Posts Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Recent Posts</span>
+                        <a href="/post.html">More ></a>
+                    </div>
+                    <div class="post-list">
+                        <a
+                            href="/posts/why-i-choose-to-use-astro.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Why I choose to use Astro?</span
+                            >
+                            <div class="post-meta">
+                                <span>2026-11-11</span>
+                                <span>1k views</span>
+                            </div>
+                        </a>
+                        <a
+                            href="/posts/how-easy-can-rust-be.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >How easy can Rust be?</span
+                            >
+                            <div class="post-meta">
+                                <span>2026-11-01</span>
+                                <span>11.4k views</span>
+                            </div>
+                        </a>
+                        <a
+                            href="/posts/java-is-a-piece-of-shit.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Java is a piece of SHIT</span
+                            >
+                            <div class="post-meta">
+                                <span>2025-12-12</span>
+                                <span>193k views</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Website Status Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Website Status</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Posts</span>
+                            <span class="status-value">25</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Running</span>
+                            <span class="status-value">1024 days</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Visitor</span>
+                            <span class="status-value">313</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Views</span>
+                            <span class="status-value">12.3k</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Last Updated</span>
+                            <span class="status-value">2026-06-03</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Footer -->
+                <footer class="left-footer">
+                    <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
+                    <p>
+                        Powered by <a href="#">Litepage</a>. Designed by
+                        <a href="#">Leo Jia</a>.
+                    </p>
+                </footer>
+            </aside>
+
+            <!-- Main Region -->
+            <main class="main-region">
+                <nav class="breadcrumbs">
+                    <a href="/">Home</a> &gt;
+                    <a href="/post.html">Posts</a> &gt;
+                </nav>
+
+                <article class="prose">
+                    <h1 class="page-title">Typography & Kitchen Sink Test</h1>
+                    <p
+                        style="
+                            color: var(--ny-color-text-subtle);
+                            margin-bottom: 20px;
+                        "
+                    >
+                        Published: 2026-06-03 &nbsp;•&nbsp; 120 views
+                        &nbsp;•&nbsp; Reading Time: 10 mins
+                    </p>
+
+                    <p>
+                        This page serves as a visual verification test ("kitchen
+                        sink") demonstrating how various common article
+                        typography elements render under the
+                        <strong>Nayuta UI</strong> theme system. All elements
+                        below mimic native Markdown output structures.
+                    </p>
+
+                    <hr />
+
+                    <h2>Heading Levels (H2 to H6)</h2>
+                    <p>
+                        This is a paragraph preceding the H3 heading below.
+                        Heading levels establish hierarchy and reading flow.
+                    </p>
+
+                    <h3>Heading Level 3</h3>
+                    <p>
+                        This is a paragraph demonstrating font hierarchy. We use
+                        a monospace typeface stack globally to preserve a clean
+                        developer-oriented visual style.
+                    </p>
+
+                    <h4>Heading Level 4</h4>
+                    <p>
+                        A smaller sub-heading, ideal for minor structural units
+                        or definitions inside sections.
+                    </p>
+
+                    <h5>Heading Level 5</h5>
+                    <p>
+                        Rarely used, but styled appropriately to maintain
+                        logical hierarchy without overlapping neighboring
+                        paragraphs.
+                    </p>
+
+                    <h6>Heading Level 6</h6>
+                    <p>
+                        The smallest available heading level, styled with muted
+                        uppercase text for metadata or visual accents.
+                    </p>
+
+                    <h2>Standard Lists</h2>
+
+                    <h3>Unordered List (Square Bullets)</h3>
+                    <ul>
+                        <li>First item in the list</li>
+                        <li>
+                            Second item in the list, showing word-wrapping
+                            behavior when there is a significant amount of text.
+                            Notice how the bullet aligns cleanly with the text.
+                        </li>
+                        <li>
+                            Third item with a nested list:
+                            <ul>
+                                <li>Nested list item level 1</li>
+                                <li>
+                                    Another nested list item
+                                    <ul>
+                                        <li>Double nested list item level 2</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Final item in the unordered list</li>
+                    </ul>
+
+                    <h3>Ordered List (Decimals)</h3>
+                    <ol>
+                        <li>
+                            Ensure layout-container supports CSS grid correctly
+                        </li>
+                        <li>Implement responsive navigation breakpoints</li>
+                        <li>
+                            Deliver static files through zero-dependency bun
+                            server:
+                            <ol>
+                                <li>Verify index.html page mapping</li>
+                                <li>Verify posts/ subfolder routes</li>
+                            </ol>
+                        </li>
+                        <li>
+                            Confirm pixel perfection in mobile device simulators
+                        </li>
+                    </ol>
+
+                    <h3>Task Lists (Checkboxes)</h3>
+                    <ul>
+                        <li class="task-list-item">
+                            <input type="checkbox" checked disabled /> Finish
+                            implementing the responsive sticky mobile header
+                        </li>
+                        <li class="task-list-item">
+                            <input type="checkbox" checked disabled /> Resolve
+                            CSS Grid column layout overflow bugs
+                        </li>
+                        <li class="task-list-item">
+                            <input type="checkbox" disabled /> Port Nayuta UI to
+                            official Astro component package
+                        </li>
+                        <li class="task-list-item">
+                            <input type="checkbox" disabled /> Build automated
+                            testing suite for light/dark scheme seeds
+                        </li>
+                    </ul>
+
+                    <h2>Blockquotes & Callouts</h2>
+
+                    <h3>Standard Blockquotes</h3>
+                    <p>
+                        Blockquotes are used to highlight external quotes or
+                        citations:
+                    </p>
+                    <blockquote>
+                        “Simplicity is the ultimate sophistication.” — Leonardo
+                        da Vinci. Monospace typography provides a very clean
+                        container structure to emphasize quotes.
+                        <blockquote>
+                            Nested blockquotes are also supported. This helps
+                            when citing conversations, comment threads, or email
+                            chains.
+                        </blockquote>
+                    </blockquote>
+
+                    <h3>GitHub-Style Alerts / Callouts</h3>
+
+                    <div class="callout callout-note">
+                        <div class="callout-title">📝 Note</div>
+                        <p>
+                            This is a standard informational note. Use this for
+                            general background context, guidelines, or helpful
+                            explanations.
+                        </p>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-title">💡 Tip</div>
+                        <p>
+                            This is a performance tip. We recommend compiling
+                            color schemes at build-time to avoid any flash of
+                            unstyled content (FOUC).
+                        </p>
+                    </div>
+
+                    <div class="callout callout-important">
+                        <div class="callout-title">⚠️ Important</div>
+                        <p>
+                            Crucial requirement! Make sure any grid-container
+                            column width on mobile uses
+                            <code>minmax(0, 1fr)</code> rather than
+                            <code>1fr</code> to contain code block widths.
+                        </p>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚡ Warning</div>
+                        <p>
+                            Warning details. Using arbitrary runtime script
+                            injections will bypass security sandboxing and fail
+                            review checks.
+                        </p>
+                    </div>
+
+                    <div class="callout callout-caution">
+                        <div class="callout-title">🛑 Caution</div>
+                        <p>
+                            High-risk warning! Deleting bun.lock or package.json
+                            files may break local task runner pipelines.
+                        </p>
+                    </div>
+
+                    <h2>Media & Figures</h2>
+                    <p>
+                        Images should look beautiful, centered, with fine
+                        borders and consistent corner radii:
+                    </p>
+
+                    <figure>
+                        <img
+                            src="../assets/images/banner.png"
+                            alt="Nayuta abstract landscape banner"
+                        />
+                        <figcaption>
+                            Figure 1: Minimalist geometric landscape in dark
+                            purple tones, generated to verify figure margin and
+                            figcaption alignment.
+                        </figcaption>
+                    </figure>
+
+                    <h2>Responsive Comparison Tables</h2>
+                    <p>
+                        Below is a secondary table demonstrating the scrolling
+                        wrapper structure under mobile viewports:
+                    </p>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Framework</th>
+                                    <th>Rendering Style</th>
+                                    <th>JS Weight</th>
+                                    <th>Use Case</th>
+                                    <th>DX Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Astro</strong></td>
+                                    <td>Islands Architecture</td>
+                                    <td>Zero by default</td>
+                                    <td>Blogs, Portfolios, Docs</td>
+                                    <td>9.5 / 10</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Next.js</strong></td>
+                                    <td>React Server Components</td>
+                                    <td>Heavy (React Hydration)</td>
+                                    <td>Web Applications, Dashboards</td>
+                                    <td>8.0 / 10</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>SvelteKit</strong></td>
+                                    <td>Compiler-compiled components</td>
+                                    <td>Lightweight SPA</td>
+                                    <td>Interactive Tools, SaaS MVP</td>
+                                    <td>9.0 / 10</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Vite Static</strong></td>
+                                    <td>Vanilla Client-side JS</td>
+                                    <td>Custom size</td>
+                                    <td>Technical Prototypes, Mockups</td>
+                                    <td>8.5 / 10</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>Code Blocks & Inline Formatting</h2>
+
+                    <h3>Inline Elements</h3>
+                    <p>
+                        We support standard inline decorations. You can
+                        highlight terms using the
+                        <code>&lt;code&gt;</code> element like
+                        <code>const x = 42</code>. Text can be
+                        <strong>bolded</strong>, <em>italicized</em>, or
+                        <del>struck through</del>. We also style
+                        <mark>marked highlight text</mark> and subscript
+                        (H<sub>2</sub>O) or superscript (x<sup>2</sup>).
+                    </p>
+
+                    <p>
+                        Keyboard combinations can be displayed using the kbd
+                        tag: press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> +
+                        <kbd>R</kbd> to perform a hard refresh, or tap
+                        <kbd>Esc</kbd> to dismiss drawer widgets.
+                    </p>
+
+                    <h3>Description List (dl, dt, dd)</h3>
+                    <dl>
+                        <dt>Term 1: CSS Custom Properties</dt>
+                        <dd>
+                            Variables defined by CSS authors containing specific
+                            values to be reused throughout a document. e.g.,
+                            <code>--ny-color-bg</code>.
+                        </dd>
+                        <dt>Term 2: JIT Compilation</dt>
+                        <dd>
+                            Just-In-Time compilation, a method of improving the
+                            execution performance of bytecode by compiling it
+                            into native machine code at runtime.
+                        </dd>
+                    </dl>
+
+                    <h3>Syntax Highlighting Mockup</h3>
+                    <pre><code>// Simple Rust function demonstrating code formatting
+fn calculate_fibonacci(n: u32) -> u64 {
+    let mut a = 0;
+    let mut b = 1;
+    for _ in 0..n {
+        let temp = a + b;
+        a = b;
+        b = temp;
+    }
+    a
+}
+
+fn main() {
+    let result = calculate_fibonacci(10);
+    println!("Fibonacci(10) is {}", result);
+}</code></pre>
+                </article>
+
+                <!-- Mobile Footer -->
+                <footer class="mobile-footer">
+                    <p>Copyright (C) 2025 Leo Jia. All rights reserved.</p>
+                    <p>
+                        Powered by <a href="#">Litepage</a>. Designed by
+                        <a href="#">Leo Jia</a>.
+                    </p>
+                </footer>
+            </main>
+
+            <!-- Right Region (Sidebar) -->
+            <aside class="right-region" id="right-sidebar">
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Page Navigator</span>
+                    </div>
+                    <div class="widget-content-simple">
+                        <div>1. Headings</div>
+                        <div>2. List Types</div>
+                        <div>3. Callouts</div>
+                        <div>4. Figures</div>
+                        <div>5. Tables</div>
+                        <div>6. Inline Text</div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Mobile Widget Drawer (Left Drawer) -->
+        <div class="drawer-backdrop" id="drawer-backdrop"></div>
+        <div class="drawer" id="widgets-drawer">
+            <button class="drawer-close" id="close-widgets-btn">[Close]</button>
+            <div style="display: flex; flex-direction: column; gap: 28px">
+                <!-- Copied content for the drawer -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Recent Posts</span>
+                        <a href="/post.html">More ></a>
+                    </div>
+                    <div class="post-list">
+                        <a
+                            href="/posts/why-i-choose-to-use-astro.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Why I choose to use Astro?</span
+                            >
+                            <div class="post-meta">
+                                <span>2026-11-11</span>
+                                <span>1k views</span>
+                            </div>
+                        </a>
+                        <a
+                            href="/posts/how-easy-can-rust-be.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >How easy can Rust be?</span
+                            >
+                            <div class="post-meta">
+                                <span>2026-11-01</span>
+                                <span>11.4k views</span>
+                            </div>
+                        </a>
+                        <a
+                            href="/posts/java-is-a-piece-of-shit.html"
+                            class="post-item"
+                        >
+                            <span class="post-title"
+                                >Java is a piece of SHIT</span
+                            >
+                            <div class="post-meta">
+                                <span>2025-12-12</span>
+                                <span>193k views</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Website Status</span>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-label">Posts</span>
+                            <span class="status-value">25</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Running</span>
+                            <span class="status-value">1024 days</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Visitor</span>
+                            <span class="status-value">313</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Views</span>
+                            <span class="status-value">12.3k</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Last Updated</span>
+                            <span class="status-value">2026-06-03</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Context Drawer (Right Drawer) -->
+        <div class="drawer drawer-right" id="context-drawer">
+            <button class="drawer-close" id="close-context-btn">[Close]</button>
+            <div style="display: flex; flex-direction: column; gap: 28px">
+                <div class="widget">
+                    <div class="widget-header">
+                        <span>Page Navigator</span>
+                    </div>
+                    <div class="widget-content-simple">
+                        <div>1. Headings</div>
+                        <div>2. List Types</div>
+                        <div>3. Callouts</div>
+                        <div>4. Figures</div>
+                        <div>5. Tables</div>
+                        <div>6. Inline Text</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const openBtn = document.getElementById("open-widgets-btn");
+            const closeBtn = document.getElementById("close-widgets-btn");
+            const openContextBtn = document.getElementById("open-context-btn");
+            const closeContextBtn =
+                document.getElementById("close-context-btn");
+
+            const widgetsDrawer = document.getElementById("widgets-drawer");
+            const contextDrawer = document.getElementById("context-drawer");
+            const backdrop = document.getElementById("drawer-backdrop");
+
+            function toggleWidgetsDrawer(open) {
+                if (open) {
+                    widgetsDrawer.classList.add("open");
+                    backdrop.classList.add("open");
+                } else {
+                    widgetsDrawer.classList.remove("open");
+                    backdrop.classList.remove("open");
+                }
+            }
+
+            function toggleContextDrawer(open) {
+                if (open) {
+                    contextDrawer.classList.add("open");
+                    backdrop.classList.add("open");
+                } else {
+                    contextDrawer.classList.remove("open");
+                    backdrop.classList.remove("open");
+                }
+            }
+
+            function closeAll() {
+                toggleWidgetsDrawer(false);
+                toggleContextDrawer(false);
+            }
+
+            openBtn.addEventListener("click", () => {
+                closeAll();
+                toggleWidgetsDrawer(true);
+            });
+            closeBtn.addEventListener("click", () =>
+                toggleWidgetsDrawer(false),
+            );
+
+            openContextBtn.addEventListener("click", () => {
+                closeAll();
+                toggleContextDrawer(true);
+            });
+            closeContextBtn.addEventListener("click", () =>
+                toggleContextDrawer(false),
+            );
+
+            backdrop.addEventListener("click", closeAll);
+
+            // Handle escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    closeAll();
+                }
+            });
+        </script>
+    </body>
+</html>

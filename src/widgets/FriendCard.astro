@@ -1,0 +1,260 @@
+---
+import Card from '../components/Card.astro';
+
+interface Props {
+  name: string;
+  href: string;
+  site?: string;
+  desc?: string;
+  avatar?: string;
+  logo?: string;
+  avatarText?: string;
+  avatarBg?: string;
+  avatarColor?: string;
+  tag?: string;
+  tags?: string[];
+}
+
+const {
+  name,
+  href,
+  avatar,
+  logo,
+  avatarText = name ? name.trim().slice(0, 1).toUpperCase() : '?',
+  avatarBg = 'rgba(0, 153, 204, 0.15)',
+  avatarColor = 'var(--ny-color-outline)',
+  tag,
+  tags = tag ? [tag] : [],
+} = Astro.props;
+
+const imageSrc = avatar || logo;
+
+let site = Astro.props.site;
+if (!site && href) {
+  try {
+    site = new URL(href).hostname;
+  } catch {
+    site = href.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  }
+}
+
+const desc = Astro.props.desc || '';
+---
+
+<Card href={href} target="_blank" class="friend-card">
+  <div class="friend-header">
+    <div class="avatar-wrapper">
+      {
+        imageSrc ? (
+          <img src={imageSrc} alt={name} class="friend-avatar" loading="lazy" />
+        ) : (
+          <div
+            class="friend-avatar friend-avatar-fallback"
+            style={`background-color: ${avatarBg}; color: ${avatarColor};`}
+          >
+            {avatarText}
+          </div>
+        )
+      }
+    </div>
+    <div class="friend-info">
+      <div class="name-row">
+        <span class="friend-name">{name}</span>
+        <svg class="external-icon" viewBox="0 0 24 24" width="12" height="12">
+          <path
+            d="M5 19L19 5M19 5H9M19 5V15"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"></path>
+        </svg>
+      </div>
+      {site && <span class="friend-site">{site}</span>}
+    </div>
+  </div>
+  {
+    desc && (
+      <p class="friend-desc" title={desc}>
+        {desc}
+      </p>
+    )
+  }
+  {
+    tags.length > 0 && (
+      <div class="friend-tags">
+        {tags.map((t) => (
+          <span class="friend-tag">{t}</span>
+        ))}
+      </div>
+    )
+  }
+</Card>
+
+<style>
+  :global(.friend-card) {
+    background-color: var(--ny-color-surface);
+    border: 1px solid var(--ny-color-border);
+    border-radius: var(--ny-radius-md);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none !important;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.friend-card::before) {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--ny-color-outline),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  :global(.friend-card:hover) {
+    transform: translateY(-3px);
+    border-color: var(--ny-color-outline);
+    background-color: var(--ny-color-surface-elevated);
+    box-shadow:
+      0 8px 24px var(--ny-color-shadow),
+      0 0 0 1px rgba(0, 191, 255, 0.15);
+  }
+
+  :global(.friend-card:hover::before) {
+    opacity: 1;
+  }
+
+  .friend-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar-wrapper {
+    flex-shrink: 0;
+  }
+
+  .friend-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--ny-radius-sm);
+    object-fit: cover;
+    border: 1px solid var(--ny-color-border);
+    background-color: var(--ny-color-surface-container);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
+    display: block;
+  }
+
+  :global(.friend-card:hover) .friend-avatar {
+    transform: scale(1.05);
+    border-color: var(--ny-color-outline);
+  }
+
+  .friend-avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--ny-font-ui);
+    user-select: none;
+  }
+
+  .friend-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .friend-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ny-color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s ease;
+  }
+
+  :global(.friend-card:hover) .friend-name {
+    color: var(--ny-color-outline);
+  }
+
+  .external-icon {
+    color: var(--ny-color-text-subtle);
+    opacity: 0.35;
+    transform: translate(-2px, 2px);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  :global(.friend-card:hover) .external-icon {
+    opacity: 1;
+    transform: translate(0, 0);
+    color: var(--ny-color-outline);
+  }
+
+  .friend-site {
+    font-size: 11px;
+    color: var(--ny-color-text-subtle);
+    font-family: var(--ny-font-code);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .friend-desc {
+    font-size: 12px;
+    color: var(--ny-color-text-muted);
+    line-height: 1.55;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 37px;
+  }
+
+  .friend-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  .friend-tag {
+    font-size: 10px;
+    font-family: var(--ny-font-code);
+    color: var(--ny-color-text-subtle);
+    background-color: var(--ny-color-surface-container);
+    border: 1px solid var(--ny-color-border);
+    padding: 1px 6px;
+    border-radius: var(--ny-radius-xs);
+  }
+</style>

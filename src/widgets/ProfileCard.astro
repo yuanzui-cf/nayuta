@@ -1,0 +1,78 @@
+---
+import avatarImg from '../assets/images/avatar.png';
+import Avatar from '../components/Avatar.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import config from '../config';
+
+const links = config.links ?? [];
+---
+
+<div class="profile-card">
+  <Avatar src={avatarImg.src} alt={`${config.author} Avatar`} />
+  <div class="profile-info">
+    <h2 class="profile-name">{config.author}</h2>
+    <div class="profile-title">
+      {config.description}
+    </div>
+  </div>
+
+  {
+    links.length > 0 && (
+      <div class="social-buttons">
+        {links.map((link) => {
+          const href = link.url || link.href || '#';
+          const isExternal =
+            href.startsWith('http://') || href.startsWith('https://');
+          const target = link.target ?? (isExternal ? '_blank' : undefined);
+          const iconOnly = link.iconOnly ?? !link.text;
+
+          return (
+            <Button
+              href={href}
+              target={target}
+              iconOnly={iconOnly}
+              ariaLabel={link.ariaLabel ?? link.text}
+            >
+              {link.icon && <Icon icon={link.icon} />}
+              {link.text && <span>{link.text}</span>}
+            </Button>
+          );
+        })}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .profile-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ny-color-text);
+  }
+
+  .profile-title {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ny-color-text-muted);
+  }
+
+  .social-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+</style>

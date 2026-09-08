@@ -1,14 +1,23 @@
 {
-  "name": "Nayuta",
+  "name": "nayuta-theme",
   "type": "module",
   "version": "0.0.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
-    "astro": "^5.16.15"
+    "@astrojs/mdx": "6.0.3",
+    "astro": "^6.4.4"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^6.0.3"
   }
 }

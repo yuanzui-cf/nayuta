@@ -1,0 +1,28 @@
+---
+import Tag from '../components/Tag.astro';
+import Widget from './Widget.astro';
+
+const tags = [
+  'Rust',
+  'Astro',
+  'WebComponents',
+  'TypeScript',
+  'Go',
+  'Loom',
+  'CSS Grid',
+];
+---
+
+<Widget title="Tags Cloud">
+  <div class="tag-cloud">
+    {tags.map((tag) => <Tag>{tag}</Tag>)}
+  </div>
+</Widget>
+
+<style>
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+</style>
