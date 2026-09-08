@@ -2,7 +2,7 @@
 import HeadBase from './head-base.astro';
 import LeftSidebar from './left-sidebar.astro';
 import RightSidebar from './right-sidebar.astro';
-import config from '../config';
+import SidebarFooter from './sidebar-footer.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -99,13 +99,7 @@ const {
         <slot />
 
         <!-- Mobile Footer (Shown in normal flow only on mobile) -->
-        <footer class="mobile-footer">
-          <p>Copyright (C) 2026 {config.title}. All rights reserved.</p>
-          <p>
-            Powered by <a href="https://github.com/yuanzui-cf/nayuta">Nayuta</a
-            >. Designed by <a href="https://yzcf.top">Leo Jia</a>.
-          </p>
-        </footer>
+        <SidebarFooter className="mobile-footer" />
       </main>
 
       {
@@ -305,13 +299,13 @@ const {
   }
 
   :global(.left-footer a),
-  .mobile-footer a {
+  :global(.mobile-footer a) {
     color: var(--ny-color-text-muted);
     text-decoration: none;
   }
 
   :global(.left-footer a:hover),
-  .mobile-footer a:hover {
+  :global(.mobile-footer a:hover) {
     color: var(--ny-color-outline);
     text-decoration: underline;
   }
@@ -533,7 +527,7 @@ const {
       padding-bottom: 20px;
     }
 
-    .mobile-footer {
+    :global(.mobile-footer) {
       display: block;
       margin-top: 40px;
       padding-top: 16px;
@@ -549,7 +543,7 @@ const {
   }
 
   @media (min-width: 769px) {
-    .mobile-footer {
+    :global(.mobile-footer) {
       display: none;
     }
   }
