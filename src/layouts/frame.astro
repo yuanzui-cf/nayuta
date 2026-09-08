@@ -2,6 +2,7 @@
 import HeadBase from './head-base.astro';
 import LeftSidebar from './left-sidebar.astro';
 import RightSidebar from './right-sidebar.astro';
+import config from '../config';
 import '../styles/global.css';
 
 interface Props {
@@ -99,7 +100,7 @@ const {
 
         <!-- Mobile Footer (Shown in normal flow only on mobile) -->
         <footer class="mobile-footer">
-          <p>Copyright (C) 2026 Kani Nayuta. All rights reserved.</p>
+          <p>Copyright (C) 2026 {config.title}. All rights reserved.</p>
           <p>
             Powered by <a href="#">Nayuta</a>. Designed by <a href="#"
               >Leo Jia</a

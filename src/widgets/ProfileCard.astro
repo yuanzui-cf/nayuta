@@ -1,5 +1,4 @@
 ---
-import avatarImg from '../assets/images/avatar.png';
 import Avatar from '../components/Avatar.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
@@ -9,7 +8,7 @@ const links = config.links ?? [];
 ---
 
 <div class="profile-card">
-  <Avatar src={avatarImg.src} alt={`${config.author} Avatar`} />
+  <Avatar src={config.avatar} alt={`${config.author} Avatar`} />
   <div class="profile-info">
     <h2 class="profile-name">{config.author}</h2>
     <div class="profile-title">
