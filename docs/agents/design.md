@@ -3,18 +3,17 @@
 This document describes the intended UI and architecture paradigm for `nayuta`.
 It is written as guidance for future agents working on the project.
 
-The concrete visual style and page examples live in `design/`. This document
-should describe architecture, boundaries, component categories, and expected
-behavior. It should not duplicate exact style values from the design files.
+This document describes architecture, boundaries, component categories, and
+expected behavior.
 
 ## Positioning
 
 `nayuta` is an Astro personal homepage and blog theme.
 
-The theme should provide a polished, responsive, reading-first foundation for
-personal homepages, blogs, notes, and adjacent content pages. It should combine
-Astro pages and layouts, reusable components, composed widgets, content styling,
-design tokens, and theme support into a coherent site experience.
+The theme provides a polished, responsive, reading-first foundation for
+personal homepages, blogs, notes, and adjacent content pages. It combines Astro
+pages and layouts, reusable components, composed widgets, templates, content
+styling, design tokens, and theme support into a coherent site experience.
 
 Short description:
 
@@ -22,34 +21,36 @@ Short description:
 > reading-first layouts, reusable UI components, composed profile/blog widgets,
 > semantic tokens, and accessible responsive surfaces.
 
-## Source of Truth for Visual Design
+## Source of Truth for Visual Design and Tokens
 
-The reference visual direction comes from the files under `design/`.
+The visual foundation and design token system are defined in:
 
-Agents should use `design/` to understand:
+- `src/styles/global.css`: Typography, spacing rhythm, border radii, and layout
+  geometry.
+- `src/styles/themes/*.css`: Modular color schemes providing semantic color
+  tokens.
+- Existing components in `src/components/*`, widgets in `src/widgets/*`, and
+  layouts in `src/layouts/*`: Reference implementations for UI density,
+  interactive states, and responsive behavior.
+
+Agents should use these styling and component definitions to understand:
 
 - Visual density and rhythm.
-- Typography direction.
+- Typography direction: Monospace aesthetic centered on JetBrains Mono and Fira
+  Code.
 - Layout behavior across desktop, narrow, and mobile viewports.
-- Button, input, card, prose, drawer, sidebar, and widget appearance.
-- Homepage and blog UI patterns that should be represented by components,
-  widgets, layouts, styles, or content conventions.
+- Control, card, callout, prose, drawer, sidebar, and widget appearance.
 
-This document should not copy concrete CSS values, exact colors, exact spacing,
-or exact breakpoints. Those details should be read from the design files when
-implementing or refining the theme.
-
-The reference typeface direction is JetBrains Mono. Fallback stacks may be used,
-but implementations should preserve the same compact monospace character unless
-the theme is configured otherwise.
+Concrete CSS values, colors, spacing, and breakpoints should use semantic
+tokens (`--ny-*`) rather than arbitrary ad-hoc inline styles.
 
 ## Design Goals
 
 - Build an Astro-first personal homepage and blog theme.
 - Prioritize reading and content consumption over dashboard density.
 - Keep the homepage, blog, notes, and adjacent content pages cohesive.
-- Preserve a clear separation between components, widgets, layouts, styles, and
-  content helpers.
+- Preserve a clear separation between components, widgets, layouts, templates,
+  styles, and content helpers.
 - Provide reusable base components for controls, surfaces, media, metadata, and
   rich prose.
 - Provide composed widgets for profile, navigation, recent content, links,
@@ -64,15 +65,18 @@ the theme is configured otherwise.
 
 ## Architecture Layers
 
-`nayuta` should keep the project organized by responsibility:
+`nayuta` organizes repository code by responsibility:
 
 ```text
 src/components/*
 src/widgets/*
 src/layouts/*
+src/templates/*
 src/styles/*
 src/content/*
 src/pages/*
+src/config.ts
+src/types/*
 ```
 
 Additional helper modules may exist when needed, but they should not blur these
@@ -86,48 +90,58 @@ A component should be simple enough that it does not need to own a whole page or
 content model. Components define shape, styling, accessibility behavior, slots,
 simple local state, token usage, and progressive enhancement hooks when needed.
 
-Examples:
+Current implemented components:
 
-- `Avatar`
-- `Button`
-- `IconButton`
-- `Input`
-- `Textarea`
-- `Card`
-- `Badge`
+- `Avatar`: User avatar display with consistent border and aspect ratio.
+- `Badge`: Small inline badge/pill for metadata.
+- `Button`: Versatile button supporting both `<button>` and `<a>` elements, with
+  icon-only support.
+- `Callout`: Styled admonition box supporting `note`, `tip`, `important`,
+  `warning`, and `caution`.
+- `Card`: Baseline card surface wrapper.
+- `Icon`: Polymorphic icon renderer supporting SVG, image, and Font Awesome
+  icons.
+- `Input`: Single-line text input control.
+- `Prose`: Typography container providing comfortable reading flow and Markdown
+  styling.
+- `TableContainer`: Horizontally scrollable wrapper for responsive tables.
+- `Tag`: Clickable or display tag chip.
+- `DynamicWidget`: Helper component that resolves widget names from frontmatter
+  or configuration to widget implementations.
+
+Planned / optional future components:
+
 - `Collapse`
 - `Mask`
-- `Prose`
+- `Textarea`
 - `CodeBlock`
-- `TableContainer`
-- `Callout`
-- `Tag` or `Chip`
 - `Media`
-
-Components may be implemented as Astro components, CSS modules or global style
-patterns, TypeScript helpers, or small client-side scripts when interaction
-requires it.
 
 ### Widgets
 
 Widgets are composed UI sections built from components, Astro components, HTML,
 and data.
 
-A widget may carry homepage or blog theme semantics. Widgets can combine
-multiple components, consume site configuration or content data, manage local
+A widget carries homepage or blog theme semantics. Widgets can combine multiple
+components, consume site configuration or content data, manage local
 interaction, and expose a higher-level interface for pages and layouts.
 
-Examples of widgets that may belong in `nayuta`:
+Current implemented widgets:
 
-- `UserProfileHeader`
-- `IdentitySummary` or `ProfileSummary`
-- `NavigationGroup`
-- `RecentPosts`
-- `RecentNotes`
-- `FriendLinks` or `LinkCards`
-- `SiteStatus`
-- `TableOfContents`
-- `RelatedLinks`
+- `ProfileCard`: Author identity, avatar, bio, and social/navigation link rows.
+- `RecentPosts`: Recent blog posts list with dates and reading time.
+- `FriendCard`: Friend link presentation card with avatar, name, description,
+  and site logo.
+- `WebsiteStatus`: Site operational status, uptime since date, and dynamic site
+  metrics.
+- `TableOfContents`: Article heading navigation hierarchy.
+- `Categories`: Category listing widget.
+- `TagCloud`: Aggregated tag cloud widget.
+- `SearchWidget`: Site search trigger / input widget.
+- `Widget`: Base card container wrapper with title header and content slot.
+
+Planned / optional interactive widgets:
+
 - `Dialog`
 - `Toast`
 - `Popover`
@@ -135,10 +149,10 @@ Examples of widgets that may belong in `nayuta`:
 - `Menu`
 - `Tabs`
 - `Tooltip`
+- `RelatedLinks`
 
-`link-card` is a widget-level pattern, not a primitive component. It can be
-built from an anchor element and a card component, so it should live with
-composed UI unless a smaller reusable primitive emerges.
+`FriendCard` is a widget-level pattern, built using card, avatar, badge, and
+tag primitives.
 
 ### Layouts
 
@@ -147,47 +161,82 @@ Layouts control page structure and responsive placement.
 Layout code belongs in `src/layouts/*`, not in `src/components/*` or
 `src/widgets/*`.
 
-Examples:
+Current layout modules:
 
-- Main reading layout.
-- Homepage layout.
-- Blog post layout.
-- Listing or archive layout.
-- Left, main, and right region placement.
-- Sidebar behavior.
-- Responsive relocation of side-region content.
-- Sticky narrow-viewport header behavior.
-- Drawer entry point placement for collapsed regions.
+- `frame.astro`: Root HTML shell providing document structure, responsive
+  three-column grid, narrow-viewport sticky header, mobile drawer surfaces, and
+  progressive enhancement drawer scripts.
+- `left-sidebar.astro`: Structural container for the left region dividing
+  content into `header`, `widgets`, and `footer`.
+- `right-sidebar.astro`: Structural container for the right contextual region.
+- `head-base.astro`: Shared `<head>` element including SEO meta tags, title
+  formatting, and theme CSS injection.
 
-A backdrop or overlay behind a sidebar or drawer can be a generic `Mask`
-component, but the sidebar and region placement behavior belongs to the layout
-layer.
+### Templates
+
+Templates provide full-page content presentations driven by content collections
+and frontmatter metadata.
+
+Template code belongs in `src/templates/*`.
+
+Current implemented templates:
+
+- `PageTemplate.astro`: Default template wrapping general prose pages within
+  the standard layout frame.
+- `FriendTemplate.astro`: Specialized page template organizing friend links
+  into structured categories, personal site showcase, and call-to-action
+  sections.
+
+Pages such as `src/pages/[...slug].astro` dynamically select and render
+templates according to the `template` attribute defined in the content
+collection entry.
 
 ### Styles and Tokens
 
-Global styles, reset rules, prose defaults, design tokens, theme variables, and
-color-scheme behavior belong in `src/styles/*` or another clearly named styling
-area.
+Global styles, reset rules, prose defaults, design tokens, and theme variables
+belong in `src/styles/*`.
 
-The theme should prefer semantic variables over hard-coded values in components
-and widgets. Component-level styles may derive from global semantic tokens when
-that keeps customization straightforward.
+- `src/styles/global.css`: Base resets, font declarations, typography tokens,
+  and structural layout measurements.
+- `src/styles/themes/*.css`: Modular theme stylesheets exposing `--ny-color-*`
+  tokens (e.g. `nayuta`, `nayuta-aqua`, `midnight-blue`, `oled-dark`,
+  `sakura-pink`).
+
+The theme prefers semantic variables over hard-coded values in components and
+widgets.
 
 ### Content
 
-Content schemas, frontmatter conventions, collection helpers, and content query
-helpers belong in `src/content/*` or another content-focused area.
+Content schemas, frontmatter conventions, collection loaders, and content query
+helpers belong in `src/content.config.ts` and `src/content/*`.
 
-Content-related code should make homepage and blog pages easy to assemble while
-keeping rendering logic out of primitive components.
+Current content collections:
+
+- `posts`: Markdown/MDX blog posts with title, publishDate, readingTime, cover,
+  and description.
+- `pages`: Markdown/MDX standalone pages supporting customizable templates,
+  breadcrumbs, widget slots, and structured friend metadata.
 
 ### Pages
 
 Astro routes belong in `src/pages/*`.
 
-Pages should compose layouts, widgets, content data, and components. They should
-avoid becoming the only place where reusable theme behavior exists; shared page
-patterns should move into layouts, widgets, styles, or content helpers.
+Pages compose layouts, widgets, content data, and components:
+
+- `src/pages/index.astro`: Homepage showing author profile, recent posts, site
+  status, and introductory bio.
+- `src/pages/posts/index.astro`: Post listing and archives.
+- `src/pages/posts/[slug].astro`: Individual post reader with table of contents
+  and cover display.
+- `src/pages/[...slug].astro`: Dynamic page router delegating to templates.
+
+### Configuration and Types
+
+Site-wide settings and TypeScript models:
+
+- `src/config.ts`: Central site configuration instance defining site title,
+  author, description, avatar, theme preset, and external links.
+- `src/types/*`: TypeScript type definitions (e.g. `config.ts`, `icon.ts`).
 
 ## Core Layout Model
 
@@ -199,14 +248,14 @@ The main page model is:
 
 `main` is required. `left` and `right` are optional layout regions around it.
 
-The layout is reading-first. The center region should preserve readable prose,
-stable spacing, predictable heading hierarchy, usable code blocks, responsive
-tables, and comfortable content rhythm. Side regions should support the reading
-experience; they should not become the primary content surface.
+The layout is reading-first. The center region preserves readable prose, stable
+spacing, predictable heading hierarchy, usable code blocks, responsive tables,
+and comfortable content rhythm. Side regions support the reading experience
+without overpowering the primary content surface.
 
-The left region commonly holds site-level identity, navigation, and supporting
-widgets. The right region commonly holds page-local contextual content such as a
-table of contents, metadata, related links, or reading tools.
+The left region holds site-level identity, navigation, and supporting widgets.
+The right region holds page-local contextual content such as a table of
+contents, metadata, related links, or reading tools.
 
 ## Left Region Structure
 
@@ -219,33 +268,29 @@ left
 └── footer
 ```
 
-These are layout roles, not fixed components.
+These are layout roles, not fixed components:
 
-`left.header` is the leading structural area of the left region. It may hold a
-user profile header, identity summary, site title, or introductory content.
+- `left.header`: Leading structural area holding user profile header, identity
+  summary, or introductory content.
+- `left.widgets`: Middle area for supporting widgets (navigation, recent posts,
+  website status, tags, search).
+- `left.footer`: Trailing structural area holding copyright, build metadata,
+  and footer credits.
 
-`left.widgets` is the middle area for optional supporting content. It may hold
-navigation, links, search entry points, recent content, controls, status, or
-other widgets.
+On mobile or narrow viewports, the layout preserves role separation:
 
-`left.footer` is the trailing structural area of the left region. It may hold
-copyright, secondary links, build metadata, theme controls, or other footer
-content.
-
-On mobile or narrow viewports, the layout should not simply move the entire left
-region into a drawer. It should preserve the role separation:
-
-- Leading identity/header content can remain near the start of the page.
+- Leading identity/header content remains near the start of the page.
 - Main content remains the primary reading flow.
-- Footer content can remain near the end of the page.
-- Supporting widgets can move into a collapsed surface.
+- Footer content moves to the end of the mobile document flow.
+- Supporting widgets move into a slide-out drawer accessible via the sticky
+  header.
 
 ## Main Region
 
 `main` is the primary content region.
 
-It should be usable for homepage content, articles, notes, listing pages,
-documentation-like pages, prose pages, forms, or other content surfaces.
+It is usable for homepage content, articles, notes, listing pages, documentation
+pages, prose pages, forms, or other content surfaces.
 
 Expected properties:
 
@@ -253,7 +298,7 @@ Expected properties:
 - Good default prose behavior.
 - Support for long headings, code blocks, tables, figures, media, and embedded
   components.
-- Compatibility with Astro pages, layouts, slots, Markdown, and MDX when used.
+- Compatibility with Astro pages, layouts, slots, Markdown, and MDX.
 - Clear content hierarchy and keyboard-readable structure.
 
 ## Right Region
@@ -267,30 +312,26 @@ Typical uses:
 - Related links.
 - Reading tools.
 - Contextual actions.
-- Secondary navigation.
 
-The right region should not contain content required to understand the page. On
-narrow screens it may collapse before the left region to preserve reading space.
+On medium/tablet viewports (<= 1120px), the right region collapses before the
+left region to preserve comfortable reading space.
 
 ## Narrow Viewport Header
 
-The design reference uses a sticky header on narrower viewports to keep
-navigation and collapsed-region entry points reachable.
+A sticky header is enabled on narrower viewports (<= 1120px) to keep navigation
+and collapsed-region entry points reachable.
 
-This header is a layout affordance. It may contain:
+This header contains:
 
-- Breadcrumbs or page location.
-- A trigger for collapsed left-region widgets.
-- A trigger for collapsed right-region widgets.
-- Compact theme or navigation actions.
-- Other compact layout-level actions supplied by the page or layout.
-
-The layout should allow this behavior without forcing every page to use the same
-breadcrumb or action content.
+- Breadcrumbs for current page navigation.
+- A trigger button (`#open-widgets-btn`) to open the left widgets drawer (on
+  mobile <= 768px).
+- A trigger button (`#open-context-btn`) to open the right context drawer (on
+  screens <= 1120px when right sidebar is present).
 
 ## Responsive Pattern
 
-Desktop behavior:
+Desktop behavior (> 1120px):
 
 ```text
 ┌────────────┬──────────────────────┬────────────┐
@@ -301,30 +342,37 @@ Desktop behavior:
 └────────────┴──────────────────────┴────────────┘
 ```
 
-Narrow and mobile behavior:
+Narrow / Tablet behavior (769px - 1120px):
 
 ```text
-┌──────────────────────┐
-│ sticky layout header │
-├──────────────────────┤
-│ left.header?         │
-├──────────────────────┤
-│ main                 │
-│ reading content      │
-├──────────────────────┤
-│ left.footer?         │
-└──────────────────────┘
-
-left.widgets  -> left collapsed surface
-right.widgets -> right collapsed surface
+┌───────────────────────────────────┬────────────┐
+│ sticky layout header (context btn)│ (drawer)   │
+├───────────────────────────────────┴────────────┤
+│ left                              │ main       │
+│ (header + widgets + footer)       │ content    │
+└───────────────────────────────────┴────────────┘
 ```
 
-The exact breakpoints and sizes should be taken from `design/` when implementing
-the reference preset.
+Mobile behavior (<= 768px):
 
-Pages should not be required to duplicate widget markup for desktop side regions
-and mobile drawers. The layout should support responsive projection, relocation,
-or another single-source pattern where practical.
+```text
+┌─────────────────────────┐
+│ sticky layout header    │
+├─────────────────────────┤
+│ left.header (profile)   │
+├─────────────────────────┤
+│ main                    │
+│ reading content         │
+├─────────────────────────┤
+│ mobile footer           │
+└─────────────────────────┘
+
+left.widgets  -> slide-out left drawer
+right.widgets -> slide-out right drawer
+```
+
+Drawer content is fed directly from the layout slots without requiring duplicate
+markup from page consumers.
 
 ## Component and Widget Boundary
 
@@ -333,7 +381,9 @@ The boundary is based on responsibility and composition:
 - Small reusable UI pieces are components.
 - More complex sections composed from components, markup, and data are widgets.
 - Page structure and region placement are layouts.
-- Content querying and frontmatter conventions belong to content helpers.
+- Full-page presentations bound to content models are templates.
+- Content querying and frontmatter conventions belong to content helpers and
+  loaders.
 - Global visual language and theme variables belong to styles and tokens.
 
 Guidelines:
@@ -342,177 +392,59 @@ Guidelines:
 - A button is a component; a group of site actions is a widget or page
   composition.
 - A card is a component; a friend link card list is a widget.
-- A mask is a component; a sidebar layout is layout.
-- A collapse primitive is a component; a full navigation/sidebar section is a
-  widget or layout composition.
-- Dialog and toast may live in widgets because they are common composed
-  interaction patterns.
-
-## Reference Component Coverage
-
-The design reference implies support for the following component areas. This
-section names coverage only; exact visual values should come from `design/`.
-
-### Controls
-
-- Buttons.
-- Icon buttons.
-- Inputs.
-- Textareas.
-- Checkboxes.
-- Compact action groups.
-- Accessible focus-visible states.
-
-### Surfaces
-
-- Cards.
-- Masks and backdrops.
-- Collapsible surfaces.
-- Drawer-like surfaces.
-- Popover-like surfaces.
-
-### Content
-
-- Prose wrapper.
-- Headings.
-- Paragraph rhythm.
-- Links.
-- Lists.
-- Task lists.
-- Blockquotes.
-- Callouts.
-- Figures and captions.
-- Tables with responsive overflow handling.
-- Inline code.
-- Code blocks.
-- Keyboard input styling.
-- Definition lists.
-
-### Data and Metadata Display
-
-- Badges.
-- Tags or chips.
-- Link rows.
-- Simple metadata rows.
-- Progress or meter-like rows when needed.
-
-### Media
-
-- Avatar-like media.
-- Generic thumbnails.
-- Responsive images.
-- Cover media inside content or cards.
-
-## Reference Widget Coverage
-
-The design reference implies support for composed homepage and blog widgets.
-This section names coverage only; exact visual values should come from
-`design/`.
-
-- User profile header.
-- Identity or profile summary.
-- Navigation groups.
-- Recent posts or recent notes.
-- Friend links or link cards.
-- Site status.
-- Table of contents.
-- Related links.
-- Theme or color-scheme controls.
-- Drawer, dialog, popover, menu, tabs, tooltip, and toast when interaction calls
-  for them.
+- A table container is a component; an entire friends directory page is a
+  template.
 
 ## Theme and Tokens
 
-`nayuta` should expose semantic tokens and allow project-level customization.
-The reference design should be implemented through tokens and theme variables,
-not through scattered hard-coded values.
+`nayuta` exposes semantic tokens and allows project-level customization.
 
-The public styling surface should be semantic first:
+The public styling surface is semantic first:
 
-- Background and surface colors.
-- Text colors.
-- Accent and primary colors.
-- Border and outline colors.
-- Shadow colors.
-- Radius scale.
-- Space scale.
-- Typography families.
-- Component-level derived tokens where needed.
+- Background and surface colors (`--ny-color-bg`, `--ny-color-surface`,
+  `--ny-color-surface-container`, `--ny-color-surface-elevated`).
+- Text colors (`--ny-color-text`, `--ny-color-text-muted`,
+  `--ny-color-text-subtle`).
+- Primary and accent colors (`--ny-color-primary`, `--ny-color-primary-hover`,
+  `--ny-color-outline`).
+- Border and shadow colors (`--ny-color-border`, `--ny-color-shadow`).
+- Radius scale (`--ny-radius-xs` to `--ny-radius-xl`).
+- Spacing rhythm (`--ny-space-1` to `--ny-space-6`).
+- Layout dimensions (`--ny-layout-*`).
+- Typography families (`--ny-font-ui`, `--ny-font-prose`, `--ny-font-code`).
 
-`nayuta` should support adaptive light and dark modes. Colors may be generated
-from a source color, provided explicitly by configuration, or emitted by
-build-time tooling.
+### Theme Selection
 
-Preferred direction:
+The active theme is configured in `src/config.ts` via the `theme` property.
+`src/layouts/head-base.astro` statically loads and inlines the corresponding CSS
+from `src/styles/themes/` at build time, ensuring zero runtime layout shifts.
 
-- Build-time or static token generation should be the main path when possible.
-- Runtime theme switching can exist as a progressive enhancement.
-- Explicit token input should be supported for projects that need full control.
+Runtime theme switching can be added as a progressive enhancement where needed.
 
 ## Rendering and Enhancement
 
-`nayuta` should be designed around Astro's static-first model.
+`nayuta` is built around Astro's static-first model.
 
 ### Static Astro Output
 
-The default path should render useful HTML at build time:
+The default path renders complete HTML at build time:
 
-- Pages and layouts render complete document structure.
-- Markdown or MDX content renders to readable HTML.
+- Pages, layouts, and templates render complete document structure.
+- Markdown and MDX content renders to readable HTML.
 - Static supporting regions render without requiring client JavaScript.
-- Theme tokens can be emitted before content renders.
-- The initial page should be visually complete before any client enhancement.
+- Theme tokens are emitted and applied before content renders.
+- The initial page is visually complete before any client enhancement.
 
 ### Progressive Enhancement
 
-Client-side JavaScript should be used when it improves interaction:
+Client-side JavaScript is used only where it improves interaction:
 
-- Drawer state.
-- Collapse state.
-- Dialog, popover, menu, tabs, tooltip, and toast behavior.
-- Theme switching when runtime switching is supported.
-- Small controls that need local browser state.
+- Drawer open/close state transitions and backdrop dismissals.
+- Keyboard shortcuts (e.g. closing drawers via Escape key).
+- Local search filtering and dynamic statistics calculation.
+- Future dialog, popover, menu, tabs, tooltip, and toast interactions.
 
-Interactive widgets should keep sensible fallback behavior where practical.
-Static content should not require hydration just to be readable.
-
-### Astro Islands
-
-Astro islands or client directives may be used for interactive widgets when a
-plain Astro component and minimal script are not enough.
-
-Use islands selectively. Avoid turning static layout, prose, metadata, or simple
-cards into client-rendered UI without a concrete interaction need.
-
-## Implementation Direction
-
-The preferred implementation direction is Astro, TypeScript, CSS, Bun, and Prettier.
-
-Astro is a good fit because it:
-
-- Supports static-first sites and content-heavy pages.
-- Provides layouts, components, pages, slots, and content collections.
-- Works well with Markdown and MDX.
-- Allows selective client-side enhancement through islands and directives.
-- Keeps the baseline site lightweight when components are mostly static.
-
-TypeScript should be used for configuration, content helpers, data shaping, and
-interactive behavior where it improves maintainability.
-
-CSS should prefer semantic variables, readable cascade boundaries, and component
-or layout ownership. Avoid scattering one-off visual values across unrelated
-files.
-
-Bun is the required package manager and script runner for repository commands.
-
-Astro owns the frontend build and development flow. Treat Vite as Astro's
-internal integration unless the repository explicitly defines Vite-specific
-configuration or scripts that need attention.
-
-Prettier is the repository formatter for Astro, Markdown, CSS, TypeScript,
-JavaScript, JSON, and other supported text files. Run formatting through
-repository-defined Bun scripts when available, and never allow automated
-formatting or lint fixes to modify `design/`.
+Static content does not require hydration to be readable.
 
 ## Accessibility Expectations
 
@@ -520,41 +452,32 @@ Interactive components, widgets, and layout surfaces must be accessible.
 
 Expected behavior:
 
-- Triggers are real buttons or appropriate interactive elements.
-- Icon-only controls preserve accessible names.
-- Drawers, dialogs, popovers, and similar widgets expose appropriate labels.
-- Modal-like surfaces trap focus when required.
-- Escape closes modal-like surfaces where appropriate.
-- Closing a modal-like surface returns focus to the trigger where practical.
+- Triggers are real buttons or valid links.
+- Icon-only controls preserve accessible names (`aria-label`).
+- Drawers, dialogs, and popovers expose appropriate accessible roles and
+  labels.
+- Escape closes open drawers and overlays.
 - Keyboard users can reach collapsed left and right region content.
 - Reduced motion preferences are respected.
-- Color contrast works in both light and dark modes.
-- Page structure uses semantic landmarks and heading hierarchy.
+- Color contrast meets readability standards across all bundled themes.
+- Page structure uses semantic landmarks (`<aside>`, `<main>`, `<nav>`,
+  `<header>`, `<footer>`).
 
 ## Agent Guidance
 
 When generating code or documentation for `nayuta`, preserve these boundaries:
 
 - Treat `nayuta` as an Astro personal homepage and blog theme.
-- Treat concrete pages in `design/` as reference examples for visual direction
-  and interaction expectations.
-- Do not copy exact style values into this document; inspect `design/` when
-  implementation needs visual details.
 - Put small reusable UI pieces in `src/components/*`.
 - Put composed homepage and blog sections in `src/widgets/*`.
-- Put page and region layout code in `src/layouts/*`.
-- Put global styles, theme variables, and design tokens in `src/styles/*` or an
-  equivalent styling area.
-- Put content schemas, frontmatter conventions, and query helpers in
-  content-focused areas.
-- Keep page routes in `src/pages/*` focused on composition.
+- Put page and region layout shells in `src/layouts/*`.
+- Put full-page content views in `src/templates/*`.
+- Put global styles, theme variables, and design tokens in `src/styles/*`.
+- Put content schemas, loaders, and conventions in `src/content.config.ts` and
+  `src/content/*`.
+- Keep page routes in `src/pages/*` focused on high-level composition.
 - Keep side regions collapsible, reachable, and accessible.
-- Keep narrow viewport entry points reachable.
 - Prefer static Astro output and progressive enhancement over unnecessary
   client-side rendering.
-- Use repository-defined Prettier scripts for formatting, and keep automated
-  formatting away from `design/`.
+- Use repository-defined Prettier scripts for formatting.
 - Prefer semantic tokens over hard-coded styles.
-
-Avoid generating APIs or implementations that make future content maintenance,
-theme customization, responsive behavior, or Astro static output difficult.
