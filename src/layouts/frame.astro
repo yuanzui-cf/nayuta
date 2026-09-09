@@ -379,7 +379,11 @@ const {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(3, 13, 22, 0.8);
+    background-color: var(
+      --ny-color-mask,
+      color-mix(in srgb, var(--ny-color-bg) 80%, transparent)
+    );
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     z-index: 1500;
     opacity: 0;
@@ -443,7 +447,11 @@ const {
       left: 0;
       right: 0;
       height: 48px;
-      background-color: rgba(3, 13, 22, 0.85);
+      background-color: var(
+        --ny-color-header-bg,
+        color-mix(in srgb, var(--ny-color-bg) 85%, transparent)
+      );
+      -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--ny-color-border);
       padding: 0 20px;

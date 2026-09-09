@@ -32,6 +32,10 @@
   --ny-layout-left-width: 250px;
   --ny-layout-main-width: minmax(0, 680px);
   --ny-layout-right-width: 200px;
+
+  /* Overlays & Translucent Surfaces (Derived from theme background) */
+  --ny-color-mask: color-mix(in srgb, var(--ny-color-bg) 80%, transparent);
+  --ny-color-header-bg: color-mix(in srgb, var(--ny-color-bg) 85%, transparent);
 }
 
 * {
