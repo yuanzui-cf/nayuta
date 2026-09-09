@@ -3,7 +3,7 @@ import Frame from '../layouts/frame.astro';
 import ProfileCard from '../widgets/ProfileCard.astro';
 import RecentPosts from '../widgets/RecentPosts.astro';
 import WebsiteStatus from '../widgets/WebsiteStatus.astro';
-import FriendCard from '../widgets/FriendCard.astro';
+import LinkCard from '../widgets/LinkCard.astro';
 import DynamicWidget from '../components/DynamicWidget.astro';
 import Prose from '../components/Prose.astro';
 
@@ -70,7 +70,7 @@ const showRightSidebar =
     : rightWidgets.length > 0;
 
 const mySite = data.mySite;
-const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
+const mySiteLogo = mySite ? mySite.avatar : null;
 ---
 
 <Frame
@@ -113,7 +113,7 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
             </div>
             <div class="friends-grid">
               {section.friends.map((friend: any) => (
-                <FriendCard {...friend} />
+                <LinkCard {...friend} />
               ))}
             </div>
           </section>
@@ -150,7 +150,7 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
               )}
               {mySiteLogo && (
                 <div class="info-row">
-                  <span class="info-label">Avatar / Logo:</span>
+                  <span class="info-label">Avatar:</span>
                   <span class="info-value">
                     <a href={mySiteLogo} target="_blank">
                       {mySiteLogo}
@@ -160,7 +160,7 @@ const mySiteLogo = mySite ? mySite.avatar || mySite.logo : null;
               )}
               {mySite.desc && (
                 <div class="info-row">
-                  <span class="info-label">Bio / Description:</span>
+                  <span class="info-label">Bio:</span>
                   <span class="info-value">{mySite.desc}</span>
                 </div>
               )}

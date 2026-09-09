@@ -6,11 +6,10 @@ interface Props {
   href: string;
   site?: string;
   desc?: string;
-  avatar?: string;
-  logo?: string;
-  avatarText?: string;
-  avatarBg?: string;
-  avatarColor?: string;
+  favicon?: string;
+  faviconText?: string;
+  faviconBg?: string;
+  faviconColor?: string;
   tag?: string;
   tags?: string[];
 }
@@ -18,16 +17,15 @@ interface Props {
 const {
   name,
   href,
-  avatar,
-  logo,
-  avatarText = name ? name.trim().slice(0, 1).toUpperCase() : '?',
-  avatarBg = 'rgba(0, 153, 204, 0.15)',
-  avatarColor = 'var(--ny-color-outline)',
+  favicon,
+  faviconText = name ? name.trim().slice(0, 1).toUpperCase() : '?',
+  faviconBg = 'rgba(0, 153, 204, 0.15)',
+  faviconColor = 'var(--ny-color-outline)',
   tag,
   tags = tag ? [tag] : [],
 } = Astro.props;
 
-const imageSrc = avatar || logo;
+const imageSrc = favicon;
 
 let site = Astro.props.site;
 if (!site && href) {
@@ -41,25 +39,25 @@ if (!site && href) {
 const desc = Astro.props.desc || '';
 ---
 
-<Card href={href} target="_blank" class="friend-card">
-  <div class="friend-header">
+<Card href={href} target="_blank" class="link-card">
+  <div class="link-header">
     <div class="avatar-wrapper">
       {
         imageSrc ? (
-          <img src={imageSrc} alt={name} class="friend-avatar" loading="lazy" />
+          <img src={imageSrc} alt={name} class="link-favicon" loading="lazy" />
         ) : (
           <div
-            class="friend-avatar friend-avatar-fallback"
-            style={`background-color: ${avatarBg}; color: ${avatarColor};`}
+            class="link-favicon link-favicon-fallback"
+            style={`background-color: ${faviconBg}; color: ${faviconColor};`}
           >
-            {avatarText}
+            {faviconText}
           </div>
         )
       }
     </div>
-    <div class="friend-info">
+    <div class="link-info">
       <div class="name-row">
-        <span class="friend-name">{name}</span>
+        <span class="link-name">{name}</span>
         <svg class="external-icon" viewBox="0 0 24 24" width="12" height="12">
           <path
             d="M5 19L19 5M19 5H9M19 5V15"
@@ -70,21 +68,21 @@ const desc = Astro.props.desc || '';
             fill="none"></path>
         </svg>
       </div>
-      {site && <span class="friend-site">{site}</span>}
+      {site && <span class="link-site">{site}</span>}
     </div>
   </div>
   {
     desc && (
-      <p class="friend-desc" title={desc}>
+      <p class="link-desc" title={desc}>
         {desc}
       </p>
     )
   }
   {
     tags.length > 0 && (
-      <div class="friend-tags">
+      <div class="link-tags">
         {tags.map((t) => (
-          <span class="friend-tag">{t}</span>
+          <span class="link-tag">{t}</span>
         ))}
       </div>
     )
@@ -92,7 +90,7 @@ const desc = Astro.props.desc || '';
 </Card>
 
 <style>
-  :global(.friend-card) {
+  :global(.link-card) {
     background-color: var(--ny-color-surface);
     border: 1px solid var(--ny-color-border);
     border-radius: var(--ny-radius-md);
@@ -107,7 +105,7 @@ const desc = Astro.props.desc || '';
     transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  :global(.friend-card::before) {
+  :global(.link-card::before) {
     content: '';
     position: absolute;
     top: 0;
@@ -124,7 +122,7 @@ const desc = Astro.props.desc || '';
     transition: opacity 0.25s ease;
   }
 
-  :global(.friend-card:hover) {
+  :global(.link-card:hover) {
     transform: translateY(-3px);
     border-color: var(--ny-color-outline);
     background-color: var(--ny-color-surface-elevated);
@@ -133,11 +131,11 @@ const desc = Astro.props.desc || '';
       0 0 0 1px rgba(0, 191, 255, 0.15);
   }
 
-  :global(.friend-card:hover::before) {
+  :global(.link-card:hover::before) {
     opacity: 1;
   }
 
-  .friend-header {
+  .link-header {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -147,7 +145,7 @@ const desc = Astro.props.desc || '';
     flex-shrink: 0;
   }
 
-  .friend-avatar {
+  .link-favicon {
     width: 44px;
     height: 44px;
     border-radius: var(--ny-radius-sm);
@@ -160,12 +158,12 @@ const desc = Astro.props.desc || '';
     display: block;
   }
 
-  :global(.friend-card:hover) .friend-avatar {
+  :global(.link-card:hover) .link-favicon {
     transform: scale(1.05);
     border-color: var(--ny-color-outline);
   }
 
-  .friend-avatar-fallback {
+  .link-favicon-fallback {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -175,7 +173,7 @@ const desc = Astro.props.desc || '';
     user-select: none;
   }
 
-  .friend-info {
+  .link-info {
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -190,7 +188,7 @@ const desc = Astro.props.desc || '';
     gap: 6px;
   }
 
-  .friend-name {
+  .link-name {
     font-size: 14px;
     font-weight: 700;
     color: var(--ny-color-text);
@@ -200,7 +198,7 @@ const desc = Astro.props.desc || '';
     transition: color 0.15s ease;
   }
 
-  :global(.friend-card:hover) .friend-name {
+  :global(.link-card:hover) .link-name {
     color: var(--ny-color-outline);
   }
 
@@ -212,13 +210,13 @@ const desc = Astro.props.desc || '';
     flex-shrink: 0;
   }
 
-  :global(.friend-card:hover) .external-icon {
+  :global(.link-card:hover) .external-icon {
     opacity: 1;
     transform: translate(0, 0);
     color: var(--ny-color-outline);
   }
 
-  .friend-site {
+  .link-site {
     font-size: 11px;
     color: var(--ny-color-text-subtle);
     font-family: var(--ny-font-code);
@@ -227,7 +225,7 @@ const desc = Astro.props.desc || '';
     text-overflow: ellipsis;
   }
 
-  .friend-desc {
+  .link-desc {
     font-size: 12px;
     color: var(--ny-color-text-muted);
     line-height: 1.55;
@@ -240,7 +238,7 @@ const desc = Astro.props.desc || '';
     min-height: 37px;
   }
 
-  .friend-tags {
+  .link-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -248,7 +246,7 @@ const desc = Astro.props.desc || '';
     padding-top: 4px;
   }
 
-  .friend-tag {
+  .link-tag {
     font-size: 10px;
     font-family: var(--ny-font-code);
     color: var(--ny-color-text-subtle);
