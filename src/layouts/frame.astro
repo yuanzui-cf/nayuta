@@ -31,43 +31,40 @@ const {
   <body>
     <!-- Mobile Sticky Header -->
     <header class="mobile-sticky-header">
-      <nav class="breadcrumbs">
-        {
-          breadcrumbs.map((crumb, idx) => (
-            <Fragment key={crumb.href}>
-              <a href={crumb.href}>{crumb.text}</a>
-              {idx < breadcrumbs.length && ' > '}
-            </Fragment>
-          ))
-        }
-      </nav>
-      <div class="header-actions">
+      <div class="header-content">
         {
           withLeftSidebar && (
             <button
-              class="header-action-btn"
+              class="mobile-menu-btn"
               id="open-widgets-btn"
-              aria-label="Open Widgets"
+              aria-label="Open Sidebar"
             >
-              <svg viewBox="0 0 24 24">
-                <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4H4zm6 6h4v4h-4zm6 0h4v4h-4z" />
+              <svg
+                viewBox="0 0 16 16"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              >
+                <line x1="2" y1="3.5" x2="14" y2="3.5" />
+                <line x1="2" y1="8" x2="14" y2="8" />
+                <line x1="2" y1="12.5" x2="14" y2="12.5" />
               </svg>
             </button>
           )
         }
-        {
-          withRightSidebar && (
-            <button
-              class="header-action-btn"
-              id="open-context-btn"
-              aria-label="Open Page Widgets"
-            >
-              <svg viewBox="0 0 24 24">
-                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-              </svg>
-            </button>
-          )
-        }
+        <nav class="breadcrumbs">
+          {
+            breadcrumbs.map((crumb, idx) => (
+              <Fragment key={crumb.href}>
+                <a href={crumb.href}>{crumb.text}</a>
+                {idx < breadcrumbs.length && ' > '}
+              </Fragment>
+            ))
+          }
+        </nav>
       </div>
     </header>
 
@@ -141,6 +138,34 @@ const {
             </RightSidebar>
           </div>
         </div>
+      )
+    }
+
+    <!-- Mobile Floating Action Button for Right Sidebar (TOC / Context) -->
+    {
+      withRightSidebar && (
+        <button
+          class="mobile-floating-btn"
+          id="open-context-btn"
+          aria-label="Open Table of Contents"
+        >
+          <span class="btn-bracket">[</span>
+          <svg
+            viewBox="0 0 16 16"
+            width="12"
+            height="12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          >
+            <line x1="2" y1="3.5" x2="14" y2="3.5" />
+            <line x1="2" y1="8" x2="10" y2="8" />
+            <line x1="2" y1="12.5" x2="14" y2="12.5" />
+          </svg>
+          <span class="btn-text">TOC</span>
+          <span class="btn-bracket">]</span>
+        </button>
       )
     }
 
@@ -416,6 +441,53 @@ const {
     color: var(--ny-color-outline);
   }
 
+  .mobile-floating-btn {
+    display: none;
+    position: fixed;
+    right: max(16px, calc(env(safe-area-inset-right, 0px) + 16px));
+    bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 20px));
+    height: 30px;
+    padding: 0 8px;
+    background-color: var(--ny-color-surface-container);
+    border: 1px solid var(--ny-color-border);
+    border-radius: var(--ny-radius-sm);
+    color: var(--ny-color-text-muted);
+    font-family: var(--ny-font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    box-shadow: 0 2px 8px var(--ny-color-shadow);
+    z-index: 1200;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .mobile-floating-btn:hover {
+    color: var(--ny-color-outline);
+    border-color: var(--ny-color-outline);
+    background-color: var(--ny-color-surface-elevated);
+    box-shadow: 0 0 10px
+      color-mix(in srgb, var(--ny-color-outline) 30%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .mobile-floating-btn:active {
+    transform: translateY(0);
+  }
+
+  .mobile-floating-btn .btn-bracket {
+    color: var(--ny-color-text-subtle);
+    transition: color 0.15s ease;
+  }
+
+  .mobile-floating-btn:hover .btn-bracket {
+    color: var(--ny-color-outline);
+  }
+
   @media (max-width: 1120px) {
     .layout-container.with-right-sidebar {
       grid-template-columns: var(--ny-layout-left-width) minmax(0, 1fr);
@@ -440,7 +512,6 @@ const {
 
     .mobile-sticky-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
@@ -453,51 +524,48 @@ const {
       );
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--ny-color-border);
+      border-bottom: none;
       padding: 0 20px;
       z-index: 1000;
     }
 
-    .mobile-sticky-header .breadcrumbs {
-      margin-bottom: 0;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .header-action-btn {
-      background: none;
-      border: 1px solid var(--ny-color-border);
-      border-radius: var(--ny-radius-sm);
-      color: var(--ny-color-text-muted);
-      width: 28px;
-      height: 28px;
+    .header-content {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 10px;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .mobile-menu-btn {
+      background: none;
+      border: none;
+      color: var(--ny-color-text-subtle);
+      padding: 6px 6px 6px 0;
       cursor: pointer;
-      transition: all 0.15s ease;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 0.15s ease;
     }
 
-    .header-action-btn:hover {
+    .mobile-menu-btn:hover {
       color: var(--ny-color-outline);
-      border-color: var(--ny-color-outline);
-      background-color: var(--ny-color-surface-container);
     }
 
-    .header-action-btn svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
+    .mobile-sticky-header .breadcrumbs {
+      margin-bottom: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mobile-floating-btn {
+      display: flex;
     }
 
     .main-region .breadcrumbs {
-      display: none;
-    }
-
-    #open-widgets-btn {
       display: none;
     }
   }
@@ -545,8 +613,8 @@ const {
       line-height: 1.6;
     }
 
-    #open-widgets-btn {
-      display: flex;
+    .mobile-menu-btn {
+      display: inline-flex;
     }
   }
 
