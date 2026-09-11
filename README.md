@@ -199,6 +199,26 @@ cover: '/assets/images/banner.png'
 Article body in Markdown or MDX...
 ```
 
+To keep a post and its images together, use a directory containing `index.md`
+or `index.mdx`:
+
+```text
+src/content/posts/aaa/
+├── index.mdx
+└── photo.png
+```
+
+This post is available at `/posts/aaa`. Set `cover: './photo.png'` in its
+frontmatter to use the adjacent image as its cover. Relative cover paths are
+resolved from the Markdown/MDX file, and Astro processes the image at build time
+for both the post detail and listing pages. Body images can use the same file
+with `![Image description](./photo.png)`.
+
+Root-relative public paths such as `/assets/images/banner.png` (stored under
+`public/`) and remote `https://...` or `http://...` cover URLs are also supported
+and rendered as-is. Omit `cover` when no cover is needed. Do not keep both
+`aaa.mdx` and `aaa/index.mdx`, since they produce the same content ID.
+
 ### 3. Creating Pages (`src/content/pages/`)
 
 Add Markdown or MDX files in `src/content/pages/`. Routes are automatically resolved from the filename (e.g. `about.md` -> `/about`):

@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Frame from '../../layouts/frame.astro';
 import Prose from '../../components/Prose.astro';
@@ -49,11 +50,19 @@ const breadcrumbs = [
             </div>
             {post.data.cover && (
               <div style="width: 100%; border-radius: var(--ny-radius-md); overflow: hidden; border: 1px solid var(--ny-color-border); aspect-ratio: 21 / 9; margin-top: 8px;">
-                <img
-                  src={post.data.cover}
-                  alt="Cover Banner"
-                  style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; border-radius: 0;"
-                />
+                {typeof post.data.cover === 'string' ? (
+                  <img
+                    src={post.data.cover}
+                    alt={post.data.title}
+                    style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; border-radius: 0;"
+                  />
+                ) : (
+                  <Image
+                    src={post.data.cover}
+                    alt={post.data.title}
+                    style="width: 100%; height: 100%; object-fit: cover; display: block; border: none; border-radius: 0;"
+                  />
+                )}
               </div>
             )}
             {post.data.description && (

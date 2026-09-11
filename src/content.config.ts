@@ -3,14 +3,17 @@ import { glob } from 'astro/loaders';
 
 const postsCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/posts' }),
-  schema: z.object({
-    title: z.string(),
-    publishDate: z.string(),
-    views: z.string().optional(),
-    readingTime: z.string(),
-    cover: z.string().optional(),
-    description: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      publishDate: z.string(),
+      views: z.string().optional(),
+      readingTime: z.string(),
+      cover: z
+        .union([z.string().regex(/^(?:\/|https?:\/\/)/i), image()])
+        .optional(),
+      description: z.string().optional(),
+    }),
 });
 
 const pagesCollection = defineCollection({

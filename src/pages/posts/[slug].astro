@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import Frame from '../../layouts/frame.astro';
 import Prose from '../../components/Prose.astro';
@@ -37,7 +38,19 @@ const breadcrumbs = [
     {
       post.data.cover && (
         <div class="post-cover-container">
-          <img class="post-cover" src={post.data.cover} alt={post.data.title} />
+          {typeof post.data.cover === 'string' ? (
+            <img
+              class="post-cover"
+              src={post.data.cover}
+              alt={post.data.title}
+            />
+          ) : (
+            <Image
+              class="post-cover"
+              src={post.data.cover}
+              alt={post.data.title}
+            />
+          )}
         </div>
       )
     }
