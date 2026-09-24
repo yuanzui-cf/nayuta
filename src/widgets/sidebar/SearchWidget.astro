@@ -1,0 +1,238 @@
+---
+import Input from '@layouts/components/Input.astro';
+import Widget from '@widgets/sidebar/Widget.astro';
+---
+
+<nayuta-search>
+  <Widget title="Search Site">
+    <label class="search-field">
+      <span class="visually-hidden">Search articles</span>
+      <Input type="search" placeholder="Search articles..." />
+      <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"
+      ></i>
+    </label>
+    <p class="search-status" role="status" aria-live="polite"></p>
+    <ul class="search-results" aria-label="Search results" hidden></ul>
+    <button class="search-more" type="button" hidden>Show more results</button>
+    <p class="search-fallback" hidden><a href="/posts">Browse posts</a></p>
+    <noscript
+      ><p class="search-fallback">
+        Search requires JavaScript. <a href="/posts">Browse posts</a>.
+      </p></noscript
+    >
+  </Widget>
+</nayuta-search>
+
+<script is:inline type="module">
+  class NayutaSearch extends HTMLElement {
+    sequence = 0;
+    matches = [];
+
+    connectedCallback() {
+      this.input = this.querySelector('input[type="search"]');
+      this.status = this.querySelector('.search-status');
+      this.results = this.querySelector('.search-results');
+      this.fallback = this.querySelector('.search-fallback');
+      this.more = this.querySelector('.search-more');
+      this.input.addEventListener('input', this.onInput);
+      this.more.addEventListener('click', this.onMore);
+    }
+
+    disconnectedCallback() {
+      this.input.removeEventListener('input', this.onInput);
+      this.more.removeEventListener('click', this.onMore);
+      window.clearTimeout(this.timer);
+      this.sequence++;
+    }
+
+    onInput = () => {
+      window.clearTimeout(this.timer);
+      const sequence = ++this.sequence;
+      const query = this.input.value.trim();
+      this.results.replaceChildren();
+      this.results.hidden = true;
+      this.matches = [];
+      this.more.hidden = true;
+      this.fallback.hidden = true;
+      this.status.textContent = query ? 'Searching...' : '';
+      if (query) {
+        this.timer = window.setTimeout(
+          () => void this.search(query, sequence),
+          200,
+        );
+      }
+    };
+
+    async search(query, sequence) {
+      try {
+        const pagefind = await import('/pagefind/pagefind.js');
+        const response = await pagefind.search(query);
+        if (sequence !== this.sequence || !this.isConnected) return;
+        this.matches = response.results;
+        await this.showMore(sequence);
+        if (sequence !== this.sequence || !this.isConnected) return;
+        if (!this.fallback.hidden) return;
+        this.status.textContent = response.results.length
+          ? response.results.length + ' matching articles'
+          : 'No matching articles.';
+      } catch {
+        if (sequence !== this.sequence || !this.isConnected) return;
+        this.status.textContent = 'Search is unavailable.';
+        this.fallback.hidden = false;
+      }
+    }
+
+    onMore = () => void this.showMore(this.sequence);
+
+    async showMore(sequence) {
+      this.more.disabled = true;
+      try {
+        const start = this.results.childElementCount;
+        const matches = await Promise.all(
+          this.matches.slice(start, start + 5).map((result) => result.data()),
+        );
+        if (sequence !== this.sequence || !this.isConnected) return;
+        for (const match of matches) {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = match.url;
+          link.textContent = match.meta.title;
+          const excerpt = document.createElement('p');
+          excerpt.className = 'search-excerpt';
+          // Pagefind encodes the source text and only adds its own <mark> tags.
+          excerpt.innerHTML = match.excerpt;
+          item.append(link, excerpt);
+          this.results.append(item);
+        }
+        this.results.hidden = this.results.childElementCount === 0;
+        this.more.hidden =
+          this.results.childElementCount >= this.matches.length;
+      } catch {
+        if (sequence !== this.sequence || !this.isConnected) return;
+        this.status.textContent = 'Search is unavailable.';
+        this.more.hidden = true;
+        this.fallback.hidden = false;
+      } finally {
+        if (sequence === this.sequence) this.more.disabled = false;
+      }
+    }
+  }
+
+  if (!customElements.get('nayuta-search')) {
+    customElements.define('nayuta-search', NayutaSearch);
+  }
+</script>
+
+<style>
+  nayuta-search {
+    display: block;
+    min-width: 0;
+  }
+
+  .search-status:empty {
+    display: none;
+  }
+
+  .search-field {
+    position: relative;
+    display: block;
+  }
+
+  .search-field :global(.search-input) {
+    padding-left: calc(var(--ny-space-2) * 2 + var(--ny-font-size-icon));
+  }
+
+  .search-icon {
+    position: absolute;
+    top: 50%;
+    left: var(--ny-space-2);
+    transform: translateY(-50%);
+    color: var(--ny-color-text-subtle);
+    font-size: var(--ny-font-size-ui-meta);
+    pointer-events: none;
+  }
+
+  .search-field:focus-within .search-icon {
+    color: var(--ny-color-outline);
+  }
+
+  .search-status,
+  .search-fallback {
+    color: var(--ny-color-text-muted);
+    font-size: var(--ny-font-size-ui-meta);
+    line-height: var(--ny-line-height-ui);
+    margin: 0;
+  }
+
+  .search-fallback a {
+    color: var(--ny-color-outline);
+  }
+
+  .search-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 20rem;
+    overflow-y: auto;
+  }
+
+  .search-more {
+    align-self: flex-start;
+    padding: var(--ny-space-1) 0;
+    border: 0;
+    background: none;
+    color: var(--ny-color-outline);
+    font: inherit;
+    font-size: var(--ny-font-size-ui-meta);
+    cursor: pointer;
+  }
+
+  .search-more:hover,
+  .search-more:focus-visible {
+    text-decoration: underline;
+  }
+
+  .search-results :global(li) {
+    min-width: 0;
+    padding: var(--ny-space-2) 0;
+    border-top: 1px solid var(--ny-color-border);
+  }
+
+  .search-results :global(a) {
+    color: var(--ny-color-text);
+    font-size: var(--ny-font-size-ui);
+    overflow-wrap: anywhere;
+    text-decoration: none;
+  }
+
+  .search-results :global(a:hover),
+  .search-results :global(a:focus-visible) {
+    color: var(--ny-color-outline);
+    text-decoration: underline;
+  }
+
+  .search-results :global(.search-excerpt) {
+    color: var(--ny-color-text-muted);
+    font-size: var(--ny-font-size-ui-meta);
+    line-height: var(--ny-line-height-ui);
+    overflow-wrap: anywhere;
+    margin: var(--ny-space-1) 0 0;
+  }
+
+  .search-results :global(mark) {
+    color: var(--ny-color-primary-text);
+    background: var(--ny-color-primary);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

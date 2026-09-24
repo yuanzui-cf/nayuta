@@ -36,39 +36,41 @@ const breadcrumbs = [
   isPost={true}
   breadcrumbs={breadcrumbs}
 >
-  <Prose>
-    {
-      post.data.cover && (
-        <div class="post-cover-container">
-          {typeof post.data.cover === 'string' ? (
-            <img
-              class="post-cover"
-              src={post.data.cover}
-              alt={post.data.title}
-            />
-          ) : (
-            <Image
-              class="post-cover"
-              src={post.data.cover}
-              alt={post.data.title}
-            />
-          )}
-        </div>
-      )
-    }
-
-    <h1 class="page-title">
-      {post.data.draft && <Badge variant="draft">Draft</Badge>}
-      {post.data.title}
-    </h1>
-    <p class="post-meta">
-      Published: {post.data.publishDate} &nbsp;•&nbsp; Reading Time: {
-        readingTime
+  <div data-pagefind-body>
+    <Prose>
+      {
+        post.data.cover && (
+          <div class="post-cover-container">
+            {typeof post.data.cover === 'string' ? (
+              <img
+                class="post-cover"
+                src={post.data.cover}
+                alt={post.data.title}
+              />
+            ) : (
+              <Image
+                class="post-cover"
+                src={post.data.cover}
+                alt={post.data.title}
+              />
+            )}
+          </div>
+        )
       }
-    </p>
 
-    <Content />
-  </Prose>
+      <h1 class="page-title" data-pagefind-meta="title">
+        {post.data.draft && <Badge variant="draft">Draft</Badge>}
+        {post.data.title}
+      </h1>
+      <p class="post-meta">
+        Published: {post.data.publishDate} &nbsp;•&nbsp; Reading Time: {
+          readingTime
+        }
+      </p>
+
+      <Content />
+    </Prose>
+  </div>
 
   {
     post.data.tags.length > 0 && (

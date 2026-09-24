@@ -110,6 +110,13 @@ widgets, RSS, and counters. Development mode includes drafts for author preview
 with a draft badge. New search data or other public listings must use the same
 filter before exposing posts.
 
+Production builds run Pagefind after Astro and index only the post detail body
+marked with `data-pagefind-body` in `src/pages/posts/[slug].astro`. The
+sidebar widget loads that generated index on demand and displays ranked results
+in groups of five. Homepages, authored pages, archives, and draft posts are
+not searchable. `astro dev` does not generate the index; use `bun run build`
+and `bun run preview` to check search locally.
+
 Tags are trimmed, nonempty, case-sensitive strings. Duplicate names are removed
 while author order is retained. Tag URLs encode spaces and non-Latin characters;
 labels retain their original text. Post detail renders tags after the body,

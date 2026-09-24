@@ -72,15 +72,20 @@ bun run dev
 Open [localhost:4321](http://localhost:4321). To contribute to the theme, follow
 [the fork setup](CONTRIBUTING.md#requirements-and-setup) instead.
 
-| Command                | Purpose                                        |
-| ---------------------- | ---------------------------------------------- |
-| `bun run dev`          | Start the development server.                  |
-| `bun run check`        | Check Astro templates and TypeScript.          |
-| `bun run test`         | Run the test suite.                            |
-| `bun run build`        | Generate the static site in `dist/`.           |
-| `bun run preview`      | Preview the production build locally.          |
-| `bun run format`       | Format source and documentation with Prettier. |
-| `bun run format:check` | Check formatting without changing files.       |
+| Command                | Purpose                                                         |
+| ---------------------- | --------------------------------------------------------------- |
+| `bun run dev`          | Start the development server.                                   |
+| `bun run check`        | Check Astro templates and TypeScript.                           |
+| `bun run test`         | Run the test suite.                                             |
+| `bun run build`        | Generate the static site and Pagefind article index in `dist/`. |
+| `bun run preview`      | Preview the production build, including search.                 |
+| `bun run format`       | Format source and documentation with Prettier.                  |
+| `bun run format:check` | Check formatting without changing files.                        |
+
+The sidebar searches published posts by title and body using Pagefind. Run
+`bun run build` before `bun run preview` to generate the search index; the
+development server alone does not generate one. Search needs JavaScript; the
+sidebar links to the post archive when search is unavailable.
 
 ## Configuration
 

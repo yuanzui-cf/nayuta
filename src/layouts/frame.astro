@@ -7,6 +7,7 @@ import HeadBase from '@layouts/head-base.astro';
 import LeftSidebar from '@layouts/left-sidebar.astro';
 import RightSidebar from '@layouts/right-sidebar.astro';
 import SidebarFooter from '@layouts/sidebar-footer.astro';
+import SearchWidget from '@widgets/sidebar/SearchWidget.astro';
 import TableOfContents from '@widgets/sidebar/TableOfContents.astro';
 import '@assets/styles/global.css';
 
@@ -120,6 +121,7 @@ const sidebarProps = { entry, headings, pathname: Astro.url.pathname };
             {Astro.slots.has('left-header') && (
               <slot name="left-header" slot="header" />
             )}
+            <SearchWidget />
             {Left && <Left {...sidebarProps} />}
           </LeftSidebar>
         )
@@ -173,6 +175,7 @@ const sidebarProps = { entry, headings, pathname: Astro.url.pathname };
             [Close]
           </button>
           <div style="margin-top: 20px;">
+            <SearchWidget />
             {Left && <Left {...sidebarProps} />}
           </div>
         </div>
