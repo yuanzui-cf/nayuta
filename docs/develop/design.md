@@ -137,6 +137,11 @@ control respects bottom and right safe-area insets.
   current number is bracketed and bold. Avoid filled page-number buttons.
   Narrow selectors retain available previous/next links; without JavaScript,
   controls can wrap. Empty or single-page lists have no selector.
+- Search uses the archive's post summaries and pagination, with no separate result
+  card design. Highlighted title or excerpt text uses `<mark>` with
+  `--ny-color-primary` and `--ny-color-primary-text`. Long queries and excerpts
+  wrap within the reading column. The sidebar search widget is a single compact
+  input with an accessible label and the shared input focus treatment.
 - Draft labels use the plain `[draft]` treatment, and drawer close controls use
   `[Close]`. These controls share the theme's understated bracket notation.
 - Icons use Font Awesome 6 or SVGs that inherit text color. Keep icons aligned

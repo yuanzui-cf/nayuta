@@ -6,6 +6,7 @@ import { defineConfig } from 'astro/config';
 import { remarkReadingTime } from './src/assets/utils/reading-time';
 import config from './src/config';
 import { rehypeImages } from './src/assets/utils/rehype-images';
+import pagefind from './src/integrations/pagefind';
 
 const site = config.site_url;
 if (!site) {
@@ -27,7 +28,7 @@ if (siteUrl.protocol !== 'http:' && siteUrl.protocol !== 'https:') {
 // https://astro.build/config
 export default defineConfig({
   site,
-  integrations: [mdx(), sitemap()],
+  integrations: [mdx(), sitemap(), pagefind()],
   markdown: {
     processor: unified({
       remarkPlugins: [remarkReadingTime],

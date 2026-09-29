@@ -18,6 +18,7 @@ const postsCollection = defineCollection({
         .optional(),
       description: z.string().optional(),
       draft: z.boolean().default(false),
+      exclude_in_search: z.boolean().default(false),
       withLeftSidebar: z.boolean().optional(),
       withProfileCard: z.boolean().optional(),
       withRightSidebar: z.boolean().optional(),

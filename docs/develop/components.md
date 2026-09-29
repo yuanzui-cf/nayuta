@@ -26,6 +26,9 @@ license inheritance; keep tags outside `Prose` after the card.
 Reuse `Pagination` for other lists without requiring post-specific presentation.
 Sidebar `Widget` supplies a section heading and optional “More” link, while
 `Callout` and `TableContainer` are public imports for authored MDX.
+`SearchWidget` is a native GET form containing one accessible search input. It
+uses `Input` directly and has no section heading. Compose it through authored
+sidebars so desktop and drawer instances follow the same resolution rules.
 
 ## Static Archives
 
@@ -114,6 +117,8 @@ Metadata-only updates preserve item nodes; `{}` only refreshes links if the
 surrounding URL changed.
 
 Dynamic URLs use `?page=<number>` and retain other query parameters and fragments.
+The search route uses `?q=<keywords>&page=<number>` and validates bounds before
+delivering results; an invalid or out-of-range search page goes to `/404.html`.
 The consuming page owns initial query parsing, history updates, and `popstate`.
 For a new search or history navigation, deliver `items`, `total`, and `currentPage`
 together to avoid request loops. Cancel or ignore stale asynchronous results.
@@ -127,7 +132,7 @@ no-JavaScript message and archive link so static articles remain discoverable.
 ## Browser Summary Data
 
 Each `PostSummaryData` item contains `href`, `title`, `publishDate`, and
-`readingTimeMinutes`, plus optional `description`, `draft`, and
+`readingTimeMinutes`, plus optional `description`, `draft`, `highlights`, and
 `cover: { src, width?, height?, srcset?, sizes? }`.
 
 Filter production drafts with `getPosts()` before publishing data. Prepare reading
@@ -135,6 +140,40 @@ time through the existing remark pipeline and local cover URLs through
 `astro:assets` at build time. Dynamic summaries use text nodes for text and accept
 HTTP(S) or relative URLs for links and images. Static summaries use the theme's `Image` wrapper around Astro's asset handling;
 dynamic clones preserve the same image host, scoped markup, and draft badge.
+
+### Text Highlights
+
+Dynamic summaries accept `highlights.title` and `highlights.description`, arrays
+of `{ start, end }` ranges in the corresponding plain text. Offsets count UTF-16
+code units, with an inclusive start and exclusive end. Ranges must be ordered,
+non-overlapping, nonempty, and within the text. Invalid ranges reject the update
+before replacing existing results.
+
+```ts
+list?.setPage({
+  items: [
+    {
+      href: '/posts/hello',
+      title: 'Writing with Astro',
+      publishDate: '2026-09-30',
+      readingTimeMinutes: 3,
+      description: 'Astro renders static pages.',
+      highlights: {
+        title: [{ start: 13, end: 18 }],
+        description: [{ start: 0, end: 5 }],
+      },
+    },
+  ],
+  total: 1,
+  currentPage: 1,
+});
+```
+
+`PostList` creates text nodes and `<mark>` elements. It never treats summary text
+as HTML. `PostListItem` owns the mark colors using the current palette's primary
+fill and primary text tokens. Search converts Pagefind excerpts into plain text
+and description ranges before calling `setPage()`; the list has no Pagefind
+dependency. Static archive summaries keep their ordinary text presentation.
 
 The tests under `tests/components/` cover page boundaries, updates, DOM
 preservation, history, focus, and style parity using isolated fixtures. Chromium

@@ -48,6 +48,7 @@ const template = !item;
 
 <style>
   .post-summary {
+    overflow-wrap: anywhere;
     border-bottom: 1px solid var(--ny-color-border);
     padding-bottom: var(--ny-space-6);
     display: flex;
@@ -57,6 +58,11 @@ const template = !item;
 
   .post-summary:last-child {
     border-bottom: 0;
+  }
+
+  .post-summary :global(mark) {
+    background: var(--ny-color-primary);
+    color: var(--ny-color-primary-text);
   }
 
   :global(.post-list) .post-title {

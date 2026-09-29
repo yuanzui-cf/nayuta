@@ -37,6 +37,8 @@ _A Sister's All You Need_ (妹さえいればいい。).
   validated metadata.
 - **Automatic reading time:** build-time estimates for CJK and Latin text.
 - **Post and tag archives:** static pagination, tag pages, and sidebar widgets.
+- **Article search:** Pagefind full-text search with highlighted excerpts and paginated
+  results, available in development and static builds.
 - **Custom sidebars and templates:** per-page Astro widgets, an article TOC,
   personal pages, and friend-link collections.
 
@@ -74,15 +76,15 @@ bun run dev
 Open [localhost:4321](http://localhost:4321). To contribute to the theme, follow
 [the fork setup](CONTRIBUTING.md#requirements-and-setup) instead.
 
-| Command                | Purpose                                        |
-| ---------------------- | ---------------------------------------------- |
-| `bun run dev`          | Start the development server.                  |
-| `bun run check`        | Check Astro templates and TypeScript.          |
-| `bun run test`         | Run the test suite.                            |
-| `bun run build`        | Generate the static site in `dist/`.           |
-| `bun run preview`      | Preview the production build locally.          |
-| `bun run format`       | Format source and documentation with Prettier. |
-| `bun run format:check` | Check formatting without changing files.       |
+| Command                | Purpose                                                         |
+| ---------------------- | --------------------------------------------------------------- |
+| `bun run dev`          | Start the development server with an article search index.      |
+| `bun run check`        | Check Astro templates and TypeScript.                           |
+| `bun run test`         | Run the test suite.                                             |
+| `bun run build`        | Generate the static site and Pagefind article index in `dist/`. |
+| `bun run preview`      | Preview the production build, including search.                 |
+| `bun run format`       | Format source and documentation with Prettier.                  |
+| `bun run format:check` | Check formatting without changing files.                        |
 
 ## Configuration
 
@@ -121,7 +123,7 @@ export default config;
 
 The checked-in default is `nayuta`; all five bundled palettes are dark.
 `site_url` must be an absolute HTTP(S) URL. `postsPerPage` controls post and tag
-archives and defaults to 10 when omitted.
+archives and search results, and defaults to 10 when omitted.
 The checked-in configuration shows a post copyright card using `CC BY-NC-SA 4.0`.
 Set `copyright.enabled` to `false` to hide cards site-wide. When enabled, set
 `copyright.license` to a supported Creative Commons 4.0 license.
@@ -133,6 +135,7 @@ Set `copyright.enabled` to `false` to hide cards site-wide. When enabled, set
 - [Homepage and custom pages](#homepage-and-custom-pages)
 - [Routes and assets](#routes-and-assets)
 - [Page templates](#page-templates)
+- [Search](#search)
 - [Custom sidebars](#custom-sidebars)
 - [Bundled demos](#bundled-demos)
 
@@ -157,7 +160,9 @@ Article content here...
 - **MDX components**: Reusable components such as `<Callout />` are available under `src/widgets/article/`.
 
 Set `draft: true` to preview a post in development while excluding it from the
-production site. Tags produce archive links at `/tag/<name>`.
+production site. Set `exclude_in_search: true` to keep a published post and its
+archive links while omitting it from the Pagefind index. Tags produce archive
+links at `/tag/<name>`.
 
 To license an individual post, add `copyright` to its front matter:
 
@@ -292,6 +297,33 @@ other files directly under `content/` do not become routes.
 Pages use `template: default` for ordinary reading content or `template: friend`
 for a friend-link collection. See [the bundled friends page](src/content/pages/friend.mdx)
 for an example of `friends`, `categories`, and `mySite` metadata.
+
+### Search
+
+Enter keywords in the sidebar search field and press Enter. The form opens
+`/search?q=your+keywords`; later pages use `/search?q=your+keywords&page=2`.
+The page title is `Search: your keywords`, and its breadcrumbs are
+`Home > Posts > Search: your keywords`. Results use the shared post list with
+publication dates, reading times, and highlighted excerpts from the article body.
+`postsPerPage` controls the number of results per page.
+
+Omitting `page` or leaving it empty selects page 1. Invalid page numbers and pages
+beyond the result count lead to the site's 404 page. A query with no matches has
+an empty first page with a link to the post archive. Pagination supports direct
+links, refresh, and browser back/forward navigation.
+
+The Pagefind Astro integration generates the index during `bun run build` and
+serves an in-memory index during `bun run dev`. Development indexes rendered
+articles when the server starts and rebuilds on the next index request after
+source changes. Reload the search page to search updated content. No separate
+indexing command or prior production build is required. Deploy all of `dist/`,
+including `dist/pagefind/`.
+
+Search covers post titles and article bodies. `exclude_in_search: true` omits a
+post from the index while keeping its page, archive links, and tags. Drafts are
+searchable in development and excluded from production. The sidebar form uses
+native GET navigation; rendering results requires JavaScript. Without JavaScript,
+the search page provides a link to the post archive.
 
 ### Custom Sidebars
 

@@ -286,6 +286,7 @@ const { entry, headings, isHome } = Astro.props;
   await write('posts/_private/bad.md', 'This private file is not a post.');
   for (const path of [
     'index',
+    'search',
     'posts',
     'posts/bundle',
     'posts/page/2',
@@ -430,6 +431,7 @@ test('does not generate routes for assets, helpers or arbitrary content-root fil
 test('system routes win without failing the build, including archives and homepage', async () => {
   for (const path of [
     '',
+    'search',
     'posts',
     'posts/bundle',
     'posts/page/2',

@@ -312,8 +312,51 @@ const page: Page<CollectionEntry<'posts'>> = {
       'A result update clears the error',
     );
 
+    const highlighted = {
+      ...items[0],
+      title: '<img src=x onerror=alert(1)> 中文',
+      description: 'Astro <script>alert(1)<\/script> 中文',
+      highlights: {
+        title: [{ start: 29, end: 31 }],
+        description: [
+          { start: 0, end: 5 },
+          { start: 32, end: 34 },
+        ],
+      },
+    };
+    list.setPage({ items: [highlighted] });
+    assert(
+      list.querySelector('.post-title a')?.textContent === highlighted.title &&
+        list.querySelector('.post-description')?.textContent ===
+          highlighted.description,
+      'Highlighted text preserves literal markup and Unicode',
+    );
+    assert(
+      !list.querySelector('.post-title img, .post-description script') &&
+        list.querySelector('.post-title mark')?.textContent === '中文' &&
+        list.querySelectorAll('.post-description mark').length === 2,
+      'Only range markers become HTML elements',
+    );
     const beforeBadData = articles()[0];
     for (const update of [
+      {
+        items: [
+          { ...highlighted, highlights: { title: [{ start: 0, end: 999 }] } },
+        ],
+      },
+      {
+        items: [
+          {
+            ...highlighted,
+            highlights: {
+              title: [
+                { start: 2, end: 4 },
+                { start: 1, end: 3 },
+              ],
+            },
+          },
+        ],
+      },
       { total: -1 },
       { pageSize: 0 },
       { items: [{ ...items[0], href: 'javascript:alert(1)' }] },
@@ -362,12 +405,11 @@ const page: Page<CollectionEntry<'posts'>> = {
     list.style.width = '120px';
     await pause();
     assert(numbers.hidden, 'Narrow selector hides page numbers');
+    list.style.width = '600px';
+    await pause();
+    assert(!numbers.hidden, 'Selector restores numbers when space returns');
     list.style.width = '';
     await pause();
-    assert(
-      !numbers.hidden || list.getBoundingClientRect().width < 300,
-      'Selector restores numbers when space returns',
-    );
 
     // The consuming page owns history. setPage with results must not create a request loop.
     const historyRequests = requests.length;

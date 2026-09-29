@@ -77,6 +77,7 @@ const summaries = await Promise.all(
 <script>
   import type {
     PageRequest,
+    PostHighlight,
     PostListElement,
     PostListPage,
     PostSummaryData,
@@ -211,7 +212,7 @@ const summaries = await Promise.all(
           true,
         ) as HTMLElement;
         const link = article.querySelector<HTMLAnchorElement>('.post-title a')!;
-        link.textContent = item.title;
+        this.setHighlightedText(link, item.title, item.highlights?.title);
         link.href = this.safeUrl(item.href);
         article.querySelector('[data-published]')!.textContent =
           `Published: ${item.publishDate}`;
@@ -219,7 +220,12 @@ const summaries = await Promise.all(
           `Reading: ${formatReadingTime(item.readingTimeMinutes)}`;
         if (!item.draft) article.querySelector('.badge')!.remove();
         const description = article.querySelector('.post-description')!;
-        if (item.description) description.textContent = item.description;
+        if (item.description)
+          this.setHighlightedText(
+            description,
+            item.description,
+            item.highlights?.description,
+          );
         else description.remove();
         const cover = article.querySelector('.post-cover-container')!;
         if (item.cover) {
@@ -238,6 +244,34 @@ const summaries = await Promise.all(
         fragment.append(article);
       }
       return fragment;
+    }
+
+    private setHighlightedText(
+      element: Element,
+      text: string,
+      highlights: readonly PostHighlight[] = [],
+    ) {
+      const content = document.createDocumentFragment();
+      let offset = 0;
+      for (const { start, end } of highlights) {
+        if (
+          !Number.isSafeInteger(start) ||
+          !Number.isSafeInteger(end) ||
+          start < offset ||
+          end <= start ||
+          end > text.length
+        ) {
+          throw new Error(
+            'Post highlights must be ordered, non-overlapping text ranges.',
+          );
+        }
+        const mark = document.createElement('mark');
+        mark.textContent = text.slice(start, end);
+        content.append(text.slice(offset, start), mark);
+        offset = end;
+      }
+      content.append(text.slice(offset));
+      element.replaceChildren(content);
     }
 
     private safeUrl(value: string): string {

@@ -97,7 +97,7 @@ and registration, see [Creating a template](templates.md).
 
 Intermediate ancestor directories are not searched. Content in the same directory
 shares local sidebars; folder bundles allow per-page overrides. Source paths,
-not public slugs, choose the sidebar. System archive and 404 pages use root
+not public slugs, choose the sidebar. System archive, search, and 404 pages use root
 defaults. The default left widgets are authored in `src/content/_left.astro`;
 routes do not supply a hard-coded widget fallback.
 
@@ -135,13 +135,22 @@ those imports into `_right.astro`. Older homepage bodies belong in
 The `posts` collection requires `title` and `publishDate`. Optional fields include
 `description`, `cover`, `views`, and sidebar switches. `cover` accepts a public or
 HTTP(S) URL or an image resolved relative to the content file. `draft` defaults
-to `false`, and `tags` defaults to an empty array.
+to `false`, `exclude_in_search` defaults to `false`, and `tags` defaults to an
+empty array.
 
 Use `getPosts()` from `@assets/utils/posts` for shared visibility filtering.
 Production builds exclude draft posts from generated routes, archives, tags,
 widgets, RSS, and counters. Development mode includes drafts for author preview
-with a draft badge. New search data or other public listings must use the same
-filter before exposing posts.
+with a draft badge. Search indexes follow the same visibility rule. Other public listings must
+use this filter before exposing posts.
+
+Set `exclude_in_search: true` to omit a post from search without changing its
+route, archive membership, tags, RSS, or counters. Post detail marks eligible
+article content with `data-pagefind-body` and exposes title, publication date,
+reading-time minutes, and draft status as Pagefind metadata. The index excludes
+sidebars, navigation, copyright cards, and tag controls. Both development and
+production index rendered HTML, so Markdown and MDX share the same search path.
+See [Search](search.md) for index generation and query behavior.
 
 Tags are trimmed, nonempty, case-sensitive strings. Duplicate names are removed
 while author order is retained. Tag URLs encode spaces and non-Latin characters;

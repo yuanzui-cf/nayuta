@@ -48,31 +48,43 @@ const breadcrumbs = [
   breadcrumbs={breadcrumbs}
 >
   <Prose>
-    {
-      post.data.cover && (
-        <div class="post-cover-container">
-          <Image
-            class="post-cover"
-            src={post.data.cover}
-            alt={post.data.title}
-            ratio="16 / 9"
-            loading="eager"
-          />
-        </div>
-      )
-    }
-
-    <h1 class="page-title">
-      {post.data.draft && <Badge variant="draft">Draft</Badge>}
-      {post.data.title}
-    </h1>
-    <p class="post-meta">
-      Published: {post.data.publishDate} &nbsp;•&nbsp; Reading Time: {
-        readingTime
+    <div data-pagefind-body={post.data.exclude_in_search ? undefined : ''}>
+      {
+        post.data.cover && (
+          <div class="post-cover-container">
+            <Image
+              class="post-cover"
+              src={post.data.cover}
+              alt={post.data.title}
+              ratio="16 / 9"
+              loading="eager"
+            />
+          </div>
+        )
       }
-    </p>
 
-    <Content />
+      <h1
+        class="page-title"
+        data-pagefind-meta="title[data-title]"
+        data-title={post.data.title}
+      >
+        {post.data.draft && <Badge variant="draft">Draft</Badge>}
+        {post.data.title}
+      </h1>
+      <p
+        class="post-meta"
+        data-pagefind-ignore
+        data-pagefind-meta="publishDate[data-publish-date], readingTimeMinutes[data-reading-minutes], draft[data-draft]"
+        data-publish-date={post.data.publishDate}
+        data-reading-minutes={remarkPluginFrontmatter.readingTimeMinutes}
+        data-draft={post.data.draft}
+      >
+        Published: {post.data.publishDate} &nbsp;•&nbsp; Reading Time: {
+          readingTime
+        }
+      </p>
+      <Content />
+    </div>
     {
       showCopyright && copyrightLicense && (
         <CopyrightCard

@@ -8,23 +8,24 @@ Prefer existing dependencies, semantic HTML, and native browser APIs.
 
 ## Directory Ownership
 
-| Path                      | Responsibility                                                                |
-| ------------------------- | ----------------------------------------------------------------------------- |
-| `src/pages/`              | Astro routes, static path generation, archives, RSS, and the 404 page.        |
-| `src/layouts/`            | Document structure, metadata, page regions, sidebars, and responsive drawers. |
-| `src/layouts/components/` | Small reusable UI such as `Prose`, `Pagination`, `Avatar`, and `Button`.      |
-| `src/layouts/widgets/`    | Composed UI and layout enhancements: `ProfileCard`, `post-list/`, `image/`.   |
-| `src/templates/`          | Template definitions, registration, metadata schemas, and body presentation.  |
-| `src/widgets/sidebar/`    | Sidebar widgets and their composition helpers, also used inside drawers.      |
-| `src/widgets/article/`    | Public MDX components such as `Callout` and `TableContainer`.                 |
-| `src/assets/styles/`      | Global style tokens and theme palettes.                                       |
-| `src/assets/utils/`       | Logic actually shared by multiple build-time or browser consumers.            |
-| `src/types/`              | Shared TypeScript contracts.                                                  |
-| `src/content/`            | Authored content, local sidebar components, and colocated assets.             |
-| `src/content.config.ts`   | Collection loaders and common metadata schemas.                               |
-| `src/config.ts`           | Site identity, navigation, theme selection, and archive page size.            |
-| `public/`                 | Files served at stable URLs without content processing.                       |
-| `tests/`                  | Bun tests and isolated site/browser fixtures.                                 |
+| Path                      | Responsibility                                                                    |
+| ------------------------- | --------------------------------------------------------------------------------- |
+| `src/integrations/`       | Astro lifecycle integrations, including Pagefind indexing and development assets. |
+| `src/pages/`              | Astro routes, static path generation, archives, RSS, and the 404 page.            |
+| `src/layouts/`            | Document structure, metadata, page regions, sidebars, and responsive drawers.     |
+| `src/layouts/components/` | Small reusable UI such as `Prose`, `Pagination`, `Avatar`, and `Button`.          |
+| `src/layouts/widgets/`    | Composed UI and layout enhancements: `ProfileCard`, `post-list/`, `image/`.       |
+| `src/templates/`          | Template definitions, registration, metadata schemas, and body presentation.      |
+| `src/widgets/sidebar/`    | Sidebar widgets and their composition helpers, also used inside drawers.          |
+| `src/widgets/article/`    | Public MDX components such as `Callout` and `TableContainer`.                     |
+| `src/assets/styles/`      | Global style tokens and theme palettes.                                           |
+| `src/assets/utils/`       | Logic actually shared by multiple build-time or browser consumers.                |
+| `src/types/`              | Shared TypeScript contracts.                                                      |
+| `src/content/`            | Authored content, local sidebar components, and colocated assets.                 |
+| `src/content.config.ts`   | Collection loaders and common metadata schemas.                                   |
+| `src/config.ts`           | Site identity, navigation, theme selection, and archive page size.                |
+| `public/`                 | Files served at stable URLs without content processing.                           |
+| `tests/`                  | Bun tests and isolated site/browser fixtures.                                     |
 
 Keep queries, sorting, and display preparation in the consuming `.astro` file.
 Extract a utility only when multiple consumers share the same logic. Current
@@ -36,7 +37,7 @@ Markdown processing; `rehype-images.ts` owns the Markdown/MDX image transform.
 
 `frame.astro` owns the HTML document, head, responsive grid, sticky header,
 drawers, footer placement, authored sidebar resolution, and the article table
-of contents. Post detail, archives, and the 404 page use it directly.
+of contents. Post detail, archives, search, and the 404 page use it directly.
 
 `layouts/template.astro` is the shared entry point for the homepage and authored
 pages. It looks up the template in `templates/registry.ts`, validates its metadata,
@@ -48,6 +49,30 @@ slot. See [Creating a template](templates.md) for the template contract and
 Use `Prose.astro` around reading content. Its scoped styles apply to descendants;
 adding a `prose` class to an unrelated element does not attach those styles.
 Keep navigation, pagination, and tag controls outside the prose wrapper.
+
+## Search and Indexing
+
+`src/pages/search/index.astro` composes `Frame`, `Prose`, and dynamic `PostList`.
+Its custom element owns query parsing, Pagefind requests, history, page validation,
+and result conversion. `PostList` owns summaries, text highlighting, pagination,
+status announcements, and keyboard focus. Browser contracts live in
+`src/types/search.ts` and `src/types/post-list.ts`; Pagefind-specific retrieval
+stays in the consuming route.
+
+`src/integrations/pagefind/index.ts` registers with Astro in `astro.config.ts`.
+The build hook indexes rendered HTML and writes the search bundle to
+`dist/pagefind/`. In development, a development-only manifest route obtains
+searchable URLs through `getPosts()`. The integration fetches those rendered pages,
+builds an in-memory index, and serves `/pagefind/*`. Source changes invalidate the
+cached bundle; the next index request rebuilds it. Index creation starts when the
+server starts, and concurrent requests share the pending generation.
+
+Both modes use `[data-pagefind-body]` as the index root. Post detail owns this
+marker and the title, date, reading-time, and draft metadata. The generated index
+contains article content; navigation, archives, standalone pages, and copyright
+cards are outside its scope. The integration releases each Pagefind index after
+producing its files. Development assets are served without browser caching.
+See [Search](search.md) for routing, failure handling, and validation.
 
 ## Imports and Types
 
