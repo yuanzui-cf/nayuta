@@ -5,6 +5,8 @@ import {
   themes,
   licenses,
   today,
+  validate,
+  siteSettingsSchema,
   type SiteSettings,
 } from '../../../core/blog/schema';
 import { discoverProject } from '../../../core/project/discover';
@@ -18,6 +20,9 @@ import {
   defaultTemplateRef,
 } from '../../../infrastructure/template';
 import { gitIdentity } from '../../../infrastructure/git';
+import { NayutaError } from '../../../core/errors';
+import { exists } from '../../../infrastructure/filesystem';
+import { validateGithub } from '../../../infrastructure/github';
 import type { MessageKey } from '../../../i18n';
 import { textDiff } from '../components/diff';
 import { changedFields, type FormField, type FormModel } from '../state';
@@ -84,8 +89,16 @@ function settingsFromValues(values: Record<string, string>): SiteSettings {
       const copyright = (settings.copyright ??= {}) as Record<string, unknown>;
       if (name === 'copyright.enabled') copyright.enabled = value === 'true';
       else if (value) copyright.license = value;
-    } else if (name === 'links') settings.links = JSON.parse(value || '[]');
-    else if (name === 'postsPerPage') {
+    } else if (name === 'links') {
+      try {
+        settings.links = JSON.parse(value || '[]');
+      } catch {
+        throw new NayutaError('errorValidation', {
+          field: 'links',
+          detail: 'JSON',
+        });
+      }
+    } else if (name === 'postsPerPage') {
       if (value) settings[name] = Number(value);
     } else if (value || name === 'description') settings[name] = value;
   }
@@ -166,6 +179,22 @@ export async function blogCreateForm(context: AppContext): Promise<FormModel> {
       const settings = settingsFromValues(
         Object.fromEntries(siteNames.map((name) => [name, values[name]!])),
       );
+      validate(siteSettingsSchema, settings);
+      for (const field of ['title', 'author', 'site_url'] as const) {
+        if (!settings[field])
+          throw new NayutaError('errorValidation', {
+            field,
+            detail: 'requiredValue',
+          });
+      }
+      validateGithub(
+        values.githubRepo || undefined,
+        values.push === 'true',
+        values.commit === 'true',
+      );
+      const destination = resolve(context.cwd, values.directory!);
+      if (await exists(destination))
+        throw new NayutaError('errorExists', { path: destination });
       const preview = fields
         .map(
           (field) =>

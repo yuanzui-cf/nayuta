@@ -1,6 +1,8 @@
 import type { AppContext } from '../../context';
 import { createPost } from '../../../core/post/service';
-import { today } from '../../../core/blog/schema';
+import { date, today, validate } from '../../../core/blog/schema';
+import { postSchema } from '../../../core/post/schema';
+import { postSlug } from '../../../core/post/path';
 import type { FormField, FormModel } from '../state';
 export function postCreateForm(context: AppContext): FormModel {
   const t = context.i18n.t.bind(context.i18n);
@@ -30,28 +32,37 @@ export function postCreateForm(context: AppContext): FormModel {
   return {
     title: 'createPost',
     fields,
-    prepare: async (values) => ({
-      preview: fields
-        .map(
-          (field) =>
-            `${t(field.label)}: ${field.choices?.find((choice) => choice.value === values[field.name])?.label ?? values[field.name]}`,
-        )
-        .join('\n'),
-      save: () =>
-        createPost({
-          directory: context.cwd,
-          i18n: context.i18n,
-          title: values.title!,
-          slug: values.slug || undefined,
-          format: values.format as 'md' | 'mdx',
-          publishDate: values.publishDate,
-          description: values.description || undefined,
-          tags: values.tags ? values.tags.split(',') : [],
-          cover: values.cover || undefined,
-          published: values.draft === 'false',
-          datePrefix: values.datePrefix !== 'false',
-          assetBase: context.cwd,
-        }),
-    }),
+    prepare: async (values) => {
+      validate(date, values.publishDate);
+      postSlug(values.slug || values.title!, Boolean(values.slug));
+      validate(postSchema, {
+        title: values.title,
+        publishDate: values.publishDate,
+        tags: values.tags ? values.tags.split(',') : [],
+      });
+      return {
+        preview: fields
+          .map(
+            (field) =>
+              `${t(field.label)}: ${field.choices?.find((choice) => choice.value === values[field.name])?.label ?? values[field.name]}`,
+          )
+          .join('\n'),
+        save: () =>
+          createPost({
+            directory: context.cwd,
+            i18n: context.i18n,
+            title: values.title!,
+            slug: values.slug || undefined,
+            format: values.format as 'md' | 'mdx',
+            publishDate: values.publishDate,
+            description: values.description || undefined,
+            tags: values.tags ? values.tags.split(',') : [],
+            cover: values.cover || undefined,
+            published: values.draft === 'false',
+            datePrefix: values.datePrefix !== 'false',
+            assetBase: context.cwd,
+          }),
+      };
+    },
   };
 }

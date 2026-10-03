@@ -5,6 +5,7 @@ import {
   type TestRendererSetup,
 } from '@opentui/core/testing';
 import { join } from 'node:path';
+import { readdir } from 'node:fs/promises';
 import { I18n } from '../src/i18n';
 import { TuiApp } from '../src/app/tui/app';
 import { frontmatterForm } from '../src/app/tui/screens/frontmatter';
@@ -163,4 +164,49 @@ test('creates an article through the TUI and gives explicit non-TTY errors', asy
   expect(
     (await fixture.cli(['--cwd', fixture.blog, 'tui', '--json'])).stdout,
   ).toContain('errorTerminal');
+});
+
+test('keeps invalid creation values in the form without previewing or writing', async () => {
+  const { fixture, setup, app } = await start();
+  await app.open('createPost');
+  const title = setup.renderer.root.findDescendantById(
+    'field-title',
+  ) as InputRenderable;
+  title.value = 'Keep my title';
+  (
+    setup.renderer.root.findDescendantById(
+      'field-publishDate',
+    ) as InputRenderable
+  ).value = '2026-02-30';
+  setup.mockInput.pressKey('s', { ctrl: true });
+  await setup.waitFor(() => !app.busy);
+  await setup.renderOnce();
+  expect(app.screen).toBe('form');
+  expect(setup.captureCharFrame()).toContain('無效');
+  expect(title.value).toBe('Keep my title');
+  expect(await readdir(join(fixture.blog, 'src/content/posts'))).toEqual([
+    '.gitkeep',
+  ]);
+
+  await app.open('createBlog');
+  const destination = join(fixture.root, 'another-blog');
+  (
+    setup.renderer.root.findDescendantById('field-directory') as InputRenderable
+  ).value = destination;
+  (
+    setup.renderer.root.findDescendantById('field-links') as InputRenderable
+  ).value = '{invalid';
+  setup.mockInput.pressKey('s', { ctrl: true });
+  await setup.waitFor(() => !app.busy);
+  await setup.renderOnce();
+  expect(app.screen).toBe('form');
+  expect(setup.captureCharFrame()).toContain('JSON');
+  expect(
+    (setup.renderer.root.findDescendantById('field-links') as InputRenderable)
+      .value,
+  ).toBe('{invalid');
+  expect(await Bun.file(join(destination, 'package.json')).exists()).toBe(
+    false,
+  );
+  expect(await readdir(fixture.root)).not.toContain('another-blog');
 });
