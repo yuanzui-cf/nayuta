@@ -88,6 +88,20 @@ Open [localhost:4321](http://localhost:4321). To contribute to the theme, follow
 
 ## Configuration
 
+### CLI and Terminal Interface
+
+Use the bundled [Nayuta CLI](packages/nayuta-cli/README.md) to create a fresh blog,
+configure a site, create article bundles, or edit Frontmatter in the terminal:
+
+```sh
+bun run cli --help
+bun run cli tui
+```
+
+The CLI supports English, Simplified Chinese and separate Traditional Chinese
+interfaces for Taiwan and Hong Kong. New blogs use your local Git identity and
+start with fresh content instead of the template demos.
+
 Customize your site profile, metadata, navigation, and theme preset in [`src/config.ts`](./src/config.ts):
 
 ```typescript

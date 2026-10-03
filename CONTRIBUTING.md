@@ -142,6 +142,12 @@ bun x --no-install prettier --write README.md CONTRIBUTING.md 'docs/develop/*.md
 bun x --no-install prettier --check README.md CONTRIBUTING.md 'docs/develop/*.md'
 ```
 
+The root check also type-checks `packages/nayuta-cli`, and root tests include its
+isolated project, Git identity, terminal and package tests. Use `bun run build:cli`
+to build the executable. Within the package, use `bun run check`, `bun run test`
+and `bun run build`; keep dependency changes in the root workspace lockfile.
+CLI fixtures must not alter authored content or access a live GitHub account.
+
 Browser tests skip when Chromium/Chrome is unavailable. Report skipped checks
 explicitly; a passing test command with skipped browser cases does not establish
 browser coverage. No Playwright dependency is required: fixtures use Bun and the

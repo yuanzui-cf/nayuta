@@ -27,6 +27,10 @@ Prefer existing dependencies, semantic HTML, and native browser APIs.
 | `public/`                 | Files served at stable URLs without content processing.                           |
 | `tests/`                  | Bun tests and isolated site/browser fixtures.                                     |
 
+The standalone CLI lives in `packages/nayuta-cli/`, sharing the Bun workspace
+lockfile while keeping its own TypeScript configuration and runtime dependencies.
+See [CLI and terminal interface](cli.md) for module ownership and contracts.
+
 Keep queries, sorting, and display preparation in the consuming `.astro` file.
 Extract a utility only when multiple consumers share the same logic. Current
 shared modules are `pages.ts`, `posts.ts`, `reading-time.ts`, and `pagination.ts`

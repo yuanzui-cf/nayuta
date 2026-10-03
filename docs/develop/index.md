@@ -12,6 +12,9 @@ These documents describe Nayuta's current design and development conventions.
 | [Creating a template](templates.md)                  | Template definitions, schemas, body components, registration, and validation.        |
 | [Components and pagination](components.md)           | Shared UI, static archives, and the dynamic post-list API.                           |
 
+The [CLI and terminal interface](cli.md) guide describes the standalone package,
+content generation, Git identity, language registration and package validation.
+
 Start with architecture when adding a feature, and consult the relevant contract
 before changing its implementation. Visual changes should also follow the design
 reference. Update these documents when a public API or convention changes.
