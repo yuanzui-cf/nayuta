@@ -3,6 +3,7 @@ import type { AppContext } from '../context';
 import { NayutaError } from '../../core/errors';
 import { registerBlogCreate } from './commands/blog-create';
 import { registerBlogSetup } from './commands/blog-setup';
+import { registerPostCreate } from './commands/post-create';
 import { fail } from './output';
 export function createCommand(context: AppContext): Command {
   const t = context.i18n.t.bind(context.i18n);
@@ -19,6 +20,7 @@ export function createCommand(context: AppContext): Command {
   const blog = command.command('blog').description(t('blogDescription'));
   registerBlogCreate(blog, context);
   registerBlogSetup(blog, context);
+  registerPostCreate(command, context);
   return command;
 }
 export async function runCli(

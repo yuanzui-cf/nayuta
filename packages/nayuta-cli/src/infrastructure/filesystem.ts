@@ -1,6 +1,18 @@
-import { lstat, open, realpath, rename, rm, stat } from 'node:fs/promises';
+import {
+  lstat,
+  open,
+  readFile,
+  realpath,
+  rename,
+  rm,
+  stat,
+} from 'node:fs/promises';
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { NayutaError } from '../core/errors';
+
+export function readText(path: string): Promise<string> {
+  return readFile(path, 'utf8');
+}
 export async function exists(path: string): Promise<boolean> {
   try {
     await lstat(path);
@@ -38,7 +50,7 @@ export async function atomicWrite(
   }
   const temporary = `${path}.nayuta-${crypto.randomUUID()}`;
   try {
-    if ((await Bun.file(path).text()) !== expected)
+    if ((await readText(path)) !== expected)
       throw new NayutaError('errorChanged', { path });
     const file = await open(temporary, 'wx', (await stat(path)).mode);
     try {
@@ -46,7 +58,7 @@ export async function atomicWrite(
     } finally {
       await file.close();
     }
-    if ((await Bun.file(path).text()) !== expected)
+    if ((await readText(path)) !== expected)
       throw new NayutaError('errorChanged', { path });
     await rename(temporary, path);
   } finally {
