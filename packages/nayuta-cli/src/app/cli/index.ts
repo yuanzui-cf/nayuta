@@ -1,4 +1,4 @@
-import { Command, CommanderError } from 'commander';
+import { Command, CommanderError, Help } from 'commander';
 import type { AppContext } from '../context';
 import { NayutaError } from '../../core/errors';
 import { registerBlogCreate } from './commands/blog-create';
@@ -23,6 +23,21 @@ export function createCommand(context: AppContext): Command {
   registerBlogSetup(blog, context);
   registerPostCreate(command, context);
   registerTui(command, context);
+  const localizeHelp = (current: Command) => {
+    current.helpOption('-h, --help', t('help'));
+    current.addHelpCommand('help [command]', t('help'));
+    current.configureHelp({
+      formatHelp: (cmd, helper) =>
+        new Help()
+          .formatHelp(cmd, helper)
+          .replace(/^Usage:/m, `${t('usage')}:`)
+          .replace(/^Options:/m, `${t('options')}:`)
+          .replace(/^Commands:/m, `${t('commands')}:`)
+          .replace(/^Arguments:/m, `${t('arguments')}:`),
+    });
+    for (const child of current.commands) localizeHelp(child);
+  };
+  localizeHelp(command);
   return command;
 }
 export async function runCli(

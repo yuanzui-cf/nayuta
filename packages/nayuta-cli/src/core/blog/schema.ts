@@ -61,7 +61,7 @@ export function validate<T>(schema: z.ZodType<T>, value: unknown): T {
     const issue = result.error.issues[0]!;
     throw new NayutaError('errorValidation', {
       field: issue.path.join('.') || 'input',
-      detail: issue.message,
+      detail: 'invalidValue',
     });
   }
   return result.data;

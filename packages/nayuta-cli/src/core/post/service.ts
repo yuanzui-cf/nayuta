@@ -181,7 +181,7 @@ export async function validatePostContent(
   if (enabled && !license)
     throw new NayutaError('errorValidation', {
       field: 'copyright.license',
-      detail: 'Required when enabled',
+      detail: 'licenseRequired',
     });
 }
 export async function updatePost(

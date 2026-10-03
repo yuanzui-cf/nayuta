@@ -18,8 +18,8 @@ export function registerPostCreate(
     .option('--description <text>', t('description'))
     .option('--tags <tags>', t('tags'))
     .option('--cover <path-or-url>', t('cover'))
-    .option('--published', t('enabled'))
-    .option('--no-date-prefix', t('datePrefix'))
+    .option('--published', t('published'))
+    .option('--no-date-prefix', t('noDatePrefix'))
     .action(async (options) =>
       output(
         context,
