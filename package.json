@@ -3,12 +3,17 @@
   "type": "module",
   "version": "0.2.0",
   "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check && tsc -p tsconfig.json --noEmit",
+    "check": "astro check && tsc -p tsconfig.json --noEmit && bun run --cwd packages/nayuta-cli check",
+    "cli": "bun run packages/nayuta-cli/src/index.ts",
+    "build:cli": "bun run --cwd packages/nayuta-cli build",
     "test": "bun test",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
