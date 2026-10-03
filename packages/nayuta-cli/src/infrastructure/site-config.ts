@@ -6,7 +6,7 @@ import {
   validate,
   type SiteSettings,
 } from '../core/blog/schema';
-import { assertInside, atomicWrite } from './filesystem';
+import { assertInside, atomicWrite, readText } from './filesystem';
 function propertyName(node: ts.PropertyName): string | undefined {
   return ts.isIdentifier(node) || ts.isStringLiteral(node)
     ? node.text
@@ -68,7 +68,7 @@ export async function readSiteConfig(
 ): Promise<SiteConfigSnapshot> {
   const path = join(root, 'src/config.ts');
   await assertInside(root, path);
-  const source = await Bun.file(path).text();
+  const source = await readText(path);
   const parsed = ts.createSourceFile(
     path,
     source,

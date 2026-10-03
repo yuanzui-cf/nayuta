@@ -2,7 +2,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { stringify } from 'yaml';
 import type { I18n } from '../../i18n';
-import { NayutaError } from '../errors';
+import { describeError, NayutaError } from '../errors';
 import { discoverProject } from '../project/discover';
 import { exists } from '../../infrastructure/filesystem';
 import {
@@ -47,7 +47,10 @@ export async function createBlog(options: CreateBlogOptions) {
   const settings = validate(siteSettingsSchema, options.settings);
   for (const field of ['title', 'author', 'site_url'] as const) {
     if (!settings[field])
-      throw new NayutaError('errorValidation', { field, detail: 'Required' });
+      throw new NayutaError('errorValidation', {
+        field,
+        detail: 'requiredValue',
+      });
   }
   validateGithub(
     options.githubRepo,
@@ -74,11 +77,21 @@ export async function createBlog(options: CreateBlogOptions) {
     }
     await Bun.write(
       join(content, 'index.md'),
-      `---\n${stringify({ title: settings.title })}---\n\n${options.i18n.t('homeBody')}\n`,
+      `---\n${stringify({ title: settings.title }, { version: '1.1' })}---\n\n${options.i18n.t('homeBody')}\n`,
     );
+    const widgets: string[] = [];
+    for (const widget of [
+      'SearchWidget',
+      'RecentPosts',
+      'TagCloud',
+      'WebsiteStatus',
+    ]) {
+      if (await exists(join(root, `src/widgets/sidebar/${widget}.astro`)))
+        widgets.push(widget);
+    }
     await Bun.write(
       join(content, '_left.astro'),
-      `---\nimport SearchWidget from '@widgets/sidebar/SearchWidget.astro';\nimport RecentPosts from '@widgets/sidebar/RecentPosts.astro';\nimport TagCloud from '@widgets/sidebar/TagCloud.astro';\nimport WebsiteStatus from '@widgets/sidebar/WebsiteStatus.astro';\n---\n\n<SearchWidget />\n<RecentPosts />\n<TagCloud />\n<WebsiteStatus />\n`,
+      `---\n${widgets.map((widget) => `import ${widget} from '@widgets/sidebar/${widget}.astro';`).join('\n')}\n---\n\n${widgets.map((widget) => `<${widget} />`).join('\n')}\n`,
     );
     const config = await readSiteConfig(root);
     await writeSiteConfig(
@@ -127,7 +140,7 @@ export async function createBlog(options: CreateBlogOptions) {
         path: root,
         detail:
           error instanceof NayutaError
-            ? options.i18n.t(error.code, error.params)
+            ? describeError(error, options.i18n)
             : String(error),
       });
     throw error;

@@ -83,7 +83,7 @@ test('edits actual frontmatter, previews the diff and saves through keyboard', a
   setup.mockInput.pressKey('s', { ctrl: true });
   await setup.waitFor(() => app.screen === 'review');
   await setup.renderOnce();
-  expect(setup.captureCharFrame()).toContain('+title: 更新後的標題');
+  expect(setup.captureCharFrame()).toContain('+title: "更新後的標題"');
   setup.mockInput.pressKey('s', { ctrl: true });
   await setup.waitFor(() => app.screen === 'home' && !app.busy);
   const snapshot = await readPost(fixture.blog, path);

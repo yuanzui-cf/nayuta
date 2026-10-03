@@ -1,4 +1,4 @@
-import { isMap, parseDocument, type Document } from 'yaml';
+import { isMap, isScalar, Scalar, parseDocument, type Document } from 'yaml';
 import { NayutaError } from '../errors';
 import { validate } from '../blog/schema';
 import { postSchema, type PostData } from './schema';
@@ -23,16 +23,17 @@ export function parseFrontmatter(
   if (!match)
     throw new NayutaError('errorFrontmatter', {
       path,
-      detail: 'Missing --- delimiters',
+      detail: 'missingDelimiters',
     });
   const document = parseDocument(match[3]!, {
+    version: '1.1',
     keepSourceTokens: true,
     uniqueKeys: true,
   });
   if (document.errors.length || !isMap(document.contents))
     throw new NayutaError('errorFrontmatter', {
       path,
-      detail: document.errors[0]?.message ?? 'Expected a YAML mapping',
+      detail: document.errors[0]?.message ?? 'yamlMapping',
     });
   let data: unknown;
   try {
@@ -61,9 +62,12 @@ export function prepareFrontmatter(
     if (!postFields.some((field) => field.name === name))
       throw new NayutaError('errorValidation', {
         field: name,
-        detail: 'Unknown field',
+        detail: 'unknownField',
       });
     const parts = name.split('.');
+    if (value !== undefined && parts.length > 1 && !document.has(parts[0]!)) {
+      document.set(parts[0]!, document.createNode({}));
+    }
     if (value === undefined) document.deleteIn(parts);
     else
       document.setIn(
@@ -80,6 +84,11 @@ export function prepareFrontmatter(
       );
   }
   const copyright = document.get('copyright', true);
+  for (const name of Object.keys(patch)) {
+    const node = document.getIn(name.split('.'), true);
+    if (isScalar(node) && typeof node.value === 'string')
+      node.type = Scalar.QUOTE_DOUBLE;
+  }
   if (isMap(copyright) && copyright.items.length === 0)
     document.delete('copyright');
   validate(postSchema, document.toJS({ maxAliasCount: 100 }));
