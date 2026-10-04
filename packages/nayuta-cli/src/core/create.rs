@@ -197,6 +197,7 @@ pub fn copy_template(source: &Path, target: &Path) -> Result<()> {
             first.as_deref(),
             Some(
                 ".git"
+                    | ".cargo"
                     | "public"
                     | "packages"
                     | "docs"
