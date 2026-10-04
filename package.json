@@ -12,6 +12,7 @@
     "test": "bun test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "bump": "bun scripts/bump-version.ts",
     "cli:version:check": "bun scripts/sync-version.ts --check",
     "cli:version:sync": "bun scripts/sync-version.ts --write",
     "cli:wrapper:check": "bun run --cwd packages/nayuta-cli-npm check",

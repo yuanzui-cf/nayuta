@@ -76,10 +76,27 @@ blobs are still missing, rather than merely absent from the checkout.
 
 ## Version and distribution
 
-The root theme version is authoritative. Run `bun run cli:version:sync` after
-changing it; the check command verifies Cargo.toml, Cargo.lock, npm wrapper, Bun's
-workspace lock entry and a
-release tag when present. Platform packages are generated with the same version
+The root theme version is authoritative. Use the root script to update all five
+version entries and create a `chore: Bump version to <version>` commit:
+
+```sh
+bun run bump 0.4.0
+bun run bump patch
+bun run bump minor
+bun run bump major
+bun run bump 0.4.0-rc.1
+```
+
+These examples are alternatives. Explicit versions may start with `v`; versions
+must be valid SemVer and newer than the current theme version. The script updates
+the root package, Cargo.toml, Cargo.lock, npm wrapper and Bun workspace lock entry.
+It commits only those files, preserving other staged work and untracked plans.
+Version files must be clean; a failed write or Git commit restores version edits
+while preserving concurrent external changes.
+
+`bun run cli:version:sync` remains available to synchronize versions after manually
+changing the root version, without committing. The check command verifies all five
+entries and a release tag when present. Platform packages are generated with the same version
 and exact optional dependencies. They are not installed in the development
 workspace before publication.
 
