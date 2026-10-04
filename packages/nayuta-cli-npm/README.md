@@ -4,6 +4,16 @@ This package starts the matching native Rust `nayuta` binary with inherited
 standard input/output, so CLI and TUI behavior is identical to the native release.
 Development and tests use Bun; the bundled launcher also runs under Node.js 22+.
 
+The wrapper contains the JavaScript launcher. Its platform-specific optional
+dependency contains the Rust binary, which already embeds the four locale
+catalogs, starter logo and other CLI assets. No separate assets directory is needed
+at runtime. Installing the wrapper selects the matching binary automatically.
+Theme templates are fetched from the selected GitHub release or local cache.
+
+GitHub Releases include the wrapper `.tgz`, all six platform `.tgz` packages, native
+archives and the clean template archive. npm publishes the platform packages and
+wrapper together at the same version.
+
 After the scoped packages are published:
 
 ```sh

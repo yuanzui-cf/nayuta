@@ -110,7 +110,7 @@ jobs:
         run: |
           cat artifacts/*.sha256 > artifacts/SHA256SUMS
           gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" || gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --generate-notes
-          gh release upload "$GITHUB_REF_NAME" artifacts/*.tar.gz artifacts/*.sha256 artifacts/SHA256SUMS --repo "$GITHUB_REPOSITORY" --clobber
+          gh release upload "$GITHUB_REF_NAME" artifacts/*.tar.gz artifacts/*.tgz artifacts/*.sha256 artifacts/SHA256SUMS --repo "$GITHUB_REPOSITORY" --clobber
   npm:
     if: github.event_name == 'workflow_dispatch' && inputs.publish_npm && startsWith(github.ref, 'refs/tags/')
     needs: binaries
