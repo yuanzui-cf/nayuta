@@ -11,8 +11,11 @@ at runtime. Installing the wrapper selects the matching binary automatically.
 Theme templates are fetched from the selected GitHub release or local cache.
 
 GitHub Releases include the wrapper `.tgz`, all six platform `.tgz` packages, native
-archives and the clean template archive. npm publishes the platform packages and
-wrapper together at the same version.
+archives and the clean template archive. Publishing a GitHub Release triggers the
+build and npm publication workflow. npm stores the wrapper at the base version
+and the six native variants under the same package name with platform suffixes,
+for example `@yuanzui-cf/nayuta@0.4.0-linux-x64`. Exact npm aliases select the
+matching variant during installation.
 
 After the scoped packages are published:
 
@@ -39,7 +42,7 @@ published by local build/pack commands. Install optional dependencies so the
 platform binary is included. No `postinstall` download is required.
 
 The development workspace has no platform dependencies. `scripts/package-cli.ts`
-adds six exact-version optional dependencies to the generated publish package.
+adds six exact-version npm aliases to the generated publish package.
 Use `NAYUTA_BINARY=/absolute/path/to/nayuta` for local launcher testing; its version
 must match the wrapper.
 

@@ -1,6 +1,7 @@
 import { mkdir, copyFile, chmod } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { platforms, root, run } from './distribution';
+import { platformDependencies, platformVersion } from './npm-release';
 
 const target = process.argv[2];
 const platform = platforms.find((p) => p.target === target);
@@ -10,7 +11,8 @@ const pkg = await Bun.file(
 ).json();
 const output = resolve(process.argv[3] ?? join(root, 'dist/cli'));
 await mkdir(output, { recursive: true });
-const name = `${pkg.name}-${platform.platform}-${platform.arch}`;
+const name = pkg.name;
+const nativeVersion = platformVersion(pkg.version, platform);
 const directory = join(output, `${platform.platform}-${platform.arch}`);
 await mkdir(directory, { recursive: true });
 const executable = platform.platform === 'win32' ? 'nayuta.exe' : 'nayuta';
@@ -56,7 +58,7 @@ await Bun.write(
   JSON.stringify(
     {
       name,
-      version: pkg.version,
+      version: nativeVersion,
       description: `Nayuta native binary for ${platform.platform}/${platform.arch}`,
       license: 'MIT',
       os: [platform.platform],
@@ -84,9 +86,7 @@ const result = await Bun.build({
 if (!result.success)
   throw new AggregateError(result.logs, 'Wrapper build failed');
 await chmod(join(wrapper, 'dist/cli.js'), 0o755);
-pkg.optionalDependencies = Object.fromEntries(
-  platforms.map((p) => [`${pkg.name}-${p.platform}-${p.arch}`, pkg.version]),
-);
+pkg.optionalDependencies = platformDependencies(pkg.name, pkg.version);
 delete pkg.scripts;
 await Bun.write(
   join(wrapper, 'package.json'),
@@ -98,5 +98,5 @@ await copyFile(
   join(wrapper, 'README.md'),
 );
 console.log(
-  `Prepared ${name}@${pkg.version} and ${pkg.name}@${pkg.version} in ${output}`,
+  `Prepared ${name}@${nativeVersion} and ${pkg.name}@${pkg.version} in ${output}`,
 );

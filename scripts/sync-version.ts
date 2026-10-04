@@ -3,9 +3,12 @@ import { readVersions, versionChanges, writeVersions } from './versions';
 
 const files = await readVersions(root);
 const version = files[0]!.version;
-const tag = process.env.GITHUB_REF?.startsWith('refs/tags/')
-  ? process.env.GITHUB_REF.slice(10).replace(/^v/, '')
-  : undefined;
+const tag = (
+  process.env.NAYUTA_RELEASE_TAG ??
+  (process.env.GITHUB_REF?.startsWith('refs/tags/')
+    ? process.env.GITHUB_REF.slice(10)
+    : undefined)
+)?.replace(/^v/, '');
 if (tag && tag !== version)
   throw new Error(`Tag ${tag} differs from theme ${version}`);
 if (process.argv.includes('--write')) {

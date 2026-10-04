@@ -17,7 +17,7 @@ try {
       );
     } catch {
       throw new Error(
-        `Missing ${name}@${pkg.version}. Reinstall ${pkg.name} with optional dependencies enabled, or download a native binary from GitHub Releases.`,
+        `Missing native dependency ${name} for ${pkg.name}@${pkg.version}. Reinstall with optional dependencies enabled, or download a native binary from GitHub Releases.`,
       );
     }
   }

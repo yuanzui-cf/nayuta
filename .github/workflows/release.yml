@@ -1,38 +1,68 @@
 name: Nayuta release
 
 on:
-  push:
-    tags: ['v*']
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
-      publish_npm:
-        description: Publish the prepared scoped npm packages (requires NPM_TOKEN)
-        type: boolean
-        default: false
+      release_tag:
+        description: Existing release tag to rebuild or retry (for example v0.4.0)
+        type: string
+        required: true
 
 permissions:
   contents: read
 
+concurrency:
+  group: nayuta-release-${{ github.event.release.tag_name || inputs.release_tag }}
+  cancel-in-progress: false
+
+env:
+  NAYUTA_RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+
 jobs:
   checks:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+      npm_prefix: ${{ steps.package.outputs.npm_prefix }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.NAYUTA_RELEASE_TAG }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.2
+      - id: release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAYUTA_RELEASE_METADATA: ${{ runner.temp }}/nayuta-release.json
+        run: |
+          gh release view "$NAYUTA_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isPrerelease,isDraft > "$NAYUTA_RELEASE_METADATA"
+          bun -e 'const release = await Bun.file(process.env.NAYUTA_RELEASE_METADATA).json(); if (release.isDraft) throw new Error("Publish the GitHub Release first."); console.log("prerelease=" + release.isPrerelease);' >> "$GITHUB_OUTPUT"
       - uses: dtolnay/rust-toolchain@1.95.0
+        with:
+          components: rustfmt, clippy
       - run: bun install --frozen-lockfile
       - run: bun run cli:version:check && bun run cli:wrapper:check && bun run cli:wrapper:test
       - run: bun run format:check && bun run check && bun run test && bun run build
+      - run: cargo +1.95.0 fmt --manifest-path packages/nayuta-cli/Cargo.toml --check
+      - run: cargo +1.95.0 clippy --manifest-path packages/nayuta-cli/Cargo.toml --locked --all-targets -- -D warnings
       - run: cargo +1.95.0 test --manifest-path packages/nayuta-cli/Cargo.toml --locked
         env:
           NAYUTA_TEST_SITE_BUILD: '1'
+      - id: package
+        shell: bash
+        run: |
+          bun -e 'const pkg = await Bun.file("packages/nayuta-cli-npm/package.json").json(); console.log("version=" + pkg.version); console.log("npm_prefix=" + pkg.name.replace(/^@/, "").replace("/", "-"));' >> "$GITHUB_OUTPUT"
       - run: bun run cli:template:pack
       - uses: actions/upload-artifact@v4
         with:
           name: template
           path: dist/cli/nayuta-template-*
+          if-no-files-found: error
   binaries:
     needs: checks
     strategy:
@@ -41,19 +71,33 @@ jobs:
         include:
           - os: macos-latest
             target: aarch64-apple-darwin
+            platform: darwin
+            arch: arm64
           - os: macos-15-intel
             target: x86_64-apple-darwin
+            platform: darwin
+            arch: x64
           - os: ubuntu-latest
             target: x86_64-unknown-linux-musl
+            platform: linux
+            arch: x64
           - os: ubuntu-24.04-arm
             target: aarch64-unknown-linux-musl
+            platform: linux
+            arch: arm64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
+            platform: win32
+            arch: x64
           - os: windows-11-arm
             target: aarch64-pc-windows-msvc
+            platform: win32
+            arch: arm64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.NAYUTA_RELEASE_TAG }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.2
@@ -90,11 +134,16 @@ jobs:
         with:
           name: cli-${{ matrix.target }}
           path: |
-            dist/cli/*.tar.gz
-            dist/cli/*.sha256
-            dist/cli/*.tgz
+            dist/cli/nayuta-${{ needs.checks.outputs.version }}-${{ matrix.target }}.tar.gz*
+            dist/cli/${{ needs.checks.outputs.npm_prefix }}-${{ needs.checks.outputs.version }}-${{ matrix.platform }}-${{ matrix.arch }}.tgz*
+          if-no-files-found: error
+      - if: matrix.target == 'aarch64-apple-darwin'
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-wrapper
+          path: dist/cli/${{ needs.checks.outputs.npm_prefix }}-${{ needs.checks.outputs.version }}.tgz*
+          if-no-files-found: error
   github:
-    if: startsWith(github.ref, 'refs/tags/')
     needs: binaries
     runs-on: ubuntu-latest
     permissions:
@@ -105,19 +154,22 @@ jobs:
           path: artifacts
           merge-multiple: true
       - shell: bash
+        working-directory: artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cat artifacts/*.sha256 > artifacts/SHA256SUMS
-          gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" || gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --generate-notes
-          gh release upload "$GITHUB_REF_NAME" artifacts/*.tar.gz artifacts/*.tgz artifacts/*.sha256 artifacts/SHA256SUMS --repo "$GITHUB_REPOSITORY" --clobber
+          cat *.sha256 > SHA256SUMS
+          sha256sum -c SHA256SUMS
+          gh release upload "$NAYUTA_RELEASE_TAG" *.tar.gz *.tgz *.sha256 SHA256SUMS --repo "$GITHUB_REPOSITORY" --clobber
   npm:
-    if: github.event_name == 'workflow_dispatch' && inputs.publish_npm && startsWith(github.ref, 'refs/tags/')
-    needs: binaries
+    needs: [github, checks]
     runs-on: ubuntu-latest
-    environment: npm-release
+    env:
+      NAYUTA_PRERELEASE: ${{ needs.checks.outputs.prerelease }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.NAYUTA_RELEASE_TAG }}
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
