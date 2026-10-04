@@ -1,0 +1,27 @@
+{
+  "name": "@yuanzui-cf/nayuta",
+  "version": "0.3.0",
+  "type": "module",
+  "description": "Native Nayuta CLI and TUI launcher",
+  "license": "MIT",
+  "repository": "https://github.com/yuanzui-cf/nayuta",
+  "bin": {
+    "nayuta": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bun build src/cli.ts --target=node --format=esm --outdir=dist",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "bun test tests"
+  }
+}

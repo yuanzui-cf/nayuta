@@ -13,11 +13,21 @@ export const platforms = [
 export async function run(args: string[], cwd = root): Promise<string> {
   const process = Bun.spawn(args, { cwd, stdout: 'pipe', stderr: 'inherit' });
   const output = await new Response(process.stdout).text();
-  if (await process.exited !== 0) throw new Error(`Command failed: ${args.join(' ')}`);
+  if ((await process.exited) !== 0)
+    throw new Error(`Command failed: ${args.join(' ')}`);
   return output.trim();
 }
 
 export function templatePath(path: string): boolean {
-  return (path.startsWith('src/') && !path.startsWith('src/content/')) ||
-    ['package.json', 'bun.lock', 'astro.config.ts', 'tsconfig.json', 'LICENSE', '.gitignore'].includes(path);
+  return (
+    (path.startsWith('src/') && !path.startsWith('src/content/')) ||
+    [
+      'package.json',
+      'bun.lock',
+      'astro.config.ts',
+      'tsconfig.json',
+      'LICENSE',
+      '.gitignore',
+    ].includes(path)
+  );
 }
