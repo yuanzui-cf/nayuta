@@ -67,7 +67,7 @@ pub fn discover(cwd: &Path) -> Result<Option<Project>> {
 pub fn validate_config(schema: &ProjectSchema, values: &mut Value, creating: bool) -> Result<()> {
     schema.config.normalize(values);
     schema.config.validate(values, "")?;
-    if schema.config.field("site_url").is_some() {
+    if schema.config.field("site_url").is_some() && values.get("site_url").is_some() {
         let url = values["site_url"]
             .as_str()
             .and_then(|s| reqwest::Url::parse(s).ok());
