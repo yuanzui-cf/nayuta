@@ -89,5 +89,9 @@
   "withLeftSidebar": "左側欄",
   "withProfileCard": "個人資料卡",
   "withRightSidebar": "右側欄",
-  "views": "瀏覽次數"
+  "views": "瀏覽次數",
+  "terminal_small": "請將終端機放大至至少 30 × 12。Ctrl+C 結束。",
+  "retry_keys": "R 重新取得版本",
+  "cancel_pending": "目前操作結束後取消…",
+  "saving_keys": "正在儲存檔案 · Ctrl+C 在儲存完成後結束"
 }

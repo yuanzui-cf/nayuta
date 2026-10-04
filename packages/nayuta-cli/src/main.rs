@@ -1,10 +1,21 @@
-use nayuta_cli::i18n::I18n;
+use nayuta_cli::app::{
+    cli::{self, Launch},
+    tui,
+};
 
 fn main() {
-    let i18n = I18n::detect(None).unwrap_or_default();
-    println!(
-        "nayuta {} · {}",
-        env!("CARGO_PKG_VERSION"),
-        i18n.t("welcome")
-    );
+    let code = match cli::launch(std::env::args_os().collect()) {
+        Launch::Exit(code) => code,
+        Launch::Tui(ui) => {
+            let i18n = ui.i18n.clone();
+            match tui::run(*ui) {
+                Ok(code) => code,
+                Err(error) => {
+                    eprintln!("{}", i18n.error(&error));
+                    1
+                }
+            }
+        }
+    };
+    std::process::exit(i32::from(code));
 }
