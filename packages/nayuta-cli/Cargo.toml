@@ -23,7 +23,7 @@ oxc_ast = { version = "0.110", features = ["serialize"] }
 oxc_parser = "0.110"
 oxc_span = "0.110"
 ratatui = "0.30"
-regress = "0.11"
+regress = { version = "0.11", features = ["utf16"] }
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
 rust-embed = "8"
 serde = { version = "1", features = ["derive"] }

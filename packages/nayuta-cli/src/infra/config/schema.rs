@@ -185,6 +185,7 @@ impl Reader {
         let args = node["arguments"]
             .as_array()
             .ok_or_else(|| module.unsupported(node))?;
+        let arg = args.first().unwrap_or(&Value::Null);
         let base_zod = kind(receiver) == "Identifier"
             && module
                 .import(name(receiver))
@@ -218,11 +219,11 @@ impl Reader {
                 }
                 "array" => Ok(Schema::new(Kind::Array(Box::new(self.zod_schema(
                     module,
-                    &args[0],
+                    arg,
                     depth + 1,
                 )?)))),
                 "union" => Ok(Schema::new(Kind::Union(
-                    args[0]["elements"]
+                    arg["elements"]
                         .as_array()
                         .ok_or_else(|| module.unsupported(node))?
                         .iter()
@@ -230,7 +231,7 @@ impl Reader {
                         .collect::<Result<_>>()?,
                 ))),
                 "enum" => {
-                    let values = self.value(module, &args[0], 0)?;
+                    let values = self.value(module, arg, 0)?;
                     Ok(Schema::new(Kind::Union(
                         values
                             .as_array()
@@ -240,7 +241,7 @@ impl Reader {
                             .collect(),
                     )))
                 }
-                "literal" => Ok(Schema::new(Kind::Literal(self.value(module, &args[0], 0)?))),
+                "literal" => Ok(Schema::new(Kind::Literal(self.value(module, arg, 0)?))),
                 _ => Err(module.unsupported(node)),
             };
         }
@@ -253,25 +254,22 @@ impl Reader {
                     Schema::new(Kind::Literal(Value::Null)),
                 ])
             }
-            "default" => schema.default = Some(self.value(module, &args[0], 0)?),
+            "default" => schema.default = Some(self.value(module, arg, 0)?),
             "trim" => schema.trim = true,
-            "min" => schema.min = self.value(module, &args[0], 0)?.as_f64(),
-            "max" => schema.max = self.value(module, &args[0], 0)?.as_f64(),
+            "min" => schema.min = self.value(module, arg, 0)?.as_f64(),
+            "max" => schema.max = self.value(module, arg, 0)?.as_f64(),
             "int" => schema.integer = true,
             "positive" => schema.min = Some(f64::MIN_POSITIVE),
             "regex" => {
                 schema.pattern = Some((
-                    args[0]["regex"]["pattern"]
+                    arg["regex"]["pattern"]
                         .as_str()
                         .ok_or_else(|| module.unsupported(node))?
                         .into(),
-                    args[0]["regex"]["flags"]
-                        .as_str()
-                        .unwrap_or_default()
-                        .into(),
+                    arg["regex"]["flags"].as_str().unwrap_or_default().into(),
                 ))
             }
-            "transform" if is_set_dedup(&args[0]) => schema.unique = true,
+            "transform" if is_set_dedup(arg) => schema.unique = true,
             _ => return Err(module.unsupported(node)),
         }
         Ok(schema)
@@ -327,6 +325,14 @@ pub fn load(root: &Path) -> Result<ProjectSchema> {
         0,
     )?;
     let loader = property(options, "loader").ok_or_else(|| content.unsupported(options))?;
+    let loader_options = &loader["arguments"][0];
+    let pattern = property(loader_options, "pattern").ok_or_else(|| content.unsupported(loader))?;
+    if reader.value(&content, pattern, 0)?
+        != json!(["**/[^_]*.{md,mdx}", "!**/assets/**", "!**/_*/**"])
+        || property(loader_options, "generateId").is_some()
+    {
+        return Err(user("unsupported", "posts loader pattern / generateId"));
+    }
     let base =
         property(&loader["arguments"][0], "base").ok_or_else(|| content.unsupported(loader))?;
     let base = reader.value(&content, base, 0)?;
