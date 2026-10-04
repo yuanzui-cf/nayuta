@@ -378,6 +378,23 @@ Open `/demo` (also linked from the homepage) to explore the examples:
 | `/demo/studio`           | `src/content/pages/demo/studio/index.astro`     | Astro body and both local sidebars                                         |
 | `/posts/typography-test` | `src/content/posts/typography-test/index.mdx`   | Bundled article, local sidebars, TOC before extra right content            |
 
+## Nayuta CLI
+
+The [Rust CLI and TUI](packages/nayuta-cli/README.md) creates clean blogs from
+GitHub releases, manages version-specific settings, and creates article bundles
+following the Wiki. Run `nayuta` without arguments for TUI, `nayuta create` outside
+a blog, or `nayuta post new` inside one. Settings and frontmatter editing are TUI
+features. English and three regional Chinese catalogs are embedded.
+
+Build locally:
+
+```sh
+cargo +1.95.0 build --manifest-path packages/nayuta-cli/Cargo.toml --release --locked
+```
+
+The [npm launcher](packages/nayuta-cli-npm/README.md) and
+[CLI maintenance guide](docs/develop/cli.md) cover packaging and publication.
+
 ## License
 
 [MIT](LICENSE)
