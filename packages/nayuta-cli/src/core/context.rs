@@ -66,6 +66,13 @@ pub fn discover(cwd: &Path) -> Result<Option<Project>> {
 
 pub fn validate_config(schema: &ProjectSchema, values: &mut Value, creating: bool) -> Result<()> {
     schema.config.normalize(values);
+    let missing = schema.config.missing(values, "");
+    if !missing.is_empty() {
+        return Err(user(
+            "validation",
+            format!("{}: required", missing.join(", ")),
+        ));
+    }
     schema.config.validate(values, "")?;
     if schema.config.field("site_url").is_some() && values.get("site_url").is_some() {
         let url = values["site_url"]
@@ -79,6 +86,17 @@ pub fn validate_config(schema: &ProjectSchema, values: &mut Value, creating: boo
         && page_size.as_u64().is_none_or(|n| n == 0)
     {
         return Err(user("validation", "postsPerPage: positive integer"));
+    }
+    if let Some(theme) = values.get("theme").and_then(Value::as_str)
+        && !schema
+            .themes
+            .iter()
+            .any(|name| name == theme.trim_end_matches(".css"))
+    {
+        return Err(user(
+            "validation",
+            format!("theme: {}", schema.themes.join(", ")),
+        ));
     }
     if creating
         && values["copyright"]["enabled"] == true

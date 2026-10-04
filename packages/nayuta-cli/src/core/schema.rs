@@ -54,6 +54,29 @@ impl Schema {
             _ => &[],
         }
     }
+    pub fn text_input(&self) -> bool {
+        match &self.kind {
+            Kind::String | Kind::Image | Kind::Literal(Value::String(_)) => true,
+            Kind::Union(choices) => choices.iter().all(Self::text_input),
+            _ => false,
+        }
+    }
+    pub fn missing(&self, values: &Value, prefix: &str) -> Vec<String> {
+        let mut missing = Vec::new();
+        for field in self.fields() {
+            let path = if prefix.is_empty() {
+                field.name.clone()
+            } else {
+                format!("{prefix}.{}", field.name)
+            };
+            if let Some(value) = values.get(&field.name) {
+                missing.extend(field.schema.missing(value, &path));
+            } else if !field.schema.optional && field.schema.default.is_none() {
+                missing.push(path);
+            }
+        }
+        missing
+    }
 
     pub fn field(&self, name: &str) -> Option<&Schema> {
         self.fields()
@@ -65,6 +88,19 @@ impl Schema {
     pub fn at(&self, path: &str) -> Option<&Schema> {
         path.split('.')
             .try_fold(self, |schema, segment| schema.field(segment))
+    }
+    pub fn at_mut(&mut self, path: &str) -> Option<&mut Schema> {
+        let (head, tail) = path
+            .split_once('.')
+            .map_or((path, None), |(h, t)| (h, Some(t)));
+        let Kind::Object(fields) = &mut self.kind else {
+            return None;
+        };
+        let field = &mut fields.iter_mut().find(|f| f.name == head)?.schema;
+        match tail {
+            Some(tail) => field.at_mut(tail),
+            None => Some(field),
+        }
     }
 
     pub fn defaults(&self) -> Value {
@@ -132,7 +168,13 @@ impl Schema {
         {
             let regex =
                 regress::Regex::with_flags(pattern, flags.as_str()).map_err(|_| fail("regex"))?;
-            if regex.find(text).is_none() {
+            let utf16: Vec<_> = text.encode_utf16().collect();
+            let matched = if flags.contains(['u', 'v']) {
+                regex.find_from_utf16(&utf16, 0).next().is_some()
+            } else {
+                regex.find_from_ucs2(&utf16, 0).next().is_some()
+            };
+            if !matched {
                 return Err(fail("pattern"));
             }
         }
@@ -239,4 +281,23 @@ pub fn apply_sets(schema: &Schema, value: &mut Value, sets: &[String]) -> Result
         )?;
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn javascript_regex_uses_utf16_and_unicode_flags() {
+        let mut schema = Schema::new(Kind::String);
+        schema.pattern = Some(("^.$".into(), String::new()));
+        assert!(
+            schema
+                .validate(&Value::String("😀".into()), "emoji")
+                .is_err()
+        );
+        schema.pattern = Some(("^.$".into(), "u".into()));
+        schema
+            .validate(&Value::String("😀".into()), "emoji")
+            .unwrap();
+    }
 }

@@ -153,12 +153,18 @@ pub struct Reader {
 impl Reader {
     pub fn new(root: &Path) -> Result<Self> {
         let root = root.canonicalize()?;
-        let aliases: Value = serde_json::from_str(&read(&root.join("tsconfig.json"))?)?;
-        Ok(Self {
+        let source = read(&root.join("tsconfig.json"))?;
+        let module = Module::parse(
+            &root.join("tsconfig.json"),
+            format!("export default {source};"),
+        )?;
+        let mut reader = Self {
             root,
             modules: HashMap::new(),
-            aliases,
-        })
+            aliases: Value::Null,
+        };
+        reader.aliases = reader.value(&module, module.config_object()?, 0)?;
+        Ok(reader)
     }
 
     pub fn module(&mut self, path: &Path) -> Result<Module> {
@@ -186,14 +192,19 @@ impl Reader {
                 .iter()
                 .filter_map(|(pattern, paths)| {
                     let prefix = pattern.trim_end_matches('*');
-                    specifier.starts_with(prefix).then(|| {
+                    (if pattern.ends_with('*') {
+                        specifier.starts_with(prefix)
+                    } else {
+                        specifier == pattern
+                    })
+                    .then(|| {
                         (
                             prefix,
                             paths[0].as_str().unwrap_or_default().trim_end_matches('*'),
                         )
                     })
                 })
-                .next()
+                .max_by_key(|(prefix, _)| prefix.len())
                 .ok_or_else(|| user("unsupported", specifier))?;
             self.root.join(replacement).join(&specifier[prefix.len()..])
         };
@@ -293,5 +304,24 @@ impl Reader {
             }
             _ => Err(module.unsupported(node)),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn jsonc_aliases_use_exact_and_longest_matches() {
+        let temp = tempfile::tempdir().unwrap();
+        std::fs::write(temp.path().join("tsconfig.json"),"{ // comment\n\"compilerOptions\": {\"paths\": {\"@type/*\": [\"src/*\"],\"@type/config\": [\"special.ts\"],},},}").unwrap();
+        std::fs::write(temp.path().join("special.ts"), "export const x = 1;").unwrap();
+        let reader = Reader::new(temp.path()).unwrap();
+        let module =
+            Module::parse(&temp.path().join("config.ts"), "export default {};".into()).unwrap();
+        assert_eq!(
+            reader.resolve(&module, "@type/config").unwrap(),
+            temp.path().canonicalize().unwrap().join("special.ts")
+        );
+        assert!(reader.resolve(&module, "@type/config-extra").is_err());
     }
 }

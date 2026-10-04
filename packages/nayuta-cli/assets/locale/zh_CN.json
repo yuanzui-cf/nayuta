@@ -90,8 +90,10 @@
   "withProfileCard": "个人资料卡",
   "withRightSidebar": "右侧栏",
   "views": "阅读量",
-  "terminal_small": "请将终端扩大至至少 30 × 12。Ctrl+C 退出。",
+  "terminal_small": "请将终端扩大至至少 40 × 18。Ctrl+C 退出。",
   "retry_keys": "R 重新获取版本",
   "cancel_pending": "当前操作结束后取消…",
-  "saving_keys": "正在保存文件 · Ctrl+C 在保存结束后退出"
+  "saving_keys": "正在保存文件 · Ctrl+C 在保存结束后退出",
+  "on": "开启",
+  "off": "关闭"
 }

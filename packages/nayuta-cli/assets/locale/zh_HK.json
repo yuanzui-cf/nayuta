@@ -90,8 +90,10 @@
   "withProfileCard": "個人資料卡",
   "withRightSidebar": "右側欄",
   "views": "瀏覽次數",
-  "terminal_small": "請將終端機放大至至少 30 × 12。Ctrl+C 離開。",
+  "terminal_small": "請將終端機放大至至少 40 × 18。Ctrl+C 離開。",
   "retry_keys": "R 重新取得版本",
   "cancel_pending": "目前操作結束後取消…",
-  "saving_keys": "正在儲存檔案 · Ctrl+C 在儲存完成後離開"
+  "saving_keys": "正在儲存檔案 · Ctrl+C 在儲存完成後離開",
+  "on": "開啟",
+  "off": "關閉"
 }

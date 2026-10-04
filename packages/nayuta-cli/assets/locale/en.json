@@ -90,8 +90,10 @@
   "withProfileCard": "Profile card",
   "withRightSidebar": "Right sidebar",
   "views": "Views",
-  "terminal_small": "Enlarge the terminal to at least 30 × 12. Ctrl+C exits.",
+  "terminal_small": "Enlarge the terminal to at least 40 × 18. Ctrl+C exits.",
   "retry_keys": "R retry releases",
   "cancel_pending": "Cancelling after the current operation…",
-  "saving_keys": "Saving files · Ctrl+C exits after saving finishes"
+  "saving_keys": "Saving files · Ctrl+C exits after saving finishes",
+  "on": "On",
+  "off": "Off"
 }

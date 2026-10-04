@@ -56,15 +56,10 @@ impl Form {
         if field.readonly {
             return Err(user("read_only", &field.path));
         }
-        let value = match &field.schema.kind {
-            Kind::String | Kind::Image => Value::String(raw.into()),
-            Kind::Union(choices)
-                if choices.iter().any(|s| matches!(s.kind, Kind::String))
-                    && field.schema.enum_values().is_none() =>
-            {
-                Value::String(raw.into())
-            }
-            _ => serde_json::from_str(raw).map_err(|_| user("invalid_json", &field.path))?,
+        let value = if field.schema.text_input() {
+            Value::String(raw.into())
+        } else {
+            serde_json::from_str(raw).map_err(|_| user("invalid_json", &field.path))?
         };
         let mut value = value;
         field.schema.normalize(&mut value);

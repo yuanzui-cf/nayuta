@@ -114,6 +114,12 @@ pub fn create(
         format!("---\ntitle: {}\n---\n", serde_json::to_string(title)?),
     )?;
     std::fs::write(stage.path().join("src/config.ts"), render_config(config)?)?;
+    if let Some(asset) = config["avatar"]
+        .as_str()
+        .and_then(|s| s.strip_prefix("@asset:"))
+    {
+        fs::inside(stage.path(), &stage.path().join(asset))?;
+    }
     let head = stage.path().join("src/layouts/head-base.astro");
     let source = std::fs::read_to_string(&head)?;
     // Adapt the known legacy PNG hint; versions already using a generic favicon need no patch.
@@ -296,6 +302,33 @@ mod tests {
         );
         assert!(create(&template, &target, &mut config, &source).is_err());
         if std::env::var_os("NAYUTA_TEST_SITE_BUILD").is_some() {
+            use crate::core::{frontmatter::Frontmatter, post, settings::Settings};
+            let settings = Settings::open(&project).unwrap();
+            let mut next = settings.values.clone();
+            next["description"] = json!("Writer profile");
+            settings.save(&project, &mut next).unwrap();
+            let mut values = post::defaults(&project);
+            values["title"] = json!("Hello, Nayuta");
+            values["draft"] = json!(false);
+            values["tags"] = json!([" Rust ", "Rust"]);
+            let file = post::create(
+                &project,
+                &mut post::NewPost {
+                    slug: "hello-nayuta".into(),
+                    format: "mdx".into(),
+                    date_prefix: false,
+                    values,
+                },
+            )
+            .unwrap();
+            let editor = Frontmatter::open(&project, &file).unwrap();
+            let mut values = editor.content.values.clone();
+            values["description"] = json!("Edited with the same version schema");
+            Frontmatter::save(&editor, &project, &mut values).unwrap();
+            assert_eq!(
+                git::run(&target, &["rev-list", "--all", "--count"]).unwrap(),
+                "1"
+            );
             for args in [
                 ["install"].as_slice(),
                 ["run", "check"].as_slice(),
@@ -313,6 +346,9 @@ mod tests {
             let output = std::fs::read_to_string(target.join("dist/index.html")).unwrap();
             assert!(!output.contains("/assets/images/avatar.png"));
             assert!(output.contains("data:image/svg+xml") || output.contains("/_astro/logo"));
+            let article =
+                std::fs::read_to_string(target.join("dist/posts/hello-nayuta/index.html")).unwrap();
+            assert!(article.contains("Hello, Nayuta") && article.contains("Rust"));
         }
     }
 }

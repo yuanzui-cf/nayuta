@@ -302,13 +302,14 @@ fn unparenthesized(node: &Value) -> &Value {
 pub fn load(root: &Path) -> Result<ProjectSchema> {
     let mut reader = Reader::new(root)?;
     let types = reader.module(&root.join("src/types/config.ts"))?;
-    let config = reader.declaration_schema(
+    let mut config = reader.declaration_schema(
         &types,
         types
             .declaration("Config")
             .ok_or_else(|| user("unsupported", "Config"))?,
         0,
     )?;
+    runtime_config(&mut reader, root, &mut config)?;
     let content = reader.module(&root.join("src/content.config.ts"))?;
     let collections = content
         .binding("collections")
@@ -367,6 +368,116 @@ pub fn load(root: &Path) -> Result<ProjectSchema> {
     })
 }
 
+/// Infer literal defaults and the required site URL from the actual theme consumers.
+/// These are AST adapters for the same code used by Astro, not another schema source.
+fn runtime_config(reader: &mut Reader, root: &Path, config: &mut Schema) -> Result<()> {
+    for path in [
+        "astro.config.ts",
+        "src/layouts/head-base.astro",
+        "src/layouts/widgets/post-list/PostList.astro",
+        "src/pages/posts/[slug].astro",
+    ] {
+        let file = root.join(path);
+        if !file.is_file() {
+            continue;
+        }
+        let mut source = crate::infra::error::read(&file)?;
+        if path.ends_with(".astro") {
+            source = source
+                .strip_prefix("---")
+                .and_then(|s| s.split_once("---").map(|(script, _)| script.to_owned()))
+                .ok_or_else(|| user("unsupported", format!("{path}: Astro script")))?;
+        }
+        let module = Module::parse(&file, source)?;
+        if path == "astro.config.ts"
+            && let Some(binding) = module.binding("site")
+            && config_path(binding).as_deref() == Some("site_url")
+        {
+            let required = module.declarations().any(|node| {
+                kind(node) == "IfStatement"
+                    && kind(&node["test"]) == "UnaryExpression"
+                    && node["test"]["operator"] == "!"
+                    && name(&node["test"]["argument"]) == "site"
+                    && node["consequent"]["body"]
+                        .as_array()
+                        .is_some_and(|body| body.iter().any(|n| kind(n) == "ThrowStatement"))
+            });
+            if required && let Some(field) = config.at_mut("site_url") {
+                field.optional = false;
+            }
+        }
+        infer_defaults(reader, &module, &module.ast, config)?;
+    }
+    Ok(())
+}
+fn config_path(node: &Value) -> Option<String> {
+    let node = if kind(node) == "ChainExpression" {
+        &node["expression"]
+    } else {
+        unwrap(node)
+    };
+    if kind(node) == "Identifier" && name(node) == "config" {
+        return Some(String::new());
+    }
+    if kind(node) != "MemberExpression" || node["computed"] == true {
+        return None;
+    }
+    let prefix = config_path(&node["object"])?;
+    Some(if prefix.is_empty() {
+        name(&node["property"]).into()
+    } else {
+        format!("{prefix}.{}", name(&node["property"]))
+    })
+}
+fn config_paths(node: &Value, paths: &mut Vec<String>) {
+    if let Some(path) = config_path(node)
+        && !path.is_empty()
+    {
+        paths.push(path);
+        return;
+    }
+    if let Some(object) = node.as_object() {
+        for value in object.values() {
+            config_paths(value, paths);
+        }
+    }
+    if let Some(array) = node.as_array() {
+        for value in array {
+            config_paths(value, paths);
+        }
+    }
+}
+fn infer_defaults(
+    reader: &mut Reader,
+    module: &Module,
+    node: &Value,
+    config: &mut Schema,
+) -> Result<()> {
+    if kind(node) == "LogicalExpression"
+        && matches!(node["operator"].as_str(), Some("??" | "||"))
+        && kind(&node["right"]) == "Literal"
+    {
+        let mut paths = Vec::new();
+        config_paths(&node["left"], &mut paths);
+        for path in paths {
+            if let Some(field) = config.at_mut(&path) {
+                field.default = Some(reader.value(module, &node["right"], 0)?);
+            }
+        }
+    }
+    if let Some(object) = node.as_object() {
+        for value in object.values() {
+            infer_defaults(reader, module, value, config)?;
+        }
+    }
+    if let Some(array) = node.as_array() {
+        for value in array {
+            infer_defaults(reader, module, value, config)?;
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -378,6 +489,19 @@ mod tests {
             .unwrap();
         let schemas = load(&root).unwrap();
         assert!(schemas.config.field("links").is_some());
+        assert!(!schemas.config.field("site_url").unwrap().optional);
+        assert_eq!(
+            schemas.config.field("theme").unwrap().default,
+            Some(json!("nayuta-aqua"))
+        );
+        assert_eq!(
+            schemas.config.field("postsPerPage").unwrap().default,
+            Some(json!(10))
+        );
+        assert_eq!(
+            schemas.config.at("copyright.enabled").unwrap().default,
+            Some(json!(false))
+        );
         assert_eq!(
             schemas.post.field("draft").unwrap().default,
             Some(json!(false))

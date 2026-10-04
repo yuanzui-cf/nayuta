@@ -1,5 +1,7 @@
 mod input;
 mod terminal;
+#[cfg(test)]
+mod tests;
 mod view;
 
 use crate::{
@@ -211,7 +213,19 @@ impl App {
             return;
         }
         match result {
-            Err(error) => self.message = Some(self.ui.i18n.error(&error)),
+            Err(error) => {
+                match &mut self.page {
+                    Page::Versions { submit, .. } => *submit = false,
+                    Page::Reference(_) => {
+                        self.page = Page::Versions {
+                            selected: self.versions.len(),
+                            submit: false,
+                        }
+                    }
+                    _ => {}
+                }
+                self.message = Some(self.ui.i18n.error(&error));
+            }
             Ok(Output::Versions(versions)) => {
                 self.versions = versions;
                 self.page = Page::Versions {
@@ -438,6 +452,7 @@ impl App {
                         let text = value
                             .map(|v| {
                                 v.as_str()
+                                    .filter(|_| field.schema.text_input())
                                     .map(str::to_owned)
                                     .unwrap_or_else(|| v.to_string())
                             })

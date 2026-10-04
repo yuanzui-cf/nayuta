@@ -104,7 +104,7 @@ fn list(
 pub(super) fn draw(frame: &mut Frame, app: &mut App) {
     app.hits.clear();
     let area = frame.area();
-    if area.width < 30 || area.height < 12 {
+    if area.width < 40 || area.height < 18 {
         frame.render_widget(
             Paragraph::new(app.ui.i18n.t("terminal_small")).wrap(Wrap { trim: false }),
             area,
@@ -256,10 +256,14 @@ pub(super) fn draw(frame: &mut Frame, app: &mut App) {
                 let display = if field.readonly {
                     app.ui.i18n.t("read_only")
                 } else if let Some(value) = value {
-                    value
-                        .as_str()
-                        .map(str::to_owned)
-                        .unwrap_or_else(|| value.to_string())
+                    if let Some(enabled) = value.as_bool() {
+                        app.ui.i18n.t(if enabled { "on" } else { "off" })
+                    } else {
+                        value
+                            .as_str()
+                            .map(str::to_owned)
+                            .unwrap_or_else(|| value.to_string())
+                    }
                 } else {
                     get(&form.inherited, &field.path)
                         .or(field.schema.default.as_ref())
