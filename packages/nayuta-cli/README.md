@@ -3,6 +3,19 @@
 A Rust companion to the Nayuta theme. Its version follows the theme's root
 `package.json`. The executable is always `nayuta`.
 
+From the repository root, use Bun's entry point to build and launch automatically:
+
+```sh
+bun run cli
+bun run cli --help
+bun run cli --cwd ./my-blog post new hello --title "Hello"
+```
+
+Arguments and terminal input/output pass through to the native binary. Cargo's
+incremental build reuses the executable when sources have not changed. To create
+release binaries and packages for the current platform, run `bun run cli:release`.
+You can also invoke Cargo directly:
+
 ```sh
 cargo +1.95.0 build --manifest-path packages/nayuta-cli/Cargo.toml --release --locked
 packages/nayuta-cli/target/release/nayuta --help

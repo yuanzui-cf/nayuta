@@ -54,6 +54,11 @@ editors are protected by pre-save hash checks, not by an OS-enforced mandatory l
 
 ## Validation
 
+Use `bun run cli` from the repository root for TUI, or append native CLI arguments
+such as `--help` or `--cwd ./my-blog post new hello --title "Hello"`. The script
+builds incrementally, obtains the executable path from Cargo's artifact messages,
+and preserves terminal input/output, signals and exit codes.
+
 ```sh
 cargo +1.95.0 fmt --manifest-path packages/nayuta-cli/Cargo.toml --check
 cargo +1.95.0 clippy --manifest-path packages/nayuta-cli/Cargo.toml --all-targets -- -D warnings
@@ -101,12 +106,17 @@ and exact optional dependencies. They are not installed in the development
 workspace before publication.
 
 ```sh
-bun run cli:template:pack
-cargo +1.95.0 build --manifest-path packages/nayuta-cli/Cargo.toml \
-  --release --locked --target aarch64-apple-darwin
-bun run cli:pack aarch64-apple-darwin
-bun scripts/archive-cli.ts aarch64-apple-darwin
+bun run cli:release
+bun run cli:release aarch64-apple-darwin
 ```
+
+The command checks versions, builds a stripped release binary and generates the
+native archive, platform npm package, wrapper npm package, template and checksums
+in `dist/cli`. Its default target follows the current OS/architecture; specify a
+supported Rust target for another build. Install the matching Rust target and
+linker when cross compiling. Linux release targets require a musl toolchain.
+The existing individual `cli:template:pack`, `cli:pack` and archive scripts remain
+available for the CI matrix, which produces all six platform packages.
 
 Template archives omit all authored content and public files, preserve actual
 schema code, and include source version/commit metadata plus a SHA-256 sidecar.

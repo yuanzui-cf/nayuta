@@ -386,11 +386,18 @@ following the Wiki. Run `nayuta` without arguments for TUI, `nayuta create` outs
 a blog, or `nayuta post new` inside one. Settings and frontmatter editing are TUI
 features. English and three regional Chinese catalogs are embedded.
 
-Build locally:
+Run from the repository root; Cargo builds the binary automatically:
 
 ```sh
-cargo +1.95.0 build --manifest-path packages/nayuta-cli/Cargo.toml --release --locked
+bun run cli
+bun run cli --help
+bun run cli --cwd ./my-blog post new hello --title "Hello"
+bun run cli:release
 ```
+
+The release command builds and packages the current platform into `dist/cli`.
+Use `bun run bump <version|major|minor|patch>` to synchronize all project versions
+and commit the version change.
 
 The [npm launcher](packages/nayuta-cli-npm/README.md) and
 [CLI maintenance guide](docs/develop/cli.md) cover packaging and publication.
