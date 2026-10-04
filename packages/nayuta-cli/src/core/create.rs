@@ -3,6 +3,7 @@ use crate::{
     infra::{
         config::schema::load,
         error::{Result, user},
+        fs::{self, Lock},
         git::{self, template::Template},
     },
 };
@@ -78,7 +79,20 @@ pub fn create(
         .parent()
         .ok_or_else(|| user("validation", "target"))?;
     std::fs::create_dir_all(parent)?;
-    let stage = tempfile::tempdir_in(parent)?;
+    let parent = parent.canonicalize()?;
+    let target = parent.join(
+        target
+            .file_name()
+            .ok_or_else(|| user("validation", "target"))?,
+    );
+    let _lock = Lock::acquire(&target)?;
+    let existed = target.exists();
+    if existed
+        && (target.is_symlink() || !target.is_dir() || std::fs::read_dir(&target)?.next().is_some())
+    {
+        return Err(user("exists", target.display().to_string()));
+    }
+    let stage = tempfile::tempdir_in(&parent)?;
     copy_template(&template.root, stage.path())?;
     let posts_relative = schemas
         .posts_root
@@ -102,9 +116,7 @@ pub fn create(
     std::fs::write(stage.path().join("src/config.ts"), render_config(config)?)?;
     let head = stage.path().join("src/layouts/head-base.astro");
     let source = std::fs::read_to_string(&head)?;
-    if !source.contains("<link rel=\"icon\" type=\"image/png\" href={config.avatar} />") {
-        return Err(user("unsupported", "favicon node"));
-    }
+    // Adapt the known legacy PNG hint; versions already using a generic favicon need no patch.
     std::fs::write(
         &head,
         source.replace(
@@ -119,18 +131,53 @@ pub fn create(
             &json!({"project":"nayuta","ref":template.reference,"commit":template.commit,"cliVersion":env!("CARGO_PKG_VERSION")}),
         )? + "\n",
     )?;
-    if target.exists() {
+    Project::open(stage.path())?;
+    let expected_snapshot = snapshot(stage.path())?;
+    if existed {
         std::fs::remove_dir(&target)?;
     }
     std::fs::rename(stage.path(), &target)?;
     match git::initialize(&target, &identity).and_then(|_| Project::open(&target)) {
         Ok(project) => Ok(project),
         Err(error) => {
-            // Only this freshly generated destination is removed; existing nonempty directories are never accepted.
-            std::fs::remove_dir_all(&target)?;
+            // Preserve any concurrent user edits; only roll back our own unchanged files.
+            if snapshot(&target)? == expected_snapshot {
+                std::fs::remove_dir_all(&target)?;
+                if existed {
+                    std::fs::create_dir(&target)?;
+                }
+            } else {
+                return Err(user("conflict", format!("{}; {}", target.display(), error)));
+            }
             Err(error)
         }
     }
+}
+
+fn snapshot(root: &Path) -> Result<std::collections::BTreeMap<PathBuf, Vec<u8>>> {
+    let mut files = std::collections::BTreeMap::new();
+    for entry in walkdir::WalkDir::new(root)
+        .into_iter()
+        .filter_entry(|e| e.file_name() != ".git")
+    {
+        let entry = entry.map_err(|e| user("error", e.to_string()))?;
+        if entry.file_type().is_symlink() {
+            return Err(user("conflict", entry.path().display().to_string()));
+        }
+        if entry.file_type().is_dir() {
+            files.insert(
+                entry.path().strip_prefix(root).unwrap().into(),
+                b"directory".to_vec(),
+            );
+        }
+        if entry.file_type().is_file() {
+            files.insert(
+                entry.path().strip_prefix(root).unwrap().into(),
+                fs::digest(&std::fs::read(entry.path())?),
+            );
+        }
+    }
+    Ok(files)
 }
 
 pub fn copy_template(source: &Path, target: &Path) -> Result<()> {
