@@ -98,3 +98,15 @@ pub fn releases(offline: bool) -> Result<Vec<Release>> {
         }
     }
 }
+
+pub fn release(reference: &str) -> Result<Release> {
+    let mut url = reqwest::Url::parse(&format!(
+        "https://api.github.com/repos/{REPOSITORY}/releases/tags/"
+    ))
+    .unwrap();
+    url.path_segments_mut()
+        .unwrap()
+        .pop_if_empty()
+        .push(reference);
+    Ok(client()?.get(url).send()?.error_for_status()?.json()?)
+}
