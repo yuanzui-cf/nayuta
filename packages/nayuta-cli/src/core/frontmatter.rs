@@ -33,7 +33,7 @@ impl Frontmatter {
         fs::inside(&project.schema.posts_root, &self.content.path)?;
         post::validate(
             &current,
-            &current.config()?,
+            &post::site_config(&current, values)?,
             values,
             self.content.path.parent().unwrap(),
         )?;

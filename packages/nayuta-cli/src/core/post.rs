@@ -1,5 +1,5 @@
 use crate::{
-    core::context::Project,
+    core::context::{Project, static_config},
     infra::{
         content::{self, Content},
         error::{Result, user},
@@ -30,6 +30,24 @@ pub fn defaults(project: &Project) -> Value {
         values["draft"] = json!(true);
     }
     values
+}
+
+pub fn site_config(project: &Project, values: &Value) -> Result<Value> {
+    let (config, readonly) = static_config(&project.root)?;
+    if project.schema.post.field("copyright").is_some()
+        && readonly.iter().any(|field| field == "copyright")
+        && !(values["copyright"]["enabled"] == false
+            || (values["copyright"]["enabled"] == true
+                && values["copyright"]["license"]
+                    .as_str()
+                    .is_some_and(|license| !license.is_empty())))
+    {
+        return Err(user(
+            "unsupported",
+            "copyright: computed site configuration; set an explicit article override",
+        ));
+    }
+    Ok(config)
 }
 
 pub fn validate(
@@ -161,7 +179,12 @@ pub fn create(project: &Project, options: &mut NewPost) -> Result<PathBuf> {
     if directory.exists() {
         return Err(user("exists", directory.display().to_string()));
     }
-    validate(project, &project.config()?, &mut options.values, &directory)?;
+    validate(
+        project,
+        &site_config(project, &options.values)?,
+        &mut options.values,
+        &directory,
+    )?;
     let next_id = id(root, &file, &options.values)?;
     for old in content::paths(root)? {
         let content = Content::open(&old)?;
@@ -171,6 +194,7 @@ pub fn create(project: &Project, options: &mut NewPost) -> Result<PathBuf> {
     }
     let stage = tempfile::tempdir_in(root)?;
     std::fs::create_dir(stage.path().join("assets"))?;
+    std::fs::write(stage.path().join("assets/.gitkeep"), "")?;
     std::fs::write(
         stage.path().join(format!("index.{}", options.format)),
         format!("---\n{}---\n\n", content::render(&options.values)?),
@@ -223,7 +247,11 @@ mod tests {
         project.root = temp.path().into();
         std::fs::create_dir(temp.path().join("src")).unwrap();
         std::fs::write(temp.path().join("tsconfig.json"), "{}").unwrap();
-        std::fs::write(temp.path().join("src/config.ts"), "export default {};").unwrap();
+        std::fs::write(
+            temp.path().join("src/config.ts"),
+            "export default { description: describe(), copyright: { enabled: true, license: 'CC BY 4.0' } };",
+        )
+        .unwrap();
         let mut options = NewPost {
             slug: "Hello World".into(),
             format: "mdx".into(),
@@ -233,7 +261,7 @@ mod tests {
         options.values["title"] = json!("你好");
         options.values["tags"] = json!([" Rust ", "Rust"]);
         let file = create(&project, &mut options).unwrap();
-        assert!(file.parent().unwrap().join("assets").is_dir());
+        assert!(file.parent().unwrap().join("assets/.gitkeep").is_file());
         let parsed = Content::open(&file).unwrap();
         assert_eq!(parsed.values["draft"], true);
         assert_eq!(parsed.values["tags"], json!(["Rust"]));
@@ -241,5 +269,19 @@ mod tests {
         options.slug = "hello-world".into();
         options.format = "md".into();
         assert!(create(&project, &mut options).is_err());
+        std::fs::write(
+            temp.path().join("src/config.ts"),
+            "export default { description: describe(), copyright: copyright() };",
+        )
+        .unwrap();
+        assert!(site_config(&project, &json!({})).is_err());
+        assert!(site_config(&project, &json!({ "copyright": { "enabled": false } })).is_ok());
+        assert!(
+            site_config(
+                &project,
+                &json!({ "copyright": { "enabled": true, "license": "CC BY 4.0" } })
+            )
+            .is_ok()
+        );
     }
 }

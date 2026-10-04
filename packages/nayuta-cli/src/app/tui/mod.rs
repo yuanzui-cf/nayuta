@@ -515,7 +515,9 @@ impl App {
                             ],
                         );
                         let mut form = Form::new(schema, values);
-                        form.inherited = project.config().unwrap_or_else(|_| json!({}));
+                        form.inherited = crate::core::context::static_config(&project.root)
+                            .map(|(values, _)| values)
+                            .unwrap_or_else(|_| json!({}));
                         self.page = Page::Form {
                             editor: Box::new(Editor::Post(project)),
                             form: Box::new(form),
@@ -549,7 +551,9 @@ impl App {
                         Ok(editor) => {
                             let mut form =
                                 Form::new(editor.schema.clone(), editor.content.values.clone());
-                            form.inherited = project.config().unwrap_or_else(|_| json!({}));
+                            form.inherited = crate::core::context::static_config(&project.root)
+                                .map(|(values, _)| values)
+                                .unwrap_or_else(|_| json!({}));
                             self.page = Page::Form {
                                 editor: Box::new(Editor::Frontmatter(project, editor)),
                                 form: Box::new(form),
