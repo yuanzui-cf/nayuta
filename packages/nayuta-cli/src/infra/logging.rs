@@ -1,7 +1,18 @@
-use std::{path::Path, sync::OnceLock};
+use std::{
+    path::Path,
+    sync::{Mutex, OnceLock},
+};
 use tracing_subscriber::EnvFilter;
 
-static LOG_GUARD: OnceLock<tracing_appender::non_blocking::WorkerGuard> = OnceLock::new();
+static LOG_GUARD: OnceLock<Mutex<Option<tracing_appender::non_blocking::WorkerGuard>>> =
+    OnceLock::new();
+pub fn shutdown() {
+    if let Some(guard) = LOG_GUARD.get()
+        && let Ok(mut guard) = guard.lock()
+    {
+        guard.take();
+    }
+}
 
 pub fn init(verbose: bool, tui: bool, path: Option<&Path>) -> super::error::Result<()> {
     let filter = EnvFilter::new(if verbose {
@@ -24,7 +35,7 @@ pub fn init(verbose: bool, tui: bool, path: Option<&Path>) -> super::error::Resu
                 .append(true)
                 .open(log)?,
         );
-        let _ = LOG_GUARD.set(guard);
+        let _ = LOG_GUARD.set(Mutex::new(Some(guard)));
         let _ = tracing_subscriber::fmt()
             .with_env_filter(filter)
             .with_ansi(false)

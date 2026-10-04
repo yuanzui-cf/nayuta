@@ -167,9 +167,32 @@ pub fn launch(args: Vec<OsString>) -> Launch {
     let cwd = bootstrap(&args, "cwd")
         .map(PathBuf::from)
         .unwrap_or_else(|| std::env::current_dir().unwrap_or_else(|_| PathBuf::from(".")));
+    let ready = command(&i18n, true);
+    let mut probe = command(&i18n, false).subcommand(
+        ready
+            .get_subcommands()
+            .find(|c| c.get_name() == "post")
+            .unwrap()
+            .clone(),
+    );
+    let syntax = probe.clone().try_get_matches_from(args.clone());
+    if let Err(error) = &syntax
+        && error.kind() == clap::error::ErrorKind::DisplayVersion
+    {
+        print!("{error}");
+        return Launch::Exit(0);
+    }
     let project = match context::discover(&cwd) {
         Ok(project) => project,
         Err(error) => {
+            if let Err(syntax) = syntax {
+                if syntax.kind() == clap::error::ErrorKind::DisplayHelp {
+                    print!("{syntax}");
+                    return Launch::Exit(0);
+                }
+                eprintln!("{}: {syntax}\n{}", i18n.t("error"), probe.render_help());
+                return Launch::Exit(2);
+            }
             eprintln!("{}", i18n.error(&error));
             return Launch::Exit(1);
         }
@@ -182,7 +205,11 @@ pub fn launch(args: Vec<OsString>) -> Launch {
         _ => std::env::var_os("NO_COLOR").is_none() && std::io::stdout().is_terminal(),
     };
     cmd = cmd.color(if color {
-        ColorChoice::Auto
+        if color_arg.as_deref().and_then(|s| s.to_str()) == Some("always") {
+            ColorChoice::Always
+        } else {
+            ColorChoice::Auto
+        }
     } else {
         ColorChoice::Never
     });

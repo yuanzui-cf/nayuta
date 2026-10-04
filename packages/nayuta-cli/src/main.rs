@@ -17,5 +17,6 @@ fn main() {
             }
         }
     };
+    nayuta_cli::infra::logging::shutdown();
     std::process::exit(i32::from(code));
 }
