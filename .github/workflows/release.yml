@@ -1,0 +1,130 @@
+name: Nayuta release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      publish_npm:
+        description: Publish the prepared scoped npm packages (requires NPM_TOKEN)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - uses: dtolnay/rust-toolchain@1.95.0
+      - run: bun install --frozen-lockfile
+      - run: bun run cli:version:check && bun run cli:wrapper:check && bun run cli:wrapper:test
+      - run: bun run format:check && bun run check && bun run test && bun run build
+      - run: cargo +1.95.0 test --manifest-path packages/nayuta-cli/Cargo.toml --locked
+        env:
+          NAYUTA_TEST_SITE_BUILD: '1'
+      - run: bun run cli:template:pack
+      - uses: actions/upload-artifact@v4
+        with:
+          name: template
+          path: dist/cli/nayuta-template-*
+  binaries:
+    needs: checks
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: macos-15-intel
+            target: x86_64-apple-darwin
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - os: windows-11-arm
+            target: aarch64-pc-windows-msvc
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - uses: dtolnay/rust-toolchain@1.95.0
+        with:
+          targets: ${{ matrix.target }}
+          components: llvm-tools-preview
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: packages/nayuta-cli
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          echo 'CC=musl-gcc' >> "$GITHUB_ENV"
+          echo 'CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=musl-gcc' >> "$GITHUB_ENV"
+          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=musl-gcc' >> "$GITHUB_ENV"
+      - run: cargo +1.95.0 build --manifest-path packages/nayuta-cli/Cargo.toml --release --locked --target ${{ matrix.target }}
+      - shell: bash
+        run: |
+          binary="packages/nayuta-cli/target/${{ matrix.target }}/release/nayuta"
+          if [[ "$RUNNER_OS" == Windows ]]; then binary="$binary.exe"; fi
+          "$binary" --version
+          "$binary" --help
+          host=$(rustc +1.95.0 -Vv | sed -n 's/^host: //p')
+          llvm="$(rustc +1.95.0 --print sysroot)/lib/rustlib/$host/bin/llvm-readobj"
+          if [[ "$RUNNER_OS" == Windows ]]; then llvm="$llvm.exe"; fi
+          "$llvm" --sections "$binary" > sections.txt
+          if rg -i '\.debug_|__debug_|\.zdebug|\.debug\$S' sections.txt; then exit 1; fi
+      - run: bun run cli:pack ${{ matrix.target }}
+      - run: bun scripts/archive-cli.ts ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cli-${{ matrix.target }}
+          path: |
+            dist/cli/*.tar.gz
+            dist/cli/*.sha256
+            dist/cli/*.tgz
+  github:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: binaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat artifacts/*.sha256 > artifacts/SHA256SUMS
+          gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" || gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --generate-notes
+          gh release upload "$GITHUB_REF_NAME" artifacts/*.tar.gz artifacts/*.sha256 artifacts/SHA256SUMS --repo "$GITHUB_REPOSITORY" --clobber
+  npm:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish_npm && startsWith(github.ref, 'refs/tags/')
+    needs: binaries
+    runs-on: ubuntu-latest
+    environment: npm-release
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun scripts/publish-cli.ts artifacts
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
