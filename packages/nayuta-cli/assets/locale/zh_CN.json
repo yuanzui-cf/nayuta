@@ -1,5 +1,5 @@
 {
-  "welcome": "安静地写作",
+  "welcome": "静心写作",
   "create": "创建博客",
   "settings": "博客设置",
   "new_post": "新建文章",
@@ -50,7 +50,7 @@
   "tags": "标签",
   "draft": "草稿",
   "cover": "封面",
-  "slug": "网址名称",
+  "slug": "网址别名",
   "format": "格式",
   "date_prefix": "日期前缀",
   "exclude_in_search": "从搜索中排除",
