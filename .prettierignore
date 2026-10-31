@@ -1,4 +1,6 @@
 dist/
+target/
+**/Cargo.lock
 .astro/
 node_modules/
 .worktree/

@@ -9,6 +9,7 @@
         "@astrojs/sitemap": "3.7.4",
         "astro": "^7.3.3",
         "photoswipe": "^5.4.4",
+        "sharp": "^0.35.4",
       },
       "devDependencies": {
         "@astrojs/check": "^0.9.10",
@@ -19,6 +20,13 @@
         "prettier": "^3.9.7",
         "prettier-plugin-astro": "^0.14.1",
         "typescript": "^6.0.3",
+      },
+    },
+    "packages/nayuta-cli-npm": {
+      "name": "@yuanzui-cf/nayuta",
+      "version": "0.3.0",
+      "bin": {
+        "nayuta": "dist/cli.js",
       },
     },
   },
@@ -348,6 +356,8 @@
     "@vscode/emmet-helper": ["@vscode/emmet-helper@2.11.0", "", { "dependencies": { "emmet": "^2.4.3", "jsonc-parser": "^2.3.0", "vscode-languageserver-textdocument": "^1.0.1", "vscode-languageserver-types": "^3.15.1", "vscode-uri": "^3.0.8" } }, "sha512-QLxjQR3imPZPQltfbWRnHU6JecWTF1QSWhx3GAKQpslx7y3Dp6sIIXhKjiUJ/BR9FX8PVthjr9PD6pNwOJfAzw=="],
 
     "@vscode/l10n": ["@vscode/l10n@0.0.18", "", {}, "sha512-KYSIHVmslkaCDyw013pphY+d7x1qV8IZupYfeIfzNA+nsaWHbn5uPuQRvdRFsa9zFzGeudPuoGoZ1Op4jrJXIQ=="],
+
+    "@yuanzui-cf/nayuta": ["@yuanzui-cf/nayuta@workspace:packages/nayuta-cli-npm"],
 
     "acorn": ["acorn@8.17.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-xRQbDb9BnwDafYNn6Vwl839DYVjqXYb1XVGtWAZ1kcDc6iwAL4hg3B1dZlRiuENFeO2H53gFG3in621AdERVAg=="],
 

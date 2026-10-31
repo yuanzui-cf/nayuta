@@ -11,14 +11,25 @@
     "check": "astro check && tsc -p tsconfig.json --noEmit",
     "test": "bun test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "bump": "bun scripts/bump-version.ts",
+    "cli": "bun scripts/native-cli.ts",
+    "cli:release": "bun scripts/release-cli.ts",
+    "cli:version:check": "bun scripts/sync-version.ts --check",
+    "cli:version:sync": "bun scripts/sync-version.ts --write",
+    "cli:wrapper:check": "bun run --cwd packages/nayuta-cli-npm check",
+    "cli:wrapper:test": "bun run --cwd packages/nayuta-cli-npm test",
+    "cli:wrapper:build": "bun run --cwd packages/nayuta-cli-npm build",
+    "cli:template:pack": "bun scripts/package-template.ts",
+    "cli:pack": "bun scripts/package-cli.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",
     "@astrojs/rss": "4.0.19",
     "@astrojs/sitemap": "3.7.4",
     "astro": "^7.3.3",
-    "photoswipe": "^5.4.4"
+    "photoswipe": "^5.4.4",
+    "sharp": "^0.35.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
@@ -29,5 +40,8 @@
     "prettier": "^3.9.7",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3"
-  }
+  },
+  "workspaces": [
+    "packages/nayuta-cli-npm"
+  ]
 }

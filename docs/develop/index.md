@@ -11,6 +11,7 @@ These documents describe Nayuta's current design and development conventions.
 | [Content](content.md)                                | Content discovery, metadata, routing, sidebars, drafts, tags, and reading time.      |
 | [Creating a template](templates.md)                  | Template definitions, schemas, body components, registration, and validation.        |
 | [Components and pagination](components.md)           | Shared UI, static archives, and the dynamic post-list API.                           |
+| [CLI and distribution](cli.md)                       | Rust CLI/TUI, static schema parsing, editing, versions, and release packages.        |
 
 Start with architecture when adding a feature, and consult the relevant contract
 before changing its implementation. Visual changes should also follow the design
